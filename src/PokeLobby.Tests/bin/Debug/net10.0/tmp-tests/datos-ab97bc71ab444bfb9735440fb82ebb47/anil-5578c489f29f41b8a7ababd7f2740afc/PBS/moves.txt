@@ -1,0 +1,5 @@
+[TACKLE]
+Name = Placaje
+Type = NORMAL
+Power = 40
+PP = 35

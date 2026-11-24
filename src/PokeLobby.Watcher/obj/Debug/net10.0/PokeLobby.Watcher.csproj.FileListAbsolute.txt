@@ -1,0 +1,15 @@
+C:\Users\david\Downloads\Pokelocke\Launcher\LockeLauncher\src\PokeLobby.Watcher\bin\Debug\net10.0\PokeLobby.Watcher.deps.json
+C:\Users\david\Downloads\Pokelocke\Launcher\LockeLauncher\src\PokeLobby.Watcher\bin\Debug\net10.0\PokeLobby.Watcher.dll
+C:\Users\david\Downloads\Pokelocke\Launcher\LockeLauncher\src\PokeLobby.Watcher\bin\Debug\net10.0\PokeLobby.Watcher.pdb
+C:\Users\david\Downloads\Pokelocke\Launcher\LockeLauncher\src\PokeLobby.Watcher\bin\Debug\net10.0\PokeLobby.Client.dll
+C:\Users\david\Downloads\Pokelocke\Launcher\LockeLauncher\src\PokeLobby.Watcher\bin\Debug\net10.0\PokeLobby.Client.pdb
+C:\Users\david\Downloads\Pokelocke\Launcher\LockeLauncher\src\PokeLobby.Watcher\obj\Debug\net10.0\PokeLobby.Watcher.csproj.AssemblyReference.cache
+C:\Users\david\Downloads\Pokelocke\Launcher\LockeLauncher\src\PokeLobby.Watcher\obj\Debug\net10.0\PokeLobby.Watcher.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\david\Downloads\Pokelocke\Launcher\LockeLauncher\src\PokeLobby.Watcher\obj\Debug\net10.0\PokeLobby.Watcher.AssemblyInfoInputs.cache
+C:\Users\david\Downloads\Pokelocke\Launcher\LockeLauncher\src\PokeLobby.Watcher\obj\Debug\net10.0\PokeLobby.Watcher.AssemblyInfo.cs
+C:\Users\david\Downloads\Pokelocke\Launcher\LockeLauncher\src\PokeLobby.Watcher\obj\Debug\net10.0\PokeLobby.Watcher.csproj.CoreCompileInputs.cache
+C:\Users\david\Downloads\Pokelocke\Launcher\LockeLauncher\src\PokeLobby.Watcher\obj\Debug\net10.0\PokeLobb.0E329B52.Up2Date
+C:\Users\david\Downloads\Pokelocke\Launcher\LockeLauncher\src\PokeLobby.Watcher\obj\Debug\net10.0\PokeLobby.Watcher.dll
+C:\Users\david\Downloads\Pokelocke\Launcher\LockeLauncher\src\PokeLobby.Watcher\obj\Debug\net10.0\refint\PokeLobby.Watcher.dll
+C:\Users\david\Downloads\Pokelocke\Launcher\LockeLauncher\src\PokeLobby.Watcher\obj\Debug\net10.0\PokeLobby.Watcher.pdb
+C:\Users\david\Downloads\Pokelocke\Launcher\LockeLauncher\src\PokeLobby.Watcher\obj\Debug\net10.0\ref\PokeLobby.Watcher.dll

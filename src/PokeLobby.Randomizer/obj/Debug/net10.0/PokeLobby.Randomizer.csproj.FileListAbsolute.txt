@@ -1,0 +1,11 @@
+C:\Users\david\Downloads\Pokelocke\Launcher\LockeLauncher\src\PokeLobby.Randomizer\bin\Debug\net10.0\PokeLobby.Randomizer.deps.json
+C:\Users\david\Downloads\Pokelocke\Launcher\LockeLauncher\src\PokeLobby.Randomizer\bin\Debug\net10.0\PokeLobby.Randomizer.dll
+C:\Users\david\Downloads\Pokelocke\Launcher\LockeLauncher\src\PokeLobby.Randomizer\bin\Debug\net10.0\PokeLobby.Randomizer.pdb
+C:\Users\david\Downloads\Pokelocke\Launcher\LockeLauncher\src\PokeLobby.Randomizer\obj\Debug\net10.0\PokeLobby.Randomizer.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\david\Downloads\Pokelocke\Launcher\LockeLauncher\src\PokeLobby.Randomizer\obj\Debug\net10.0\PokeLobby.Randomizer.AssemblyInfoInputs.cache
+C:\Users\david\Downloads\Pokelocke\Launcher\LockeLauncher\src\PokeLobby.Randomizer\obj\Debug\net10.0\PokeLobby.Randomizer.AssemblyInfo.cs
+C:\Users\david\Downloads\Pokelocke\Launcher\LockeLauncher\src\PokeLobby.Randomizer\obj\Debug\net10.0\PokeLobby.Randomizer.csproj.CoreCompileInputs.cache
+C:\Users\david\Downloads\Pokelocke\Launcher\LockeLauncher\src\PokeLobby.Randomizer\obj\Debug\net10.0\PokeLobby.Randomizer.dll
+C:\Users\david\Downloads\Pokelocke\Launcher\LockeLauncher\src\PokeLobby.Randomizer\obj\Debug\net10.0\refint\PokeLobby.Randomizer.dll
+C:\Users\david\Downloads\Pokelocke\Launcher\LockeLauncher\src\PokeLobby.Randomizer\obj\Debug\net10.0\PokeLobby.Randomizer.pdb
+C:\Users\david\Downloads\Pokelocke\Launcher\LockeLauncher\src\PokeLobby.Randomizer\obj\Debug\net10.0\ref\PokeLobby.Randomizer.dll

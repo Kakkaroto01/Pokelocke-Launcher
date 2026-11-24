@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="PKHeX.Core" Version="26.5.5" />
+  </ItemGroup>
+
+  <!-- Lógica pura de lanzamiento/permisos compartida con PokeLocke (sin WPF).
+       Se compila en línea para evitar el bug de restore de .slnx con múltiples ProjectReference. -->
+  <ItemGroup>
+    <Compile Include="..\PokeLobby.PokeLocke\ConfigLauncher.cs" LinkBase="PokeLockeCompartido" />
+  </ItemGroup>
+
+</Project>

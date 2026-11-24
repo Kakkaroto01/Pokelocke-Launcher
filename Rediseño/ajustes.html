@@ -1,0 +1,498 @@
+<!DOCTYPE html><html lang="es"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ajustes — PokeLocke Launcher</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">/** @type {import('tailwindcss').Config} */
+globalThis.tailwind = globalThis.tailwind || {};
+globalThis.tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        'primary': '#FFB4A8',
+        'on-primary': '#690000',
+        'primary-container': '#FF5541',
+        'on-primary-container': '#2A0000',
+        'secondary': '#FFB95F',
+        'on-secondary': '#472A00',
+        'secondary-container': '#EE9800',
+        'on-secondary-container': '#5B3800',
+        'tertiary': '#85CFFF',
+        'on-tertiary': '#00344C',
+        'tertiary-container': '#3299D0',
+        'on-tertiary-container': '#00121D',
+        'error': '#FFB4AB',
+        'on-error': '#690005',
+        'error-container': '#93000A',
+        'on-error-container': '#FFDAD6',
+        'success': '#4AE176',
+        'on-success': '#003915',
+        'success-container': '#005321',
+        'on-success-container': '#6BFF8F',
+        'background': '#0F131E',
+        'on-background': '#DFE2F2',
+        'surface': '#0F131E',
+        'surface-dim': '#0F131E',
+        'surface-bright': '#353945',
+        'surface-container-lowest': '#0A0E19',
+        'surface-container-low': '#171B26',
+        'surface-container': '#1B1F2B',
+        'surface-container-high': '#262A35',
+        'surface-container-highest': '#313441',
+        'on-surface': '#DFE2F2',
+        'on-surface-muted': '#A7ABBA',
+        'outline': '#5A5E6B',
+        'outline-variant': '#2C303C',
+        'inverse-surface': '#DFE2F2',
+        'inverse-on-surface': '#2C303C',
+      },
+      borderRadius: {
+        'sm': '6px',
+        'DEFAULT': '8px',
+        'md': '12px',
+        'lg': '16px',
+        'xl': '20px',
+        'full': '9999px',
+      },
+      spacing: {
+        'gutter-xs': '4px',
+        'gutter-sm': '8px',
+        'gutter-md': '16px',
+        'gutter-lg': '24px',
+        'gutter-xl': '32px',
+        'section': '40px',
+        'page-margin': '32px',
+      },
+      fontFamily: {
+        'display': ['"Wix Madefor Display"', 'sans-serif'],
+        'headline': ['"Wix Madefor Display"', 'sans-serif'],
+        'title': ['"Radio Canada Big"', 'sans-serif'],
+        'body': ['"Radio Canada Big"', 'sans-serif'],
+        'label': ['"Radio Canada Big"', 'sans-serif'],
+        'mono': ['"Red Hat Mono"', 'monospace'],
+      },
+      fontSize: {
+        'display-lg': ['36px', { lineHeight: '42px', letterSpacing: '-0.5px', fontWeight: '700' }],
+        'display-lg-mobile': ['28px', { lineHeight: '34px', letterSpacing: '-0.25px', fontWeight: '700' }],
+        'headline-lg': ['28px', { lineHeight: '34px', letterSpacing: '-0.25px', fontWeight: '700' }],
+        'headline-md': ['22px', { lineHeight: '28px', letterSpacing: '-0.15px', fontWeight: '600' }],
+        'title-lg': ['18px', { lineHeight: '24px', letterSpacing: '0px', fontWeight: '600' }],
+        'title-md': ['15px', { lineHeight: '20px', letterSpacing: '0px', fontWeight: '600' }],
+        'body-md': ['14px', { lineHeight: '20px', letterSpacing: '0px', fontWeight: '400' }],
+        'body-sm': ['12px', { lineHeight: '18px', letterSpacing: '0.1px', fontWeight: '400' }],
+        'label-lg': ['14px', { lineHeight: '18px', letterSpacing: '0.1px', fontWeight: '600' }],
+        'label-sm': ['11px', { lineHeight: '14px', letterSpacing: '0.5px', fontWeight: '600' }],
+        'mono-sm': ['12px', { lineHeight: '18px', letterSpacing: '0px', fontWeight: '500' }],
+      },
+      transitionDuration: {
+        'state-change': '120ms',
+        'surface-enter': '200ms',
+        'surface-exit': '150ms',
+      },
+      transitionDelay: {
+        'state-change': '0ms',
+        'surface-enter': '0ms',
+        'surface-exit': '0ms',
+      },
+      transitionTimingFunction: {
+        'state-change': 'ease-out',
+        'surface-enter': 'cubic-bezier(0.2, 0, 0, 1)',
+        'surface-exit': 'cubic-bezier(0.3, 0, 1, 1)',
+      },
+    },
+  },
+};
+if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
+</script>
+  <link href="https://fonts.googleapis.com/css2?family=Radio+Canada+Big:wght@400;500;600;700&amp;family=Red+Hat+Mono:wght@400;500;600&amp;family=Wix+Madefor+Display:wght@600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet">
+  <style>
+    .material-symbols-outlined {
+      display: inline-block;
+      width: 1em;
+      height: 1em;
+      line-height: 1 !important;
+      box-sizing: content-box;
+      overflow: hidden;
+      white-space: nowrap;
+      direction: ltr;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface font-body antialiased selection:bg-primary-container selection:text-on-primary-container">
+
+  <div class="min-h-[1024px] flex flex-col lg:flex-row bg-surface" data-stitch-vh="min-h-[1024px]===min-h-screen">
+
+    <!-- Persistent Desktop Sidebar -->
+    <aside class="w-full lg:w-64 shrink-0 min-h-[1024px] bg-surface-container-lowest border-r border-outline-variant flex flex-col justify-between p-gutter-md gap-gutter-lg" data-stitch-vh="min-h-[1024px]===min-h-screen">
+
+      <div class="flex flex-col gap-gutter-lg">
+        <!-- Brand Header -->
+        <div class="flex items-center gap-gutter-sm px-2 py-1">
+          <img src="data:image/png;base64,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" alt="Logo de PokeLocke" class="w-9 h-9 rounded-sm object-contain shrink-0">
+          <div class="flex flex-col">
+            <span class="font-headline text-title-lg text-on-surface" data-design-text-token="title-lg">PokeLocke</span>
+            <span class="font-mono text-mono-sm text-on-surface-muted" data-design-text-token="mono-sm">Launcher v1.0.0</span>
+          </div>
+        </div>
+
+        <!-- Primary Navigation -->
+        <nav aria-label="Navegación principal" class="flex flex-col gap-1">
+          <a href="#inicio" class="flex items-center gap-gutter-sm px-3 py-2.5 rounded text-on-surface-muted font-label text-label-lg transition-colors duration-state-change ease-state-change hover:bg-surface-container-low hover:text-on-surface">
+            <span class="material-symbols-outlined text-[20px]" aria-hidden="true">home</span>
+            <span data-design-text-token="label-lg">Inicio</span>
+          </a>
+
+          <a href="#biblioteca" class="flex items-center gap-gutter-sm px-3 py-2.5 rounded text-on-surface-muted font-label text-label-lg transition-colors duration-state-change ease-state-change hover:bg-surface-container-low hover:text-on-surface">
+            <span class="material-symbols-outlined text-[20px]" aria-hidden="true">library_books</span>
+            <span data-design-text-token="label-lg">Biblioteca</span>
+          </a>
+
+          <a href="#locke-en-vivo" class="flex items-center justify-between px-3 py-2.5 rounded text-on-surface-muted font-label text-label-lg transition-colors duration-state-change ease-state-change hover:bg-surface-container-low hover:text-on-surface">
+            <span class="flex items-center gap-gutter-sm">
+              <span class="material-symbols-outlined text-[20px]" aria-hidden="true">lock</span>
+              <span data-design-text-token="label-lg">Locke en vivo</span>
+            </span>
+            <span data-component-id="badge-dot" data-component-type="badge" data-component-variant="dot" role="status" aria-label="Firebase activo" class="inline-block w-2 h-2 rounded-full bg-success"></span>
+          </a>
+
+          <a href="#randomizador" class="flex items-center gap-gutter-sm px-3 py-2.5 rounded text-on-surface-muted font-label text-label-lg transition-colors duration-state-change ease-state-change hover:bg-surface-container-low hover:text-on-surface">
+            <span class="material-symbols-outlined text-[20px]" aria-hidden="true">casino</span>
+            <span data-design-text-token="label-lg">Randomizador</span>
+          </a>
+
+          <a href="#ajustes" aria-current="page" class="flex items-center gap-gutter-sm px-3 py-2.5 rounded bg-surface-container-high text-on-surface font-label text-label-lg transition-colors duration-state-change ease-state-change">
+            <span class="material-symbols-outlined text-primary text-[20px]" style="font-variation-settings: &#39;FILL&#39; 1;" aria-hidden="true">settings</span>
+            <span data-design-text-token="label-lg">Ajustes</span>
+          </a>
+        </nav>
+
+        <!-- Quick Utility Actions -->
+        <div class="pt-gutter-md border-t border-outline-variant flex flex-col gap-gutter-sm">
+          <!-- COMPONENT: button-with-icon-secondary -->
+          <button data-component-id="button-with-icon-secondary" data-component-type="button" data-component-variant="secondary" type="button" class="w-full inline-flex items-center justify-center gap-gutter-sm px-gutter-md py-3 rounded bg-surface-container-high text-on-surface border border-outline-variant font-label text-label-lg transition-colors duration-state-change ease-state-change hover:bg-surface-container-highest focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiary active:scale-[0.98]">
+            <span class="material-symbols-outlined text-[18px]" aria-hidden="true">add</span>
+            <span data-design-text-token="label-lg">Añadir ROM</span>
+          </button>
+
+          <button data-component-id="button-tertiary" data-component-type="button" data-component-variant="tertiary" type="button" class="w-full inline-flex items-center justify-center gap-gutter-sm px-gutter-md py-2 rounded text-on-surface-muted font-label text-body-sm transition-colors duration-state-change ease-state-change hover:text-on-surface hover:bg-surface-container-low focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiary">
+            <span class="material-symbols-outlined text-[16px]" aria-hidden="true">folder_open</span>
+            <span data-design-text-token="body-sm">Carpeta de datos</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Firebase Account Panel -->
+      <div class="p-gutter-md rounded-md bg-surface-container-low border border-outline-variant flex flex-col gap-gutter-sm">
+        <div class="flex items-center justify-between">
+          <!-- COMPONENT: badge-success -->
+          <span data-component-id="badge-success" data-component-type="badge" data-component-variant="success" role="status" class="inline-flex items-center gap-gutter-xs px-2.5 py-1 rounded-full bg-success-container text-on-success-container font-label text-label-sm">
+            <span class="w-1.5 h-1.5 rounded-full bg-success" aria-hidden="true"></span>
+            <span data-design-text-token="label-sm">Firebase conectado</span>
+          </span>
+        </div>
+
+        <div class="flex flex-col">
+          <span class="font-title text-title-md text-on-surface" data-design-text-token="title-md">david</span>
+          <span class="font-mono text-mono-sm text-on-surface-muted" data-design-text-token="mono-sm">
+            david@pokelocke.com
+          </span>
+        </div>
+
+        <button data-component-id="button-secondary" data-component-type="button" data-component-variant="secondary" type="button" class="w-full inline-flex items-center justify-center gap-gutter-sm px-gutter-md py-2.5 rounded bg-surface-container-high text-on-surface border border-outline-variant font-label text-label-lg transition-colors duration-state-change ease-state-change hover:bg-surface-container-highest focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiary active:scale-[0.98]">
+          <span class="material-symbols-outlined text-[18px]" aria-hidden="true">logout</span>
+          <span data-design-text-token="label-lg">Cambiar cuenta</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Workspace Column -->
+    <div class="flex-1 min-w-0 flex flex-col justify-between bg-surface">
+
+      <!-- Top Window Header -->
+      <header class="px-gutter-xl py-gutter-lg border-b border-outline-variant flex flex-wrap items-center justify-between gap-gutter-md">
+        <div class="flex flex-col gap-1">
+          <h1 class="font-headline text-headline-lg text-on-surface" data-design-text-token="headline-lg">Ajustes</h1>
+          <p class="font-body text-body-sm text-on-surface-muted" data-design-text-token="body-sm">
+            Configura el tema visual, fondo, sonidos, emulador de Switch y rutas de Firebase sin salir de la ventana
+          </p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-gutter-sm">
+          <!-- COMPONENT: button-with-icon -->
+          <button id="save-settings-btn" data-component-id="button-with-icon" data-component-type="button" data-component-variant="with-icon" type="button" class="inline-flex items-center justify-center gap-gutter-sm px-gutter-lg py-3 rounded bg-primary-container text-on-primary-container font-label text-label-lg transition-colors duration-state-change ease-state-change hover:bg-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary active:scale-[0.98]">
+            <span class="material-symbols-outlined text-[18px]" aria-hidden="true">save</span>
+            <span data-design-text-token="label-lg">Aplicar cambios</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Main Settings Content -->
+      <main class="flex-1 p-gutter-xl flex flex-col gap-gutter-lg max-w-6xl w-full">
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-gutter-lg items-stretch">
+
+          <!-- Tema de acento (16 presets) -->
+          <article class="p-gutter-lg rounded-md bg-surface-container border border-outline-variant flex flex-col gap-gutter-md">
+            <header class="flex items-center justify-between border-b border-outline-variant pb-gutter-sm">
+              <div class="flex flex-col gap-0.5">
+                <h2 class="font-title text-title-lg text-on-surface" data-design-text-token="title-lg">Tema de acento</h2>
+                <p class="font-body text-body-sm text-on-surface-muted" data-design-text-token="body-sm">
+                  16 presets de color aplicados al instante en controles y resaltados
+                </p>
+              </div>
+              <span id="accent-label" class="font-mono text-mono-sm text-primary" data-design-text-token="mono-sm">Rojo Pokéball</span>
+            </header>
+
+            <div class="grid grid-cols-8 gap-gutter-sm pt-gutter-xs" role="radiogroup" aria-label="Selector de tema de acento">
+              <button type="button" data-accent-name="Rojo Pokéball" aria-label="Rojo Pokéball" class="accent-swatch w-9 h-9 rounded-full ring-2 ring-on-surface ring-offset-2 ring-offset-surface-container transition-transform hover:scale-105" style="background-color: #FF5541;"></button>
+              <button type="button" data-accent-name="Carmesí" aria-label="Carmesí" class="accent-swatch w-9 h-9 rounded-full border border-outline-variant transition-transform hover:scale-105" style="background-color: #E11D48;"></button>
+              <button type="button" data-accent-name="Naranja Fuego" aria-label="Naranja Fuego" class="accent-swatch w-9 h-9 rounded-full border border-outline-variant transition-transform hover:scale-105" style="background-color: #F97316;"></button>
+              <button type="button" data-accent-name="Ámbar Locke" aria-label="Ámbar Locke" class="accent-swatch w-9 h-9 rounded-full border border-outline-variant transition-transform hover:scale-105" style="background-color: #EE9800;"></button>
+              <button type="button" data-accent-name="Oro Pikachu" aria-label="Oro Pikachu" class="accent-swatch w-9 h-9 rounded-full border border-outline-variant transition-transform hover:scale-105" style="background-color: #EAB308;"></button>
+              <button type="button" data-accent-name="Lima Rayquaza" aria-label="Lima Rayquaza" class="accent-swatch w-9 h-9 rounded-full border border-outline-variant transition-transform hover:scale-105" style="background-color: #84CC16;"></button>
+              <button type="button" data-accent-name="Esmeralda" aria-label="Esmeralda" class="accent-swatch w-9 h-9 rounded-full border border-outline-variant transition-transform hover:scale-105" style="background-color: #4AE176;"></button>
+              <button type="button" data-accent-name="Turquesa" aria-label="Turquesa" class="accent-swatch w-9 h-9 rounded-full border border-outline-variant transition-transform hover:scale-105" style="background-color: #14B8A6;"></button>
+              <button type="button" data-accent-name="Cian Agua" aria-label="Cian Agua" class="accent-swatch w-9 h-9 rounded-full border border-outline-variant transition-transform hover:scale-105" style="background-color: #06B6D4;"></button>
+              <button type="button" data-accent-name="Azul Zafiro" aria-label="Azul Zafiro" class="accent-swatch w-9 h-9 rounded-full border border-outline-variant transition-transform hover:scale-105" style="background-color: #3299D0;"></button>
+              <button type="button" data-accent-name="Cobalto" aria-label="Cobalto" class="accent-swatch w-9 h-9 rounded-full border border-outline-variant transition-transform hover:scale-105" style="background-color: #3B82F6;"></button>
+              <button type="button" data-accent-name="Índigo" aria-label="Índigo" class="accent-swatch w-9 h-9 rounded-full border border-outline-variant transition-transform hover:scale-105" style="background-color: #6366F1;"></button>
+              <button type="button" data-accent-name="Violeta Gengar" aria-label="Violeta Gengar" class="accent-swatch w-9 h-9 rounded-full border border-outline-variant transition-transform hover:scale-105" style="background-color: #8B5CF6;"></button>
+              <button type="button" data-accent-name="Púrpura Psíquico" aria-label="Púrpura Psíquico" class="accent-swatch w-9 h-9 rounded-full border border-outline-variant transition-transform hover:scale-105" style="background-color: #A855F7;"></button>
+              <button type="button" data-accent-name="Rosa Hada" aria-label="Rosa Hada" class="accent-swatch w-9 h-9 rounded-full border border-outline-variant transition-transform hover:scale-105" style="background-color: #EC4899;"></button>
+              <button type="button" data-accent-name="Plata" aria-label="Plata" class="accent-swatch w-9 h-9 rounded-full border border-outline-variant transition-transform hover:scale-105" style="background-color: #94A3B8;"></button>
+            </div>
+          </article>
+
+          <!-- Fondo y Audio de Interfaz -->
+          <article class="p-gutter-lg rounded-md bg-surface-container border border-outline-variant flex flex-col gap-gutter-md">
+            <header class="flex items-center justify-between border-b border-outline-variant pb-gutter-sm">
+              <div class="flex flex-col gap-0.5">
+                <h2 class="font-title text-title-lg text-on-surface" data-design-text-token="title-lg">Fondo y sonidos</h2>
+                <p class="font-body text-body-sm text-on-surface-muted text-pretty" data-design-text-token="body-sm">
+                  8 presets de color, imagen/vídeo y audio
+                </p>
+              </div>
+              <span id="bg-label" class="font-mono text-mono-sm text-on-surface-muted" data-design-text-token="mono-sm">Obsidiana</span>
+            </header>
+
+            <div class="flex flex-wrap items-center justify-between gap-gutter-md">
+              <div class="flex items-center gap-gutter-sm" role="radiogroup" aria-label="Presets de color de fondo">
+                <button type="button" data-bg-name="Obsidiana" aria-label="Obsidiana" class="backdrop-swatch w-8 h-8 rounded-full ring-2 ring-on-surface ring-offset-2 ring-offset-surface-container transition-transform hover:scale-105" style="background-color: #0F131E;"></button>
+                <button type="button" data-bg-name="Noche" aria-label="Noche" class="backdrop-swatch w-8 h-8 rounded-full border border-outline-variant transition-transform hover:scale-105" style="background-color: #111827;"></button>
+                <button type="button" data-bg-name="Carbón" aria-label="Carbón" class="backdrop-swatch w-8 h-8 rounded-full border border-outline-variant transition-transform hover:scale-105" style="background-color: #18181B;"></button>
+                <button type="button" data-bg-name="Abismo" aria-label="Abismo" class="backdrop-swatch w-8 h-8 rounded-full border border-outline-variant transition-transform hover:scale-105" style="background-color: #0C192C;"></button>
+                <button type="button" data-bg-name="Bosque" aria-label="Bosque" class="backdrop-swatch w-8 h-8 rounded-full border border-outline-variant transition-transform hover:scale-105" style="background-color: #0F1F18;"></button>
+                <button type="button" data-bg-name="Burdeos" aria-label="Burdeos" class="backdrop-swatch w-8 h-8 rounded-full border border-outline-variant transition-transform hover:scale-105" style="background-color: #231116;"></button>
+                <button type="button" data-bg-name="Amatista" aria-label="Amatista" class="backdrop-swatch w-8 h-8 rounded-full border border-outline-variant transition-transform hover:scale-105" style="background-color: #1B1328;"></button>
+                <button type="button" data-bg-name="Pizarra" aria-label="Pizarra" class="backdrop-swatch w-8 h-8 rounded-full border border-outline-variant transition-transform hover:scale-105" style="background-color: #1E2430;"></button>
+              </div>
+
+              <div class="flex items-center gap-gutter-xs">
+                <button type="button" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-surface-container-high text-on-surface border border-outline-variant font-label text-body-sm hover:bg-surface-container-highest transition-colors duration-state-change ease-state-change">
+                  <span class="material-symbols-outlined text-[16px]" aria-hidden="true">wallpaper</span>
+                  <span data-design-text-token="body-sm">Elegir imagen/vídeo…</span>
+                </button>
+                <button type="button" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-on-surface-muted font-label text-body-sm hover:text-on-surface hover:bg-surface-container-low transition-colors duration-state-change ease-state-change">
+                  <span data-design-text-token="body-sm">Quitar fondo</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-gutter-md pt-gutter-xs border-t border-outline-variant">
+              <div class="flex flex-col gap-gutter-sm">
+                <label class="flex items-center gap-2.5 text-body-sm text-on-surface cursor-pointer">
+                  <input type="checkbox" checked class="rounded-sm bg-surface-container-low border-outline text-primary-container focus:ring-primary">
+                  <span data-design-text-token="body-sm">Sonidos de la interfaz al navegar</span>
+                </label>
+                <label class="flex items-center gap-2.5 text-body-sm text-on-surface cursor-pointer">
+                  <input id="video-sound-toggle" type="checkbox" class="rounded-sm bg-surface-container-low border-outline text-primary-container focus:ring-primary">
+                  <span data-design-text-token="body-sm">Vídeo de fondo con sonido</span>
+                </label>
+              </div>
+
+              <div class="flex flex-col gap-gutter-xs justify-center">
+                <div class="flex items-center justify-between">
+                  <label for="video-volume" class="font-label text-body-sm text-on-surface-muted" data-design-text-token="body-sm">Volumen del vídeo</label>
+                  <span id="video-volume-val" class="font-mono text-mono-sm text-on-surface tabular-nums" data-design-text-token="mono-sm">35%</span>
+                </div>
+                <input id="video-volume" type="range" min="0" max="100" value="35" class="w-full accent-primary-container">
+              </div>
+            </div>
+          </article>
+
+        </div>
+
+        <!-- Emulador de Switch -->
+        <article class="p-gutter-lg rounded-md bg-surface-container border border-outline-variant flex flex-col gap-gutter-md">
+          <header class="flex items-center justify-between border-b border-outline-variant pb-gutter-sm">
+            <div class="flex flex-col gap-0.5">
+              <h2 class="font-title text-title-lg text-on-surface" data-design-text-token="title-lg">Emulador de Nintendo Switch</h2>
+              <p class="font-body text-body-sm text-on-surface-muted" data-design-text-token="body-sm">
+                Ejecutable y argumentos para lanzar ROMs de Switch (.nsp / .xci) desde la biblioteca
+              </p>
+            </div>
+            <span class="font-mono text-mono-sm text-on-surface-muted" data-design-text-token="mono-sm">Ryujinx / Yuzu</span>
+          </header>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter-md items-end">
+            <div class="lg:col-span-7 flex flex-col gap-gutter-xs">
+              <label for="switch-exe" class="font-label text-body-sm text-on-surface-muted" data-design-text-token="body-sm">Ruta del ejecutable (.exe)</label>
+              <div class="flex items-center gap-gutter-xs">
+                <input id="switch-exe" type="text" value="C:\Emuladores\Ryujinx\Ryujinx.exe" class="flex-1 px-3.5 py-2 rounded bg-surface-container-low border border-outline-variant font-mono text-mono-sm text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+                <button type="button" class="inline-flex items-center gap-1.5 px-3 py-2 rounded bg-surface-container-high text-on-surface border border-outline-variant font-label text-body-sm hover:bg-surface-container-highest transition-colors duration-state-change ease-state-change">
+                  <span class="material-symbols-outlined text-[16px]" aria-hidden="true">folder_open</span>
+                  <span data-design-text-token="body-sm">Examinar</span>
+                </button>
+                <button type="button" class="inline-flex items-center gap-1 px-3 py-2 rounded text-on-surface-muted font-label text-body-sm hover:text-on-surface hover:bg-surface-container-low transition-colors duration-state-change ease-state-change">
+                  <span data-design-text-token="body-sm">Quitar</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="lg:col-span-5 flex flex-col gap-gutter-xs">
+              <label for="switch-args" class="font-label text-body-sm text-on-surface-muted" data-design-text-token="body-sm">Argumentos de lanzamiento (usa {rom})</label>
+              <input id="switch-args" type="text" value="--fullscreen &#34;{rom}&#34;" class="w-full px-3.5 py-2 rounded bg-surface-container-low border border-outline-variant font-mono text-mono-sm text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+            </div>
+          </div>
+        </article>
+
+        <!-- Carpetas y conexión Firebase -->
+        <article class="p-gutter-lg rounded-md bg-surface-container border border-outline-variant flex flex-col gap-gutter-md">
+          <header class="flex items-center justify-between border-b border-outline-variant pb-gutter-sm">
+            <div class="flex flex-col gap-0.5">
+              <h2 class="font-title text-title-lg text-on-surface" data-design-text-token="title-lg">Carpetas y conexión Firebase</h2>
+              <p class="font-body text-body-sm text-on-surface-muted" data-design-text-token="body-sm">
+                Rutas locales de almacenamiento y credenciales para sincronizar con Pokelocke Android
+              </p>
+            </div>
+            <span class="font-mono text-mono-sm text-success" data-design-text-token="mono-sm">RTDB conectada</span>
+          </header>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-gutter-md">
+            <div class="flex flex-col gap-gutter-xs">
+              <label for="vendor-dir" class="font-label text-body-sm text-on-surface-muted" data-design-text-token="body-sm">Carpeta vendor (emuladores y herramientas)</label>
+              <div class="flex items-center gap-gutter-xs">
+                <input id="vendor-dir" type="text" value="C:\PokeLockeLauncher\vendor" class="flex-1 px-3.5 py-2 rounded bg-surface-container-low border border-outline-variant font-mono text-mono-sm text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+                <button type="button" class="inline-flex items-center gap-1.5 px-3 py-2 rounded bg-surface-container-high text-on-surface border border-outline-variant font-label text-body-sm hover:bg-surface-container-highest transition-colors duration-state-change ease-state-change">
+                  <span data-design-text-token="body-sm">Examinar</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-gutter-xs">
+              <label for="data-dir" class="font-label text-body-sm text-on-surface-muted" data-design-text-token="body-sm">Carpeta de datos (library.json, huellas, vínculos)</label>
+              <div class="flex items-center gap-gutter-xs">
+                <input id="data-dir" type="text" value="%APPDATA%\PokeLockeLauncher\datos" class="flex-1 px-3.5 py-2 rounded bg-surface-container-low border border-outline-variant font-mono text-mono-sm text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+                <button type="button" class="inline-flex items-center gap-1.5 px-3 py-2 rounded bg-surface-container-high text-on-surface border border-outline-variant font-label text-body-sm hover:bg-surface-container-highest transition-colors duration-state-change ease-state-change">
+                  <span data-design-text-token="body-sm">Abrir</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-gutter-xs">
+              <label for="firebase-url" class="font-label text-body-sm text-on-surface-muted" data-design-text-token="body-sm">URL de Firebase Realtime Database</label>
+              <input id="firebase-url" type="url" value="https://pokelocke-live-default-rtdb.europe-west1.firebasedatabase.app" class="w-full px-3.5 py-2 rounded bg-surface-container-low border border-outline-variant font-mono text-mono-sm text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+            </div>
+
+            <div class="flex flex-col gap-gutter-xs">
+              <label for="firebase-key" class="font-label text-body-sm text-on-surface-muted" data-design-text-token="body-sm">Web API Key de Firebase</label>
+              <div class="flex items-center gap-gutter-xs">
+                <input id="firebase-key" type="password" value="AIzaSyB9xK4mN2pQ8rT5vW1zA3cE7gJ0lM" class="flex-1 px-3.5 py-2 rounded bg-surface-container-low border border-outline-variant font-mono text-mono-sm text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+                <button id="toggle-key-btn" type="button" aria-label="Mostrar u ocultar API Key" class="inline-flex items-center justify-center w-9 h-9 rounded bg-surface-container-high text-on-surface-muted border border-outline-variant hover:text-on-surface hover:bg-surface-container-highest transition-colors duration-state-change ease-state-change">
+                  <span id="toggle-key-icon" class="material-symbols-outlined text-[18px]" aria-hidden="true">visibility</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Persistencia y Restablecimiento -->
+        <section class="p-gutter-lg rounded-md bg-surface-container-low border border-outline-variant flex flex-wrap items-center justify-between gap-gutter-md">
+          <div class="flex flex-col gap-0.5">
+            <span class="font-title text-title-md text-on-surface" data-design-text-token="title-md">Persistencia automática en ajustes.json</span>
+            <span id="save-status-text" class="font-mono text-mono-sm text-on-surface-muted" data-design-text-token="mono-sm">
+              %APPDATA%\PokeLockeLauncher\ajustes.json · Cambios aplicados al instante
+            </span>
+          </div>
+
+          <button type="button" class="inline-flex items-center gap-gutter-xs px-gutter-md py-2 rounded bg-error-container text-on-error-container font-label text-body-sm transition-colors duration-state-change ease-state-change hover:opacity-90">
+            <span class="material-symbols-outlined text-[16px]" aria-hidden="true">restart_alt</span>
+            <span data-design-text-token="body-sm">Restablecer ajustes de fábrica</span>
+          </button>
+        </section>
+
+      </main>
+
+    </div>
+
+  </div>
+
+  <script>
+    (function () {
+      var accentLabel = document.getElementById('accent-label');
+      document.querySelectorAll('.accent-swatch').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          document.querySelectorAll('.accent-swatch').forEach(function (b) {
+            b.classList.remove('ring-2', 'ring-on-surface', 'ring-offset-2', 'ring-offset-surface-container');
+            b.classList.add('border', 'border-outline-variant');
+          });
+          btn.classList.remove('border', 'border-outline-variant');
+          btn.classList.add('ring-2', 'ring-on-surface', 'ring-offset-2', 'ring-offset-surface-container');
+          if (accentLabel) {
+            accentLabel.textContent = btn.getAttribute('data-accent-name') || '';
+          }
+        });
+      });
+
+      var bgLabel = document.getElementById('bg-label');
+      document.querySelectorAll('.backdrop-swatch').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          document.querySelectorAll('.backdrop-swatch').forEach(function (b) {
+            b.classList.remove('ring-2', 'ring-on-surface', 'ring-offset-2', 'ring-offset-surface-container');
+            b.classList.add('border', 'border-outline-variant');
+          });
+          btn.classList.remove('border', 'border-outline-variant');
+          btn.classList.add('ring-2', 'ring-on-surface', 'ring-offset-2', 'ring-offset-surface-container');
+          if (bgLabel) {
+            bgLabel.textContent = btn.getAttribute('data-bg-name') || '';
+          }
+        });
+      });
+
+      var volRange = document.getElementById('video-volume');
+      var volVal = document.getElementById('video-volume-val');
+      if (volRange && volVal) {
+        volRange.addEventListener('input', function () {
+          volVal.textContent = volRange.value + '%';
+        });
+      }
+
+      var keyInput = document.getElementById('firebase-key');
+      var toggleKeyBtn = document.getElementById('toggle-key-btn');
+      var toggleKeyIcon = document.getElementById('toggle-key-icon');
+      if (keyInput && toggleKeyBtn && toggleKeyIcon) {
+        toggleKeyBtn.addEventListener('click', function () {
+          var isPwd = keyInput.type === 'password';
+          keyInput.type = isPwd ? 'text' : 'password';
+          toggleKeyIcon.textContent = isPwd ? 'visibility_off' : 'visibility';
+        });
+      }
+
+      var saveBtn = document.getElementById('save-settings-btn');
+      var saveStatus = document.getElementById('save-status-text');
+      if (saveBtn && saveStatus) {
+        saveBtn.addEventListener('click', function () {
+          saveStatus.textContent = '%APPDATA%\\PokeLockeLauncher\\ajustes.json · Guardado correctamente';
+          saveStatus.classList.remove('text-on-surface-muted');
+          saveStatus.classList.add('text-success');
+        });
+      }
+    })();
+  </script>
+
+
+
+</body></html>

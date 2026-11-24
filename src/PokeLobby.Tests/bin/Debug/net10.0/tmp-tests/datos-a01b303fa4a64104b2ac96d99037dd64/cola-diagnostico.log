@@ -1,0 +1,8 @@
+[2026-10-22 22:40:47] == Cola: locke=l tag=p save=C:\Users\david\Downloads\Pokelocke\Launcher\LockeLauncher\src\PokeLobby.Tests\bin\Debug\net10.0\tmp-tests\70b71135db8345f998020b645f24e64c.sav existe=True
+[2026-10-22 22:40:47]    leídas=3 procesables=3
+[2026-10-22 22:40:47]    [evs] CARD_EFFECT card=70 → applied: +128 EV en ATK (Equipo 1 — Telefónica Nv70) (EV final: 200)
+[2026-10-22 22:40:47]    [evs] verificación en memoria OK → aplicada
+[2026-10-22 22:40:47]    [gacha] GACHA_POKEMON card= → applied: Pikachu Nv1 añadido en caja 1 · hueco 5 (POKEBALL) — aviso: el Pokémon puede ser señalado como ilegal por PKHeX (met location) · registrado en la Pokédex
+[2026-10-22 22:40:47]    [gacha] verificación en memoria OK → aplicada
+[2026-10-22 22:40:47]    [item] ITEM_GRANT card= → applied: Master Ball ×1 añadido a la mochila
+[2026-10-22 22:40:47]    [item] verificación en memoria OK → aplicada

@@ -1,0 +1,11 @@
+# sintético
+[BULBASAUR]
+Name = Bulbasaur
+Types = GRASS,POISON
+BaseStats = 45,49,49,45,65,65
+Abilities = OVERGROW
+[EEVEE]
+Name = Eevee
+Types = NORMAL
+BaseStats = 55,55,50,55,75,65
+Abilities = RUNAWAY

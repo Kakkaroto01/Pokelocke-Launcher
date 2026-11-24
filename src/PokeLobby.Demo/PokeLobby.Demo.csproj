@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="PKHeX.Core" Version="26.5.5" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="10.0.0" />
+  </ItemGroup>
+
+  <!-- Compila todos los fuentes de los proyectos sin project references (workaround .NET 10 NuGet) -->
+  <ItemGroup>
+    <Compile Remove="bin\**" />
+    <Compile Remove="obj\**" />
+    <Compile Include="..\PokeLobby.Client\**\*.cs" LinkBase="Client" />
+    <Compile Include="..\PokeLobby.Watcher\**\*.cs" LinkBase="Watcher" />
+    <Compile Include="..\PokeLobby.Emulator\**\*.cs" LinkBase="Emulator" />
+    <Compile Include="..\PokeLobby.Randomizer\**\*.cs" LinkBase="Randomizer" />
+    <Compile Include="..\PokeLobby.PokeLocke\**\*.cs" LinkBase="PokeLocke" />
+    <Compile Remove="..\PokeLobby.Client\obj\**" />
+    <Compile Remove="..\PokeLobby.Client\bin\**" />
+    <Compile Remove="..\PokeLobby.Watcher\obj\**" />
+    <Compile Remove="..\PokeLobby.Watcher\bin\**" />
+    <Compile Remove="..\PokeLobby.Emulator\obj\**" />
+    <Compile Remove="..\PokeLobby.Emulator\bin\**" />
+    <Compile Remove="..\PokeLobby.Randomizer\obj\**" />
+    <Compile Remove="..\PokeLobby.Randomizer\bin\**" />
+    <Compile Remove="..\PokeLobby.PokeLocke\obj\**" />
+    <Compile Remove="..\PokeLobby.PokeLocke\bin\**" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,3 @@
+[2026-10-22 00:20:42] == Cola: locke=l tag=p save=C:\Users\david\Downloads\Pokelocke\Launcher\LockeLauncher\src\PokeLobby.Tests\bin\Debug\net10.0\tmp-tests\1754031701424deab74729d3da077a55.sav existe=True
+[2026-10-22 00:20:42]    leídas=1 procesables=1
+[2026-10-22 00:20:42]    [accion] ITEM_GRANT card= → failed: Objeto «Objeto inventado» no encontrado en el catálogo de Heartgold.

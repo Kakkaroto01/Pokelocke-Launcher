@@ -1,0 +1,3 @@
+[POTION]
+Name = Poción
+Pocket = 2

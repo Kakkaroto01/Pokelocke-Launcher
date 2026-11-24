@@ -1,0 +1,12 @@
+<Solution>
+  <Project Path="PokeLobby.Client/PokeLobby.Client.csproj" />
+  <Project Path="PokeLobby.Demo/PokeLobby.Demo.csproj" />
+  <Project Path="PokeLobby.Emulator/PokeLobby.Emulator.csproj" />
+  <Project Path="PokeLobby.LauncherUi/PokeLobby.LauncherUi.csproj" />
+  <Project Path="PokeLobby.LauncherUi.Uninstaller/PokeLobby.LauncherUi.Uninstaller.csproj" />
+  <Project Path="PokeLobby.PokeLocke/PokeLobby.PokeLocke.csproj" />
+  <Project Path="PokeLobby.Randomizer/PokeLobby.Randomizer.csproj" />
+  <Project Path="PokeLobby.Shared/PokeLobby.Shared.csproj" />
+  <Project Path="PokeLobby.Tests/PokeLobby.Tests.csproj" />
+  <Project Path="PokeLobby.Watcher/PokeLobby.Watcher.csproj" />
+</Solution>

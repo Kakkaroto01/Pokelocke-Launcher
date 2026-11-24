@@ -1,0 +1,88 @@
+{
+  "rules": {
+    "users": {
+      "$uid": {
+        ".read": "auth != null",
+        ".write": "auth != null && auth.uid == $uid",
+        "friends": {
+          ".write": "auth != null"
+        },
+        "friendRequests": {
+          ".write": "auth != null"
+        },
+        "invites": {
+          ".write": "auth != null"
+        }
+      }
+    },
+    "usernames": {
+      "$username": {
+        ".read": "auth != null",
+        ".write": "auth != null && (!data.exists() || data.val() == auth.uid)",
+        ".validate": "newData.isString() && newData.val() == auth.uid"
+      }
+    },
+    "user_lockes": {
+      "$uid": {
+        ".read": "auth != null && auth.uid == $uid",
+        ".write": "auth != null && auth.uid == $uid"
+      }
+    },
+    "lockes": {
+      "$lockeId": {
+        ".read": "auth != null",
+        ".write": "auth != null && (!data.exists() || (!newData.exists() && root.child('lockes').child($lockeId).child('players').hasChild((root.child('users').child(auth.uid).child('usuario').val() + '_' + root.child('users').child(auth.uid).child('discriminator').val()))))",
+        "id": {
+          ".write": "auth != null && root.child('lockes').child($lockeId).child('players').hasChild((root.child('users').child(auth.uid).child('usuario').val() + '_' + root.child('users').child(auth.uid).child('discriminator').val()))"
+        },
+        "nombre": {
+          ".write": "auth != null && root.child('lockes').child($lockeId).child('players').hasChild((root.child('users').child(auth.uid).child('usuario').val() + '_' + root.child('users').child(auth.uid).child('discriminator').val()))"
+        },
+        "juego": {
+          ".write": "auth != null && root.child('lockes').child($lockeId).child('players').hasChild((root.child('users').child(auth.uid).child('usuario').val() + '_' + root.child('users').child(auth.uid).child('discriminator').val()))"
+        },
+        "isSoloRun": {
+          ".write": "auth != null && root.child('lockes').child($lockeId).child('players').hasChild((root.child('users').child(auth.uid).child('usuario').val() + '_' + root.child('users').child(auth.uid).child('discriminator').val()))"
+        },
+        "isMegasEnabled": {
+          ".write": "auth != null && root.child('lockes').child($lockeId).child('players').hasChild((root.child('users').child(auth.uid).child('usuario').val() + '_' + root.child('users').child(auth.uid).child('discriminator').val()))"
+        },
+        "isPkhexEnabled": {
+          ".write": "auth != null && root.child('lockes').child($lockeId).child('players').hasChild((root.child('users').child(auth.uid).child('usuario').val() + '_' + root.child('users').child(auth.uid).child('discriminator').val()))"
+        },
+        "isShinylocke": {
+          ".write": "auth != null && root.child('lockes').child($lockeId).child('players').hasChild((root.child('users').child(auth.uid).child('usuario').val() + '_' + root.child('users').child(auth.uid).child('discriminator').val()))"
+        },
+        "creatorUser": {
+          ".write": "auth != null && root.child('lockes').child($lockeId).child('players').hasChild((root.child('users').child(auth.uid).child('usuario').val() + '_' + root.child('users').child(auth.uid).child('discriminator').val()))"
+        },
+        "codigo": {
+          ".write": "auth != null && root.child('lockes').child($lockeId).child('players').hasChild((root.child('users').child(auth.uid).child('usuario').val() + '_' + root.child('users').child(auth.uid).child('discriminator').val()))"
+        },
+        "lastActive": {
+          ".write": "auth != null && root.child('lockes').child($lockeId).child('players').hasChild((root.child('users').child(auth.uid).child('usuario').val() + '_' + root.child('users').child(auth.uid).child('discriminator').val()))"
+        },
+        "history": {
+          ".write": "auth != null && root.child('lockes').child($lockeId).child('players').hasChild((root.child('users').child(auth.uid).child('usuario').val() + '_' + root.child('users').child(auth.uid).child('discriminator').val()))"
+        },
+        "players": {
+          "$playerTag": {
+            ".write": "auth != null && $playerTag == (root.child('users').child(auth.uid).child('usuario').val() + '_' + root.child('users').child(auth.uid).child('discriminator').val())",
+            "inventario": {
+              ".write": "auth != null && root.child('lockes').child($lockeId).child('players').hasChild((root.child('users').child(auth.uid).child('usuario').val() + '_' + root.child('users').child(auth.uid).child('discriminator').val()))"
+            },
+            "notifications": {
+              ".write": "auth != null && root.child('lockes').child($lockeId).child('players').hasChild((root.child('users').child(auth.uid).child('usuario').val() + '_' + root.child('users').child(auth.uid).child('discriminator').val()))"
+            },
+            "launcherQueue": {
+              "$actionId": {
+                ".write": "auth != null && !data.exists() && root.child('lockes').child($lockeId).child('players').hasChild((root.child('users').child(auth.uid).child('usuario').val() + '_' + root.child('users').child(auth.uid).child('discriminator').val()))",
+                ".validate": "newData.hasChildren(['schema', 'type', 'status']) && newData.child('schema').val() == 1 && (newData.child('type').val() == 'CARD_EFFECT' || newData.child('type').val() == 'GACHA_POKEMON' || newData.child('type').val() == 'ITEM_GRANT' || newData.child('type').val() == 'MINT_USE') && (newData.child('status').val() == 'pending' || newData.child('status').val() == 'applying' || newData.child('status').val() == 'applied' || newData.child('status').val() == 'failed' || newData.child('status').val() == 'skipped') && (data.exists() || (newData.child('status').val() == 'pending' && newData.child('createdBy').val() == (root.child('users').child(auth.uid).child('usuario').val() + '_' + root.child('users').child(auth.uid).child('discriminator').val())))"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

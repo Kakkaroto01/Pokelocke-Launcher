@@ -1,0 +1,77 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>PokeLockeLauncher</AssemblyName>
+    <RootNamespace>PokeLobby.LauncherUi</RootNamespace>
+    <!-- Velopack necesita ejecutarse antes de que arranque WPF: Main propio en App.xaml.cs -->
+    <StartupObject>PokeLobby.LauncherUi.App</StartupObject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="PKHeX.Core" Version="26.5.5" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="10.0.0" />
+    <PackageReference Include="Velopack" Version="1.2.161" />
+  </ItemGroup>
+
+  <!-- Carátulas incluidas: van junto al ejecutable en covers\ y se siembran en la carpeta de datos -->
+  <!-- Icono de la aplicación (recurso embebido para pack URI) -->
+  <ItemGroup>
+    <Resource Include="..\..\pokelocke.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\..\assets\covers\**\*"
+             Link="covers\%(RecursiveDir)%(Filename)%(Extension)"
+             CopyToOutputDirectory="PreserveNewest"
+             CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <!-- Desinstalador: borra la carpeta de datos de usuario (%APPDATA%\PokeLockeLauncher) y la carpeta de instalación.
+       Los archivos se aplanan a la raíz (junto a PokeLocke Launcher.exe y Update.exe). -->
+  <ItemGroup>
+    <Content Include="uninstaller\*"
+             Link="%(Filename)%(Extension)"
+             CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="uninstall.bat"
+             CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <!-- App.xaml pasa a ser Page para que el Main lo ponga App.xaml.cs, no el generador -->
+  <ItemGroup>
+    <ApplicationDefinition Remove="App.xaml" />
+    <Page Include="App.xaml" />
+  </ItemGroup>
+
+  <!-- Usings para los fuentes compilados inline (el proyecto WPF no tiene ImplicitUsings de net10.0 sin TFM -windows) -->
+  <ItemGroup>
+    <Using Include="System.Net.Http" />
+    <Using Include="System.Net" />
+  </ItemGroup>
+
+  <!-- Compila todos los fuentes de los proyectos sin project references (workaround .NET 10 NuGet) -->
+  <ItemGroup>
+    <Compile Remove="bin\**" />
+    <Compile Remove="obj\**" />
+    <Compile Include="..\PokeLobby.Client\**\*.cs" LinkBase="Client" />
+    <Compile Include="..\PokeLobby.Watcher\**\*.cs" LinkBase="Watcher" />
+    <Compile Include="..\PokeLobby.Emulator\**\*.cs" LinkBase="Emulator" />
+    <Compile Include="..\PokeLobby.Randomizer\**\*.cs" LinkBase="Randomizer" />
+    <Compile Include="..\PokeLobby.PokeLocke\**\*.cs" LinkBase="PokeLocke" />
+    <Compile Remove="..\PokeLobby.Client\obj\**" />
+    <Compile Remove="..\PokeLobby.Client\bin\**" />
+    <Compile Remove="..\PokeLobby.Watcher\obj\**" />
+    <Compile Remove="..\PokeLobby.Watcher\bin\**" />
+    <Compile Remove="..\PokeLobby.Emulator\obj\**" />
+    <Compile Remove="..\PokeLobby.Emulator\bin\**" />
+    <Compile Remove="..\PokeLobby.Randomizer\obj\**" />
+    <Compile Remove="..\PokeLobby.Randomizer\bin\**" />
+    <Compile Remove="..\PokeLobby.PokeLocke\obj\**" />
+    <Compile Remove="..\PokeLobby.PokeLocke\bin\**" />
+  </ItemGroup>
+
+</Project>

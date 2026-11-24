@@ -1,0 +1,5 @@
+[2026-10-23 11:33:58] == Cola: locke=l tag=p save=C:\Users\david\Downloads\Pokelocke\Launcher\LockeLauncher\src\PokeLobby.Tests\bin\Debug\net10.0\tmp-tests\defa6a94d9e243c1a65836e41cfa7bf4.sav existe=True
+[2026-10-23 11:33:58]    leídas=2 procesables=2
+[2026-10-23 11:33:58]    [cancela] CARD_EFFECT card=41 → pending: Cancelado por el usuario; la acción sigue pendiente.
+[2026-10-23 11:33:58]    [sigue] CARD_EFFECT card=67 → applied: Dinero: 999.999
+[2026-10-23 11:33:58]    [sigue] verificación en memoria OK → aplicada

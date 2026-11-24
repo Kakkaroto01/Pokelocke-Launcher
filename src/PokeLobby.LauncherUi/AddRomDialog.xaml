@@ -1,0 +1,87 @@
+<Window x:Class="PokeLobby.LauncherUi.AddRomDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Añadir ROM" Height="540" Width="620"
+        Background="{DynamicResource ColorFondo}"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
+        FontFamily="Segoe UI">
+
+    <Border Margin="18" Background="{DynamicResource ColorPanel}" CornerRadius="12" Padding="22"
+            BorderBrush="{DynamicResource ColorBorde}" BorderThickness="1">
+        <DockPanel>
+            <TextBlock DockPanel.Dock="Top" Text="Añadir ROM a la biblioteca"
+                       FontSize="22" FontWeight="Bold" Foreground="{DynamicResource AcentoBrush}"/>
+            <TextBlock DockPanel.Dock="Top" Margin="0,4,0,18"
+                       Text="Elige el archivo de la ROM, la carpeta de partidas y una carátula (opcional)."
+                       Foreground="{DynamicResource ColorTextoSuave}" TextWrapping="Wrap"/>
+
+            <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,18,0,0">
+                <Button Content="Cancelar" Padding="18,8" Margin="0,0,10,0" Click="Cancelar_Click"/>
+                <Button x:Name="BtnAnadir" Content="Añadir ROM" Style="{StaticResource BotonAcento}"
+                        Padding="22,8" Click="Anadir_Click"/>
+            </StackPanel>
+
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <TextBlock Text="Archivo de ROM" Style="{StaticResource EtiquetaCampo}"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="TxtRom" Grid.Column="0"/>
+                        <Button Grid.Column="1" Content="Examinar…" Margin="8,0,0,0" Padding="12,6" Click="ExaminarRom_Click"/>
+                    </Grid>
+
+                    <TextBlock Text="Nombre en la biblioteca" Style="{StaticResource EtiquetaCampo}"/>
+                    <TextBox x:Name="TxtNombre"/>
+
+                    <TextBlock Text="Consola" Style="{StaticResource EtiquetaCampo}"/>
+                    <ComboBox x:Name="CmbConsola">
+                        <ComboBoxItem Content="GBA"/>
+                        <ComboBoxItem Content="DS"/>
+                        <ComboBoxItem Content="3DS"/>
+                        <ComboBoxItem Content="Switch"/>
+                            <ComboBoxItem Content="Añil"/>
+                    </ComboBox>
+
+                    <TextBlock Text="Carpeta de partidas o ARCHIVO de partida (.sav / main) — en 3DS se copia a Azahar" Style="{StaticResource EtiquetaCampo}"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="TxtSave" Grid.Column="0"/>
+                        <Button Grid.Column="1" Content="Carpeta…" Margin="8,0,0,0" Padding="12,6" Click="ElegirSave_Click"/>
+                        <Button Grid.Column="2" Content="Archivo…" Margin="8,0,0,0" Padding="12,6" Click="ElegirSaveArchivo_Click"
+                                ToolTip="Elige un .sav/«main» volcado; en 3DS se copia a la carpeta de Azahar"/>
+                    </Grid>
+
+                    <TextBlock Text="Juego detectado" Style="{StaticResource EtiquetaCampo}"/>
+                    <TextBlock x:Name="TxtJuego" Text="—" Foreground="{DynamicResource AcentoBrush}"/>
+
+                    <TextBlock Text="Carátula (opcional)" Style="{StaticResource EtiquetaCampo}"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="TxtCaratula" Grid.Column="0"/>
+                        <Button Grid.Column="1" Content="Elegir imagen…" Margin="8,0,0,0" Padding="12,6" Click="ExaminarCaratula_Click"/>
+                        <Button Grid.Column="2" Content="Quitar" Margin="8,0,0,0" Padding="12,6" Click="QuitarCaratula_Click"/>
+                    </Grid>
+                    <TextBlock x:Name="TxtCaratulaEstado" Margin="0,6,0,0" FontSize="11.5" TextWrapping="Wrap"
+                               Foreground="{DynamicResource ColorTextoSuave}"/>
+
+                    <TextBlock x:Name="TxtAviso" Margin="0,12,0,0" Foreground="#FFA726"
+                               TextWrapping="Wrap" Visibility="Collapsed"/>
+                </StackPanel>
+            </ScrollViewer>
+        </DockPanel>
+    </Border>
+</Window>

@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "v6ai34Kj5oA=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\david\\Downloads\\Pokelocke\\Launcher\\LockeLauncher\\src\\PokeLobby.Emulator\\PokeLobby.Emulator.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\david\\Downloads\\Pokelocke\\Launcher\\.nuget\\packages\\pkhex.core\\26.5.5\\pkhex.core.26.5.5.nupkg.sha512"
+  ],
+  "logs": []
+}

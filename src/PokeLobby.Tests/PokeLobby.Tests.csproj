@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <!-- Ejecuta los tests con Microsoft.Testing.Platform (en proceso): el testhost de
+         VSTest usa named pipes y la sandbox los bloquea (Acceso denegado). -->
+    <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="PKHeX.Core" Version="26.5.5" />
+    <PackageReference Include="xunit.v3" Version="3.0.1" />
+  </ItemGroup>
+
+  <!-- Compila los fuentes de PokeLocke inline (mismo workaround de NuGet/.slnx que Demo y LauncherUi) -->
+  <ItemGroup>
+    <Compile Remove="bin\**" />
+    <Compile Remove="obj\**" />
+    <Compile Include="..\PokeLobby.PokeLocke\**\*.cs" LinkBase="PokeLocke" />
+    <Compile Remove="..\PokeLobby.PokeLocke\obj\**" />
+    <Compile Remove="..\PokeLobby.PokeLocke\bin\**" />
+    <!-- RandomizerSettings/AjustesDefecto (defectos del UPRZX extraídos con REA) -->
+    <Compile Include="..\PokeLobby.Randomizer\RandomizerSettings.cs" LinkBase="Randomizer" />
+    <Compile Include="..\PokeLobby.Randomizer\AjustesDefecto.cs" LinkBase="Randomizer" />
+  </ItemGroup>
+
+  <!-- Fixture de HeartGold (formato de disco exacto) para los tests de efectos -->
+  <ItemGroup>
+    <None Include="testdata\**" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>
+

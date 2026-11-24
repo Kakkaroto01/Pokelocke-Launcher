@@ -1,0 +1,41 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "PokeLobby.Emulator/1.0.0": {
+        "dependencies": {
+          "PKHeX.Core": "26.5.5"
+        },
+        "runtime": {
+          "PokeLobby.Emulator.dll": {}
+        }
+      },
+      "PKHeX.Core/26.5.5": {
+        "runtime": {
+          "lib/net10.0/PKHeX.Core.dll": {
+            "assemblyVersion": "26.5.5.0",
+            "fileVersion": "26.5.5.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "PokeLobby.Emulator/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "PKHeX.Core/26.5.5": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-5rHGUxdoAfDN4NEwKVyQvsNIlZrLXy1DX9WHAQJOWsOLq84KaA5fQ67zrwriUBtHk59iFr8AbYbMTTLDRfuTMg==",
+      "path": "pkhex.core/26.5.5",
+      "hashPath": "pkhex.core.26.5.5.nupkg.sha512"
+    }
+  }
+}

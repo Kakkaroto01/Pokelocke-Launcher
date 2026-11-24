@@ -1,0 +1,38 @@
+PokeLocke Launcher
+==================
+
+1. Ejecuta PokeLockeLauncher-win-Setup.exe.
+   No hace falta instalar .NET ni PokeLobby: el instalador ya incluye todo
+   (emuladores mGBA, melonDS y azahar, Java y SuperRandomizer).
+
+2. Si Windows SmartScreen avisa ("Windows protegió tu PC"), es porque el
+   ejecutable no está firmado: "Más información" → "Ejecutar de todas formas".
+
+3. Al terminar, abre PokeLocke Launcher desde el acceso directo del escritorio
+   o del menú Inicio. Se instala en tu perfil, sin permisos de administrador.
+
+4. Inicia sesión con el MISMO usuario y contraseña de la app PokeLocke del móvil.
+
+5. Actualizaciones: al abrir el launcher comprobará si hay una versión nueva.
+   Si la hay, te preguntará; acepta y se reiniciará ya actualizado. No tienes
+   que volver a descargar el instalador.
+
+Tus datos (biblioteca, carátulas, partidas, sesión) se guardan en tu perfil de
+Windows, no en la carpeta del programa:
+  %APPDATA%\PokeLockeLauncher          (ajustes y sesión)
+  %APPDATA%\PokeLockeLauncher\datos    (biblioteca, huellas, carátulas)
+El programa instalado vive en %LOCALAPPDATA%\PokeLockeLauncher\current, junto
+con las carátulas incluidas (covers) y los emuladores (vendor).
+Por eso una actualización no borra nada, y al desinstalar tampoco pierdes la
+biblioteca ni tus carátulas.
+
+Notas
+-----
+- Las ROMs y los .sav se quedan donde tú los tengas; el launcher solo guarda su ruta.
+- La instalación trae 25 carátulas incluidas: en el primer arranque se copian a
+  tu carpeta de datos las que falten. Si tú habías puesto una carátula propia,
+  se respeta la tuya (nunca se sobrescribe).
+- Antes de tocar una partida, el launcher hace copia de seguridad y verifica los
+  checksums al releer el archivo.
+- Si usas el ZIP portable en vez del instalador, el launcher funciona igual pero
+  NO puede actualizarse solo. Para recibir actualizaciones, usa el Setup.exe.

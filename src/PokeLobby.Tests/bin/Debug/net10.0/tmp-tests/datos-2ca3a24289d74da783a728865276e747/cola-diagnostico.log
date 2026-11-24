@@ -1,0 +1,3 @@
+[2026-10-22 15:00:24] == Cola: locke=l tag=p save=C:\Users\david\Downloads\Pokelocke\Launcher\LockeLauncher\src\PokeLobby.Tests\bin\Debug\net10.0\tmp-tests\6701f2ff3eb241159939c5a0f665038e.sav existe=True
+[2026-10-22 15:00:24]    leídas=1 procesables=1
+[2026-10-22 15:00:24]    [c31] CARD_EFFECT card=31 → skipped: Efecto aún no soportado por el launcher

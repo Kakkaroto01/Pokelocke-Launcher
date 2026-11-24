@@ -1,0 +1,9 @@
+[POTION]
+Name = Poción
+Pocket = 2
+[TM01]
+Name = MT01
+Pocket = 4
+[TM02]
+Name = MT02
+Pocket = 4

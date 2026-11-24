@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PokeLobby.Client\PokeLobby.Client.csproj" />
+    <ProjectReference Include="..\PokeLobby.Watcher\PokeLobby.Watcher.csproj" />
+    <ProjectReference Include="..\PokeLobby.Emulator\PokeLobby.Emulator.csproj" />
+    <ProjectReference Include="..\PokeLobby.Randomizer\PokeLobby.Randomizer.csproj" />
+    <ProjectReference Include="..\PokeLobby.PokeLocke\PokeLobby.PokeLocke.csproj" />
+  </ItemGroup>
+</Project>

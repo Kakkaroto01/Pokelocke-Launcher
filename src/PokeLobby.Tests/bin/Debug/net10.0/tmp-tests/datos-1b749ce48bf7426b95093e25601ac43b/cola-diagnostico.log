@@ -1,0 +1,5 @@
+[2026-10-21 23:53:16] == Cola: locke=l tag=p save=C:\Users\david\Downloads\Pokelocke\Launcher\LockeLauncher\src\PokeLobby.Tests\bin\Debug\net10.0\tmp-tests\9d5c59cfc741467e8705a6431b67b0d3.sav existe=True
+[2026-10-21 23:53:16]    leídas=2 procesables=2
+[2026-10-21 23:53:16]    [mala] GACHA_POKEMON card= → failed: La especie #888 no está presente en HG. | error: La especie #888 no está presente en HG.
+[2026-10-21 23:53:16]    [buena] CARD_EFFECT card=67 → applied: Dinero: 999.999
+[2026-10-21 23:53:16]    [buena] verificación en memoria OK → aplicada
