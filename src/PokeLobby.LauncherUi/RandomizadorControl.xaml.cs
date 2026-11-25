@@ -136,31 +136,39 @@ public partial class RandomizadorControl : UserControl
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
-        TabsCategorias.Items.Clear();
-        foreach (var grupo in CategoriasAgrupadas)
+        // Las pestañas son botones en el XAML (BotonCategoria). Seleccionar la primera presente.
+        foreach (var btn in new[] { BtnTabCaracteristicas, BtnTabIniciales, BtnTabMovimientos,
+                                    BtnTabSalvajes, BtnTabEntrenadores, BtnTabObjetos, BtnTabMiscelanea })
         {
-            // Solo mostrar la pestaña si tiene al menos un prefijo presente en los ajustes
-            if (!grupo.Prefijos.Any(p => gruposPresentes.Contains(p))) continue;
-
-            var tab = new TabItem
-            {
-                Header = grupo.Titulo,
-                Tag = grupo,
-            };
-            TabsCategorias.Items.Add(tab);
+            var grupo = CategoriasAgrupadas.FirstOrDefault(g => g.Titulo == btn.Content.ToString());
+            btn.Visibility = grupo != null && grupo.Prefijos.Any(p => gruposPresentes.Contains(p))
+                ? Visibility.Visible : Visibility.Collapsed;
+            btn.Tag = null;
         }
 
-        if (TabsCategorias.Items.Count > 0)
-            TabsCategorias.SelectedIndex = 0;
+        // Marcar la primera visible como activa
+        var primero = new[] { BtnTabCaracteristicas, BtnTabIniciales, BtnTabMovimientos,
+                              BtnTabSalvajes, BtnTabEntrenadores, BtnTabObjetos, BtnTabMiscelanea }
+            .FirstOrDefault(b => b.Visibility == Visibility.Visible);
+        if (primero is not null)
+        {
+            primero.Tag = "activo";
+            var grupo = CategoriasAgrupadas.First(g => g.Titulo == primero.Content.ToString());
+            MostrarCategoria(grupo);
+        }
     }
 
-    private void TabsCategorias_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    private void TabCategoria_Click(object sender, RoutedEventArgs e)
     {
-        if (TabsCategorias.SelectedItem is not TabItem tab) return;
-        if (tab.Tag is not CategoriaGrupo grupo) return;
-        VolcarControles();
-        _prefijoActual = grupo.Prefijos.FirstOrDefault() ?? "";
-        MostrarCategoria(grupo);
+        if (sender is not Button btn) return;
+        foreach (var b in new[] { BtnTabCaracteristicas, BtnTabIniciales, BtnTabMovimientos,
+                                  BtnTabSalvajes, BtnTabEntrenadores, BtnTabObjetos, BtnTabMiscelanea })
+            b.Tag = null;
+        btn.Tag = "activo";
+
+        var grupo = CategoriasAgrupadas.FirstOrDefault(g => g.Titulo == btn.Content.ToString());
+        if (grupo is not null)
+            MostrarCategoria(grupo);
     }
 
     private void MostrarCategoria(CategoriaGrupo grupo)
@@ -186,8 +194,7 @@ public partial class RandomizadorControl : UserControl
 
         try
         {
-            // Agrupar opciones en UNA tarjeta por categoría base (Modo + Opciones juntos,
-            // al estilo Pokelobby: no se separan en tarjetas distintas).
+            // Agrupar opciones en UNA tarjeta por subcategoría (Estadísticas Base, Evoluciones, etc.)
             var subgrupos = opciones
                 .Select(kv => new
                 {
@@ -205,7 +212,7 @@ public partial class RandomizadorControl : UserControl
                 var prefijoReal = subgrupo.First().PrefijoReal;
                 var tarjeta = CrearTarjeta(subgrupo.Key, subgrupo.Select(x => (x.Clave, x.Valor)).ToList(), prefijoReal);
                 PanelOpciones.Children.Add(tarjeta);
-                PanelOpciones.Children.Add(new Separator { Margin = new Thickness(0, 10, 0, 10) });
+                PanelOpciones.Children.Add(new Separator { Margin = new Thickness(0, 12, 0, 12) });
             }
 
             // Quitar el último Separator sobrante
@@ -693,18 +700,21 @@ public partial class RandomizadorControl : UserControl
     {
         if (_prefijoActual.Length == 0) return;
         var defecto = new RandomizerSettings();
-        if (TabsCategorias.SelectedItem is TabItem tab && tab.Tag is CategoriaGrupo grupo)
+        var btnActivo = new[] { BtnTabCaracteristicas, BtnTabIniciales, BtnTabMovimientos,
+                                BtnTabSalvajes, BtnTabEntrenadores, BtnTabObjetos, BtnTabMiscelanea }
+            .FirstOrDefault(b => b.Tag is string s && s == "activo");
+        if (btnActivo is null) return;
+        var grupo = CategoriasAgrupadas.FirstOrDefault(g => g.Titulo == btnActivo.Content.ToString());
+        if (grupo is null) return;
+        foreach (var clave in _settings.Valores.Keys
+                     .Where(k => grupo.Prefijos.Any(p => k.StartsWith(p + ".", StringComparison.OrdinalIgnoreCase)))
+                     .ToList())
         {
-            foreach (var clave in _settings.Valores.Keys
-                         .Where(k => grupo.Prefijos.Any(p => k.StartsWith(p + ".", StringComparison.OrdinalIgnoreCase)))
-                         .ToList())
-            {
-                var valor = defecto.Get(clave);
-                if (valor is not null) _settings.Set(clave, valor);
-            }
-            MostrarCategoria(grupo);
-            Log("Categoría restablecida: " + string.Join(", ", grupo.Prefijos));
+            var valor = defecto.Get(clave);
+            if (valor is not null) _settings.Set(clave, valor);
         }
+        MostrarCategoria(grupo);
+        Log("Categoría restablecida: " + string.Join(", ", grupo.Prefijos));
     }
 
     // ─────────────────────────── rueda / compatibilidad ───────────────────────────
@@ -860,13 +870,32 @@ public partial class RandomizadorControl : UserControl
         {
             _settings.Guardar(dlg.FileName);
             Log("Preset propio guardado en " + Path.GetFileName(dlg.FileName));
-            TxtEstado.Text = "Preset guardado: " + Path.GetFileName(dlg.FileName);
+            // // TxtEstado.Text = "Preset guardado: " + Path.GetFileName(dlg.FileName);
         }
         catch (Exception ex) { Log("Error al guardar preset: " + ex.Message); }
     }
 
-    /// <summary>Guarda los ajustes como preset y luego randomiza la ROM.</summary>
-    private async void GuardarPresetYRandomizar_Click(object sender, RoutedEventArgs e)
+    /// <summary>Guarda los ajustes actuales como preset propio.</summary>
+    private async void GuardarPreset_Click(object sender, RoutedEventArgs e)
+    {
+        var dlg = new SaveFileDialog
+        {
+            Title = "Guardar preset propio del randomizador",
+            Filter = "Preset del randomizador (*.rnqs)|*.rnqs|Todos los archivos|*.*",
+            FileName = $"preset_{DateTime.Now:yyyyMMdd-HHmmss}.rnqs",
+            InitialDirectory = DirPresetsPropios,
+        };
+        if (dlg.ShowDialog() != true) return;
+        try
+        {
+            _settings.Guardar(dlg.FileName);
+            Log("Preset guardado en " + Path.GetFileName(dlg.FileName));
+        }
+        catch (Exception ex) { Log("Error al guardar preset: " + ex.Message); }
+    }
+
+    /// <summary>Randomiza la ROM con los ajustes actuales (guarda preset previo si se pide).</summary>
+    private async void BtnRandomizar_Click(object sender, RoutedEventArgs e)
         => await EjecutarRandomizacionAsync(guardarPresetPrimero: true);
 
     /// <summary>
@@ -910,14 +939,14 @@ public partial class RandomizadorControl : UserControl
         if (dlgSalida.ShowDialog() != true)
         {
             BtnRandomizar.IsEnabled = true;
-            BtnGuardarPresetYRandomizar.IsEnabled = true;
+            BtnGuardarPreset.IsEnabled = true;
             return;
         }
         var salida = dlgSalida.FileName;
 
         BtnRandomizar.IsEnabled = false;
-        BtnGuardarPresetYRandomizar.IsEnabled = false;
-        TxtEstado.Text = "Randomizando… (puede tardar varios minutos)";
+        BtnGuardarPreset.IsEnabled = false;
+        // // TxtEstado.Text = "Randomizando… (puede tardar varios minutos)";
         Log("Iniciando: " + Path.GetFileName(rom));
 
         // Sanea valores .mod que el motor no admite (p. ej. COMPLETELY_RANDOM en habilidades):
@@ -940,7 +969,7 @@ public partial class RandomizadorControl : UserControl
             if (!string.IsNullOrWhiteSpace(resultado.Salida)) Log(resultado.Salida.Trim());
             if (resultado.Ok && File.Exists(salida))
             {
-                TxtEstado.Text = "Randomizado completado";
+                // TxtEstado.Text = "Randomizado completado";
                 Log("ROM guardada en: " + salida);
 
                 if (liga100)
@@ -953,19 +982,19 @@ public partial class RandomizadorControl : UserControl
             }
             else
             {
-                TxtEstado.Text = "El randomizador falló: " + resultado.Motivo;
+                // TxtEstado.Text = "El randomizador falló: " + resultado.Motivo;
                 if (!string.IsNullOrWhiteSpace(resultado.SalidaError)) Log(resultado.SalidaError.Trim());
             }
         }
         catch (Exception ex)
         {
-            TxtEstado.Text = "Error al randomizar: " + ex.Message;
+            // TxtEstado.Text = "Error al randomizar: " + ex.Message;
             Log("ERROR: " + ex.Message);
         }
         finally
         {
             BtnRandomizar.IsEnabled = true;
-            BtnGuardarPresetYRandomizar.IsEnabled = true;
+            BtnGuardarPreset.IsEnabled = true;
         }
     }
 
@@ -1013,6 +1042,6 @@ public partial class RandomizadorControl : UserControl
 
     private void Log(string linea)
     {
-        TxtEstado.Text = $"[{DateTime.Now:HH:mm:ss}] {linea}";
+        // TxtEstado.Text = $"[{DateTime.Now:HH:mm:ss}] {linea}";
     }
 }

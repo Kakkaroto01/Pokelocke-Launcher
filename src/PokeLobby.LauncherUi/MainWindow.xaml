@@ -4,7 +4,8 @@
         xmlns:ui="clr-namespace:PokeLobby.LauncherUi"
         Title="PokeLocke Launcher" Height="820" Width="1280"
         Background="{DynamicResource ColorFondo}"
-        WindowStartupLocation="CenterScreen" FontFamily="Segoe UI">
+        WindowStartupLocation="CenterScreen" FontFamily="Segoe UI"
+        Icon="pack://application:,,,/pokelocke.png">
 
     <Grid>
         <!-- Fondo personalizado (imagen) + velo -->
@@ -15,244 +16,579 @@
                       MediaFailed="FondoVideo_MediaFailed" Visibility="Collapsed"/>
         <Rectangle Fill="{DynamicResource FondoVeloBrush}"/>
 
-        <DockPanel>
-            <!-- ═══════════ Barra lateral ═══════════ -->
-            <Border DockPanel.Dock="Left" Width="252" Background="{DynamicResource ColorPanelVelo}"
-                    BorderBrush="{DynamicResource ColorBorde}" BorderThickness="0,0,1,0" Padding="14,18">
-                <DockPanel>
-                    <StackPanel DockPanel.Dock="Top">
-                        <StackPanel Orientation="Horizontal" Margin="4,0,0,20">
-                            <Grid Width="34" Height="34" VerticalAlignment="Center">
+        <DockPanel LastChildFill="True">
+            <!-- ═══════════ Sidebar persistente (desktop) ═══════════ -->
+            <Border DockPanel.Dock="Left" Width="252" Background="{DynamicResource ColorPanelContainerLowest}"
+                    BorderBrush="{DynamicResource ColorBordeVariant}" BorderThickness="0,0,1,0"
+                    Padding="12,14">
+                <DockPanel LastChildFill="True">
+                    <!-- Encabezado de marca -->
+                    <StackPanel DockPanel.Dock="Top" Margin="0,0,0,16">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Grid Width="32" Height="32">
                                 <Ellipse Fill="#F5F5F5" Stroke="#20202E" StrokeThickness="2"/>
                                 <Path Data="M1,17 A16,16 0 0 1 33,17 L1,17 Z" Fill="{DynamicResource AcentoBrush}"/>
                                 <Rectangle Height="3" Fill="#20202E" VerticalAlignment="Center"/>
-                                <Ellipse Width="11" Height="11" Fill="White" Stroke="#20202E" StrokeThickness="2.5"/>
+                                <Ellipse Width="10" Height="10" Fill="White" Stroke="#20202E" StrokeThickness="2"/>
                             </Grid>
-                            <StackPanel Margin="10,0,0,0" VerticalAlignment="Center">
-                                <TextBlock Text="PokeLocke" FontSize="18" FontWeight="Bold"/>
-                                <TextBlock Text="Launcher" FontSize="10.5" Foreground="{DynamicResource ColorTextoSuave}"/>
+                            <StackPanel Margin="8,0,0,0" VerticalAlignment="Center">
+                                <TextBlock Text="PokeLocke" FontSize="16" FontWeight="SemiBold"
+                                           Foreground="{DynamicResource ColorTexto}"/>
+                                <TextBlock Text="Launcher v1.0.0" FontSize="10.5"
+                                           Foreground="{DynamicResource ColorTextoSuave}"/>
                             </StackPanel>
                         </StackPanel>
-
-                        <Button x:Name="BtnNavInicio" Content="🏠   Inicio" Style="{StaticResource BotonNav}" Tag="activo" Click="Nav_Click"/>
-                        <Button x:Name="BtnNavBiblioteca" Content="📚   Biblioteca" Style="{StaticResource BotonNav}" Click="BtnNavBiblioteca_Click"/>
-                        <Button x:Name="BtnNavLocke" Content="🔒   Locke en vivo" Style="{StaticResource BotonNav}" Click="Nav_Click"/>
-                        <Button x:Name="BtnNavRandomizar" Content="🎲   Randomizador" Style="{StaticResource BotonNav}" Click="BtnNavRandomizar_Click"/>
-                        <Button x:Name="BtnNavAjustes" Content="⚙   Ajustes" Style="{StaticResource BotonNav}" Click="BtnAjustes_Click"/>
-
-                        <Separator/>
-
-                        <Button x:Name="BtnAnadirRom" Content="➕  Añadir ROM" Style="{StaticResource BotonAcento}"
-                                Padding="14,10" Click="BtnAnadirRom_Click"/>
-                        <Button x:Name="BtnAbrirBiblioteca" Content="📚  Abrir biblioteca" Margin="0,8,0,0"
-                                Padding="14,10" Click="BtnNavBiblioteca_Click"/>
                     </StackPanel>
 
-                    <!-- Estado de cuenta (abajo) -->
-                    <StackPanel DockPanel.Dock="Bottom" VerticalAlignment="Bottom">
-                        <Border Background="#0F1622" CornerRadius="10" Padding="12,10">
-                            <StackPanel>
-                                <StackPanel Orientation="Horizontal">
-                                    <Ellipse x:Name="DotFirebase" Width="9" Height="9" Fill="Gray" Margin="0,0,7,0"
-                                             VerticalAlignment="Center"/>
-                                    <TextBlock x:Name="TxtFirebaseEstado" Text="Firebase sin configurar" FontSize="11.5"
-                                               Foreground="{DynamicResource ColorTextoSuave}" TextTrimming="CharacterEllipsis"/>
-                                </StackPanel>
-                                <TextBlock x:Name="TxtCuenta" Text="Sin cuenta" Margin="0,8,0,0" FontWeight="SemiBold"
-                                           TextTrimming="CharacterEllipsis"/>
-                                <Button x:Name="BtnCuenta" Content="Iniciar sesión" Margin="0,10,0,0" Padding="10,6"
-                                        Click="BtnCuenta_Click"/>
-                                <StackPanel x:Name="PanelPendientes" Orientation="Horizontal" Margin="0,10,0,0"
-                                            Visibility="Collapsed">
-                                    <TextBlock x:Name="TxtPendientes" VerticalAlignment="Center" FontSize="11.5"
-                                               Foreground="#F0A24A"/>
-                                    <Button x:Name="BtnAplicarPendientes" Content="⚡" Margin="8,0,0,0" Padding="8,2"
-                                            ToolTip="Aplicar acciones pendientes de la app" Click="BtnAplicarPendientes_Click"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </Border>
-                    </StackPanel>
+                    <!-- Navegación principal -->
+                    <ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Auto">
+                        <StackPanel>
+                            <Button x:Name="BtnNavInicio" Content="🏠   Inicio" Tag="activo"
+                                    Style="{StaticResource BotonNav}" Click="Nav_Click"/>
+                            <Button x:Name="BtnNavBiblioteca" Content="📚   Biblioteca"
+                                    Style="{StaticResource BotonNav}" Click="BtnNavBiblioteca_Click"/>
+                            <Button x:Name="BtnNavLocke" Content="🔒   Locke en vivo"
+                                    Style="{StaticResource BotonNav}" Click="Nav_Click"/>
+                            <Button x:Name="BtnNavRandomizar" Content="🎲   Randomizador"
+                                    Style="{StaticResource BotonNav}" Click="BtnNavRandomizar_Click"/>
+                            <Button x:Name="BtnNavAjustes" Content="⚙   Ajustes"
+                                    Style="{StaticResource BotonNav}" Click="BtnAjustes_Click"/>
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <!-- Acciones rápidas (Añadir ROM, Carpeta de datos) -->
+                    <Border DockPanel.Dock="Bottom" Background="{DynamicResource ColorPanelContainerLow}"
+                            BorderBrush="{DynamicResource ColorBordeVariant}" BorderThickness="0,1,0,0"
+                            Padding="8,12" CornerRadius="8">
+                        <StackPanel>
+                            <Button x:Name="BtnAnadirRom" Content="➕  Añadir ROM"
+                                    Style="{StaticResource BotonAcento}" Padding="12,8"
+                                    Click="BtnAnadirRom_Click" Margin="0,0,0,8"/>
+                            <Button x:Name="BtnAbrirBiblioteca" Content="📂  Carpeta de datos"
+                                    Style="{StaticResource BotonNav}" Padding="10,6" FontSize="12"
+                                    Click="BtnAbrirBiblioteca_Click" Margin="0"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Panel de cuenta Firebase (abajo) -->
+                    <Border DockPanel.Dock="Bottom" Background="{DynamicResource ColorPanelContainerLow}"
+                            BorderBrush="{DynamicResource ColorBordeVariant}" BorderThickness="0,1,0,0"
+                            Padding="10,10" CornerRadius="10" VerticalAlignment="Bottom">
+                        <StackPanel>
+                            <TextBlock Text="Firebase conectado" FontSize="10.5"
+                                       Foreground="{DynamicResource ColorOk}" Margin="0,0,0,4"/>
+                            <TextBlock x:Name="TxtCuenta" Text="Sin cuenta" FontSize="12"
+                                       Foreground="{DynamicResource ColorTexto}" FontWeight="SemiBold"
+                                       Margin="0,0,0,8"/>
+                            <Button x:Name="BtnCuenta" Content="Iniciar sesión" Margin="0" Padding="10,6"
+                                    FontSize="12" Click="BtnCuenta_Click"
+                                    Style="{StaticResource BotonAcento}"/>
+                        </StackPanel>
+                    </Border>
                 </DockPanel>
             </Border>
 
-            <!-- ═══════════ Contenido ═══════════ -->
-            <DockPanel>
-                <!-- Cabecera -->
-                <Border DockPanel.Dock="Top" Padding="22,16,22,10">
-                    <StackPanel>
-                        <TextBlock x:Name="TxtTituloSeccion" Text="Inicio" FontSize="26" FontWeight="Bold"/>
-                        <TextBlock x:Name="TxtLockeConectado" Text="" FontSize="12"
-                                   Foreground="{DynamicResource ColorTextoSuave}" Margin="0,2,0,0"/>
-                    </StackPanel>
-                </Border>
+            <!-- ═══════════ Área de contenido principal ═══════════ -->
+            <DockPanel LastChildFill="True">
+                <!-- Cabecera superior -->
+                <Border DockPanel.Dock="Top" Background="{DynamicResource ColorFondo}"
+                        BorderBrush="{DynamicResource ColorBordeVariant}" BorderThickness="0,0,0,1"
+                        Padding="16,12">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
 
-                <!-- Barra de estado inferior -->
-                <Border DockPanel.Dock="Bottom" Background="{DynamicResource ColorPanelVelo}" Padding="22,8"
-                        BorderBrush="{DynamicResource ColorBorde}" BorderThickness="0,1,0,0">
-                    <StackPanel Orientation="Horizontal">
-                        <Ellipse x:Name="DotEstado" Width="10" Height="10" Fill="Gray" Margin="0,0,8,0" VerticalAlignment="Center"/>
-                        <TextBlock x:Name="TxtEstado" Text="Listo" VerticalAlignment="Center" FontWeight="SemiBold"/>
-                    </StackPanel>
-                </Border>
-
-                <Grid>
-                    <!-- ─── PÁGINA: INICIO ─── -->
-                    <ScrollViewer x:Name="PanelInicio" VerticalScrollBarVisibility="Auto" Padding="22,0,22,18">
-                        <StackPanel>
-
-                            <!-- Continuar Partida -->
-                            <Border Style="{StaticResource Tarjeta}" Margin="0,0,0,14">
-                                <StackPanel>
-                                    <Button x:Name="BtnJugarUltima" Content="▶  Continuar Partida" Style="{StaticResource BotonAcento}"
-                                            Padding="18,9" Click="BtnJugarUltima_Click"
-                                            HorizontalAlignment="Left"/>
-                                    <TextBlock x:Name="TxtUltimaRom" Margin="0,10,0,0" FontSize="11.5"
-                                               Foreground="{DynamicResource ColorTextoSuave}"
-                                               TextTrimming="CharacterEllipsis"/>
-                                </StackPanel>
-                            </Border>
-
+                        <StackPanel Grid.Column="0">
+                            <TextBlock x:Name="TxtTituloSeccion" Text="Inicio" FontSize="22"
+                                       FontWeight="SemiBold" Foreground="{DynamicResource ColorTexto}"/>
+                            <TextBlock x:Name="TxtSubtituloSeccion" Text="" FontSize="11.5"
+                                       Foreground="{DynamicResource ColorTextoSuave}" Margin="0,2,0,0"/>
                         </StackPanel>
-                    </ScrollViewer>
 
-                    <!-- ─── PÁGINA: LOCKE EN VIVO ─── -->
-                    <ScrollViewer x:Name="PanelLocke" VerticalScrollBarVisibility="Auto"
-                                  Padding="22,0,22,18" Visibility="Collapsed">
-                        <StackPanel>
-                            <Border Style="{StaticResource Tarjeta}" Margin="0,0,0,14">
-                                <StackPanel>
-                                    <TextBlock Text="LOCKE — POKELOCKE ANDROID (FIREBASE)" Style="{StaticResource TituloSeccion}"/>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="Locke" VerticalAlignment="Center" Margin="0,0,8,0"
-                                                   Foreground="{DynamicResource ColorTextoSuave}"/>
-                                        <ComboBox x:Name="CmbLockes" Width="300" SelectionChanged="CmbLockes_SelectionChanged"/>
-                                        <TextBlock Text="Jugador" VerticalAlignment="Center" Margin="14,0,8,0"
-                                                   Foreground="{DynamicResource ColorTextoSuave}"/>
-                                        <ComboBox x:Name="CmbPlayers" Width="170"/>
-                                        <Button x:Name="BtnConectarLocke" Content="Conectar en vivo" Margin="14,0,0,0"
-                                                Padding="12,6" Click="BtnConectarLocke_Click"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
-                                        <Button x:Name="BtnPublicarEquipo" Content="📤  Publicar equipo del .sav → app"
-                                                Padding="14,7" Click="BtnPublicarEquipo_Click"/>
-                                        <TextBlock Text="Las cartas/Gachapón/objetos que uses en la app se aplican al .sav (⚡ o al pulsar ▶ JUGAR)."
-                                                   Foreground="{DynamicResource ColorTextoSuave}" FontSize="11.5"
-                                                   VerticalAlignment="Center" Margin="14,0,0,0" TextWrapping="Wrap" MaxWidth="620"/>
-                                    </StackPanel>
-                                </StackPanel>
-                            </Border>
-
-                            <!-- REGISTRO -->
-                            <Border Style="{StaticResource Tarjeta}">
-                                <DockPanel>
-                                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,8">
-                                        <TextBlock Text="REGISTRO" Style="{StaticResource TituloSeccion}" Margin="0"
-                                                   VerticalAlignment="Center"/>
-                                        <Button Content="Limpiar" Margin="16,0,0,0" Padding="10,4" FontSize="11.5"
-                                                Click="BtnLimpiarLog_Click"/>
-                                    </StackPanel>
-                                    <TextBox x:Name="TxtLog" IsReadOnly="True" FontFamily="Consolas" FontSize="12"
-                                             Height="170" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap"
-                                             Background="Transparent" BorderThickness="0"/>
-                                </DockPanel>
-                            </Border>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                            <TextBlock x:Name="TxtEstadoConexion" Text="● Conectado" FontSize="11"
+                                       Foreground="{DynamicResource ColorOk}" Margin="0,0,12,0"
+                                       VerticalAlignment="Center"/>
                         </StackPanel>
-                    </ScrollViewer>
-
-                    <!-- ─── PÁGINA: BIBLIOTECA DE ROMS (integrada en la ventana) ─── -->
-                    <ScrollViewer x:Name="PanelBiblioteca" VerticalScrollBarVisibility="Auto"
-                                  Padding="22,0,22,18" Visibility="Collapsed">
-                        <StackPanel>
-                            <Border Style="{StaticResource Tarjeta}" Margin="0,0,0,14">
-                                <DockPanel>
-                                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,10">
-                                        <TextBlock Text="BIBLIOTECA DE ROMS" Style="{StaticResource TituloSeccion}" Margin="0"
-                                                   VerticalAlignment="Center"/>
-                                        <Button Content="➕ Añadir ROM" Style="{StaticResource BotonAcento}" Margin="16,0,0,0"
-                                                Padding="12,6" Click="BtnAnadirRom_Click"/>
-                                        <Button Content="🗑 Borrar" Margin="8,0,0,0" Padding="12,6" Click="BtnBorrarRom_Click"/>
-                                        <Button Content="🔄 Recargar" Margin="8,0,0,0" Padding="12,6" Click="BtnRecargar_Click"/>
-                                        <TextBlock x:Name="TxtBibliotecaRuta" FontSize="10.5" Margin="14,0,0,0"
-                                                   VerticalAlignment="Center" Foreground="{DynamicResource ColorTextoSuave}"
-                                                   TextTrimming="CharacterEllipsis" MaxWidth="360"/>
-                                    </StackPanel>
-                                    <ListBox x:Name="ListaRoms" MaxHeight="330" SelectionChanged="ListaRoms_SelectionChanged"
-                                             ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                                        <ListBox.ItemTemplate>
-                                            <DataTemplate>
-                                                <Border Background="#121723" CornerRadius="10" Padding="12"
-                                                        BorderBrush="{DynamicResource ColorBorde}" BorderThickness="1">
-                                                    <Grid>
-                                                        <Grid.ColumnDefinitions>
-                                                            <ColumnDefinition Width="56"/>
-                                                            <ColumnDefinition Width="*"/>
-                                                            <ColumnDefinition Width="Auto"/>
-                                                        </Grid.ColumnDefinitions>
-                                                        <Border Width="52" Height="52" CornerRadius="8" Background="#0B0F17">
-                                                            <Image Source="{Binding CoverPath}" Stretch="UniformToFill"/>
-                                                        </Border>
-                                                        <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center">
-                                                            <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="14"
-                                                                       TextTrimming="CharacterEllipsis"/>
-                                                            <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
-                                                                <TextBlock Text="{Binding ConsoleName}" FontSize="11.5"
-                                                                           Foreground="{DynamicResource AcentoBrush}"/>
-                                                                <TextBlock Text="  ·  " FontSize="11.5"
-                                                                           Foreground="{DynamicResource ColorTextoSuave}"/>
-                                                                <TextBlock Text="{Binding DetectedGame}" FontSize="11.5"
-                                                                           Foreground="{DynamicResource ColorTextoSuave}"
-                                                                           TextTrimming="CharacterEllipsis"/>
-                                                            </StackPanel>
-                                                        </StackPanel>
-                                                        <TextBlock Grid.Column="2" Text="{Binding LastPlayed}" FontSize="10.5"
-                                                                   VerticalAlignment="Center"
-                                                                   Foreground="{DynamicResource ColorTextoSuave}"/>
-                                                    </Grid>
-                                                </Border>
-                                            </DataTemplate>
-                                        </ListBox.ItemTemplate>
-                                    </ListBox>
-                                </DockPanel>
-                            </Border>
-
-                            <Border Style="{StaticResource Tarjeta}">
-                                <StackPanel Orientation="Horizontal">
-                                    <Border Width="120" Height="120" CornerRadius="10" Background="#0B0F17">
-                                        <Image x:Name="ImgCover" Stretch="Uniform" Margin="4"/>
-                                    </Border>
-                                    <StackPanel Margin="18,0,0,0" VerticalAlignment="Center" Width="520">
-                                        <TextBlock x:Name="TxtRomNombre" Text="Selecciona una ROM" FontSize="20" FontWeight="Bold"/>
-                                        <TextBlock x:Name="TxtRomInfo" Foreground="{DynamicResource ColorTextoSuave}" Margin="0,6,0,0"/>
-                                        <TextBlock x:Name="TxtRomSave" Foreground="{DynamicResource ColorTextoSuave}"
-                                                   FontSize="11.5" Margin="0,4,0,0" TextTrimming="CharacterEllipsis"/>
-                                        <TextBlock x:Name="TxtRomUltima" Foreground="{DynamicResource ColorTextoSuave}"
-                                                   FontSize="11.5" Margin="0,4,0,0"/>
-                                    </StackPanel>
-                                    <StackPanel VerticalAlignment="Center" Margin="16,0,0,0">
-                                        <Button x:Name="BtnJugar" Content="▶  JUGAR" Style="{StaticResource BotonAcento}"
-                                                FontSize="16" Padding="30,12" Click="BtnJugar_Click"/>
-                                        <Button Content="🐚  Añadir Escamas Corazón" Margin="0,8,0,0" Padding="18,9"
-                                                Click="BtnEscamasCorazon_Click"/>
-                                        <Button Content="🍬  Añadir Carameloraros" Margin="0,10,0,0" Padding="18,9"
-                                                Click="BtnCarameloraros_Click"/>
-                                        <Button Content="🔗  Vincular a locke" Margin="0,8,0,0" Padding="18,9"
-                                                Click="BtnVincularLocke_Click"/>
-                                        <Button Content="🖼  Cambiar carátula" Margin="0,8,0,0" Padding="14,7"
-                                                Click="BtnCambiarCaratula_Click"/>
-                                    </StackPanel>
-                                </StackPanel>
-                            </Border>
-                        </StackPanel>
-                    </ScrollViewer>
-
-                    <!-- ─── PÁGINA: RANDOMIZADOR (dentro de la ventana, como pestaña) ─── -->
-                    <Grid x:Name="PanelRandomizador" Margin="22,0,22,18" Visibility="Collapsed">
-                        <ui:RandomizadorControl x:Name="CtrlRandomizador"/>
                     </Grid>
+                </Border>
 
-                    <!-- ─── PÁGINA: AJUSTES (embebida en la ventana) ─── -->
-                    <Grid x:Name="PanelAjustes" Margin="22,0,22,18" Visibility="Collapsed"/>
-                </Grid>
+                <!-- Contenido scrollable -->
+                <ScrollViewer DockPanel.Dock="Bottom" VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Disabled" Padding="16,0,16,16">
+                    <Grid>
+                        <!-- ─── PÁGINA: INICIO ─── -->
+                        <ScrollViewer x:Name="PanelInicio" VerticalScrollBarVisibility="Auto"
+                                      Padding="0,0,0,0" Visibility="Visible">
+                            <StackPanel Margin="0,12,0,0">
+
+                                <!-- Hero: Continuar Partida -->
+                                <Border Style="{StaticResource Tarjeta}" Margin="0,0,0,16"
+                                        CornerRadius="12" BorderThickness="1">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="220"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <StackPanel Grid.Column="0" Margin="20">
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                                                <TextBlock Text="Última partida" FontSize="10.5"
+                                                           FontWeight="SemiBold" Foreground="{DynamicResource AcentoBrush}"
+                                                           Margin="0,0,6,0"/>
+                                                <Border Width="7" Height="7" CornerRadius="4"
+                                                      Background="{DynamicResource ColorOk}"
+                                                      Margin="0,3,0,0"/>
+                                                <TextBlock Text="DS · 2026-11-24 23:20" FontSize="10.5"
+                                                           Foreground="{DynamicResource ColorTextoSuave}"
+                                                           VerticalAlignment="Center"/>
+                                            </StackPanel>
+
+                                            <TextBlock Text="Pokémon HeartGold" FontSize="22"
+                                                       FontWeight="SemiBold" Foreground="{DynamicResource ColorTexto}"
+                                                       Margin="0,0,0,4"/>
+                                            <TextBlock Text="Pokemon HeartGold_randomized_20261117-004448.nds"
+                                                       FontSize="11" Foreground="{DynamicResource ColorTextoSuave}"
+                                                       Margin="0,0,0,10"/>
+
+                                            <TextBlock Text="Al iniciar se aplicarán automáticamente los objetos y cartas pendientes de tu sala en Pokelocke sobre el archivo de guardado."
+                                                       FontSize="12" TextWrapping="Wrap"
+                                                       Foreground="{DynamicResource ColorTextoSuave}"
+                                                       Margin="0,0,0,14"/>
+
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+                                                <Button x:Name="BtnJugarUltima" Content="▶  Continuar Partida"
+                                                        Style="{StaticResource BotonAcento}" Padding="16,10"
+                                                        FontSize="13" FontWeight="SemiBold"
+                                                        Click="BtnJugarUltima_Click" Margin="0,0,10,0"
+                                                        HorizontalAlignment="Left"/>
+                                                <Button Content="🔄  Aplicar cambios al .sav"
+                                                        Style="{StaticResource BotonNav}" Padding="12,8"
+                                                        FontSize="12" Margin="0"/>
+                                            </StackPanel>
+                                        </StackPanel>
+
+                                        <Border Grid.Column="1" Background="{DynamicResource ColorPanelContainerLow}"
+                                                CornerRadius="10" Margin="16,16,16,16"
+                                                BorderBrush="{DynamicResource ColorBordeVariant}" BorderThickness="1">
+                                            <TextBlock Text="🖼 Portada" FontSize="11"
+                                                       Foreground="{DynamicResource ColorTextoSuave}"
+                                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </Grid>
+                                </Border>
+
+                                <!-- Registro -->
+                                <Border Style="{StaticResource Tarjeta}" Margin="0,0,0,0"
+                                        CornerRadius="12" BorderThickness="1">
+                                    <DockPanel>
+                                        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal"
+                                                    Margin="20,20,20,12">
+                                            <TextBlock Text="REGISTRO" FontSize="11.5" FontWeight="SemiBold"
+                                                       Foreground="{DynamicResource ColorTextoSuave}"/>
+                                            <Button Content="Limpiar" Margin="12,0,0,0" Padding="8,4"
+                                                    FontSize="11" Click="BtnLimpiarLog_Click"
+                                                    Style="{StaticResource BotonNav}"/>
+                                        </StackPanel>
+                                        <TextBox x:Name="TxtLog" IsReadOnly="True" FontFamily="Consolas"
+                                                 FontSize="11.5" Height="150" VerticalScrollBarVisibility="Auto"
+                                                 TextWrapping="Wrap" Background="Transparent"
+                                                 BorderThickness="0" Margin="20,0,20,20"/>
+                                    </DockPanel>
+                                </Border>
+
+                            </StackPanel>
+                        </ScrollViewer>
+
+                        <!-- ─── PÁGINA: LOCKE EN VIVO ─── -->
+                        <ScrollViewer x:Name="PanelLocke" VerticalScrollBarVisibility="Auto"
+                                      Padding="0,0,0,0" Visibility="Collapsed">
+                            <StackPanel Margin="0,12,0,0">
+
+                                <!-- Conexión y sincronización -->
+                                <Border Style="{StaticResource Tarjeta}" Margin="0,0,0,16"
+                                        CornerRadius="12" BorderThickness="1">
+                                    <StackPanel Margin="24">
+
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,14">
+                                            <TextBlock Text="Pokelocke Android · Firebase RTDB" FontSize="10.5"
+                                                       FontWeight="SemiBold" Foreground="{DynamicResource AcentoBrush}"/>
+                                            <Border Width="7" Height="7" CornerRadius="4"
+                                                  Background="{DynamicResource ColorOk}"
+                                                  Margin="8,3,0,0"/>
+                                            <TextBlock Text="Conexión y sincronización de equipo" FontSize="16"
+                                                       FontWeight="SemiBold" Foreground="{DynamicResource ColorTexto}"
+                                                       VerticalAlignment="Center"/>
+                                        </StackPanel>
+
+                                        <!-- Selectores y conectar -->
+                                        <Grid Margin="0,0,0,16">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <StackPanel Grid.Column="0" Margin="0,0,8,0">
+                                                <TextBlock Text="Locke" FontSize="11.5"
+                                                           FontWeight="SemiBold" Foreground="{DynamicResource ColorTextoSuave}"
+                                                       Margin="0,0,0,6"/>
+                                                <ComboBox x:Name="CmbLockesLocke" FontSize="13" Padding="10,8"/>
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Column="1" Margin="8,0,0,0">
+                                                <TextBlock Text="Jugador" FontSize="11.5"
+                                                           FontWeight="SemiBold" Foreground="{DynamicResource ColorTextoSuave}"
+                                                       Margin="0,0,0,6"/>
+                                                <ComboBox x:Name="CmbPlayersLocke" FontSize="13" Padding="10,8"/>
+                                            </StackPanel>
+
+                                            <Button Grid.Column="2" Content="⚡  Conectar en vivo"
+                                                    Style="{StaticResource BotonAcento}" Padding="14,10"
+                                                    FontSize="13" Margin="8,0,0,0" Click="BtnConectarLocke_Click"/>
+                                        </Grid>
+
+                                        <Border Background="{DynamicResource ColorPanelContainerLow}"
+                                                BorderBrush="{DynamicResource ColorBordeVariant}" BorderThickness="1"
+                                                CornerRadius="10" Padding="16" Margin="0,0,0,16">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <StackPanel Grid.Column="0">
+                                                    <TextBlock Text="Publicar equipo del .sav → app"
+                                                               FontSize="12.5" FontWeight="SemiBold"
+                                                               Foreground="{DynamicResource ColorTexto}"/>
+                                                    <TextBlock Text="Las cartas, Gachapón y objetos usados en la app móvil se aplican al archivo .sav al conectar o pulsar Jugar."
+                                                               FontSize="11" Foreground="{DynamicResource ColorTextoSuave}"
+                                                               TextWrapping="Wrap" Margin="0,4,0,0"/>
+                                                </StackPanel>
+
+                                                <Button Content="📤  Publicar equipo" Padding="14,10"
+                                                        Style="{StaticResource BotonNav}" FontSize="12"
+                                                        Click="BtnPublicarEquipo_Click"/>
+                                            </Grid>
+                                        </Border>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Registro -->
+                                <Border Style="{StaticResource Tarjeta}" Margin="0,0,0,0"
+                                        CornerRadius="12" BorderThickness="1">
+                                    <DockPanel>
+                                        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal"
+                                                    Margin="20,20,20,12">
+                                            <TextBlock Text="REGISTRO" FontSize="11.5" FontWeight="SemiBold"
+                                                       Foreground="{DynamicResource ColorTextoSuave}"/>
+                                            <Button Content="Limpiar" Margin="12,0,0,0" Padding="8,4"
+                                                    FontSize="11" Click="BtnLimpiarLog_Click"
+                                                    Style="{StaticResource BotonNav}"/>
+                                        </StackPanel>
+                                        <TextBox x:Name="TxtLogLocke" IsReadOnly="True" FontFamily="Consolas"
+                                                 FontSize="11.5" Height="150" VerticalScrollBarVisibility="Auto"
+                                                 TextWrapping="Wrap" Background="Transparent"
+                                                 BorderThickness="0" Margin="20,0,20,20"/>
+                                    </DockPanel>
+                                </Border>
+
+                            </StackPanel>
+                        </ScrollViewer>
+
+                        <!-- ─── PÁGINA: BIBLIOTECA DE ROMS ─── -->
+                        <ScrollViewer x:Name="PanelBiblioteca" VerticalScrollBarVisibility="Auto"
+                                      Padding="0,0,0,0" Visibility="Collapsed">
+                            <StackPanel Margin="0,12,0,0">
+
+                                <!-- Cabecera de biblioteca -->
+                                <Border Margin="0,0,0,16">
+                                    <DockPanel LastChildFill="True">
+                                        <StackPanel DockPanel.Dock="Left">
+                                            <TextBlock Text="Mis partidas y lockes vinculados" FontSize="18"
+                                                       FontWeight="SemiBold" Foreground="{DynamicResource ColorTexto}"/>
+                                            <TextBlock Text="Administra tu biblioteca de ROMs, vincula salas de Pokelocke Android y aplica cambios al guardado"
+                                                       FontSize="11.5" Foreground="{DynamicResource ColorTextoSuave}"
+                                                       Margin="0,2,0,0"/>
+                                        </StackPanel>
+                                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                                            <Button Content="🔄  Recargar" Padding="12,8" FontSize="12"
+                                                    Click="BtnRecargar_Click" Style="{StaticResource BotonNav}"/>
+                                            <Button Content="➕  Añadir ROM" Style="{StaticResource BotonAcento}"
+                                                    Padding="14,10" FontSize="12" Margin="8,0,0,0"
+                                                    Click="BtnAnadirRom_Click"/>
+                                        </StackPanel>
+                                    </DockPanel>
+                                </Border>
+
+                                <!-- Métricas resumen -->
+                                <Grid Margin="0,0,0,16">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Border Grid.Column="0" Background="{DynamicResource ColorPanelContainer}"
+                                            BorderBrush="{DynamicResource ColorBordeVariant}" BorderThickness="1"
+                                            CornerRadius="10" Padding="16" Margin="0,0,8,0">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="🎮" FontSize="20" Margin="0,0,10,0"/>
+                                            <StackPanel>
+                                                <TextBlock Text="ROMs en biblioteca" FontSize="10.5"
+                                                           Foreground="{DynamicResource ColorTextoSuave}"
+                                                           TextTrimming="CharacterEllipsis"/>
+                                                <TextBlock Text="2 partidas" FontSize="14" FontWeight="SemiBold"
+                                                           Foreground="{DynamicResource ColorTexto}"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <Border Grid.Column="1" Background="{DynamicResource ColorPanelContainer}"
+                                            BorderBrush="{DynamicResource ColorBordeVariant}" BorderThickness="1"
+                                            CornerRadius="10" Padding="16" Margin="8,0,8,0">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="🔗" FontSize="20" Margin="0,0,10,0"/>
+                                            <StackPanel>
+                                                <TextBlock Text="Lockes vinculados" FontSize="10.5"
+                                                           Foreground="{DynamicResource ColorTextoSuave}"
+                                                           TextTrimming="CharacterEllipsis"/>
+                                                <TextBlock Text="1 activo" FontSize="14" FontWeight="SemiBold"
+                                                           Foreground="{DynamicResource AcentoBrush}"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <Border Grid.Column="2" Background="{DynamicResource ColorPanelContainer}"
+                                            BorderBrush="{DynamicResource ColorBordeVariant}" BorderThickness="1"
+                                            CornerRadius="10" Padding="16" Margin="8,0,0,0">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="📦" FontSize="20" Margin="0,0,10,0"/>
+                                            <StackPanel>
+                                                <TextBlock Text="Pendiente al .sav" FontSize="10.5"
+                                                           Foreground="{DynamicResource ColorTextoSuave}"
+                                                           TextTrimming="CharacterEllipsis"/>
+                                                <TextBlock Text="2 objetos" FontSize="14" FontWeight="SemiBold"
+                                                           Foreground="{DynamicResource ColorOk}"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
+
+                                <!-- Split: lista ROMs + detalle -->
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="3*"/>
+                                        <ColumnDefinition Width="2*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Lista de ROMs -->
+                                    <Border Grid.Column="0" Margin="0,0,12,0">
+                                        <StackPanel>
+                                            <TextBlock Text="Partidas registradas" FontSize="14"
+                                                       FontWeight="SemiBold" Foreground="{DynamicResource ColorTexto}"
+                                                       Margin="0,0,0,12"/>
+
+                                            <!-- ROM seleccionada -->
+                                            <Border Background="{DynamicResource ColorPanelContainerHigh}"
+                                                    BorderBrush="{DynamicResource AcentoBrush}" BorderThickness="1"
+                                                    CornerRadius="10" Padding="14" Margin="0,0,0,12">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <Border Width="44" Height="44" CornerRadius="8"
+                                                            Background="#0B0F17" Margin="0,0,10,0">
+                                                        <Image x:Name="ImgCoverSel" Stretch="UniformToFill"
+                                                               Margin="2"/>
+                                                    </Border>
+
+                                                    <StackPanel Grid.Column="1" Margin="0,0,10,0">
+                                                        <TextBlock x:Name="TxtRomNombreSel" Text="Pokémon HeartGold"
+                                                                   FontSize="14" FontWeight="SemiBold"
+                                                                   Foreground="{DynamicResource ColorTexto}"/>
+                                                        <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                                                            <Border Width="7" Height="7" CornerRadius="4"
+                                                                  Background="#0B0F17" Margin="0,2,6,0"/>
+                                                            <TextBlock Text="DS · Sala 607 · Hardlocke"
+                                                                       FontSize="10.5"
+                                                                       Foreground="{DynamicResource ColorTextoSuave}"/>
+                                                        </StackPanel>
+                                                    </StackPanel>
+
+                                                    <StackPanel Grid.Column="2" HorizontalAlignment="Right">
+                                                        <TextBlock Text="2026-10-11" FontSize="10.5"
+                                                                   Foreground="{DynamicResource ColorTextoSuave}"/>
+                                                        <TextBlock Text="Seleccionada" FontSize="10.5"
+                                                                   FontWeight="SemiBold" Foreground="{DynamicResource AcentoBrush}"/>
+                                                    </StackPanel>
+                                                </Grid>
+                                            </Border>
+
+                                            <!-- ROM no vinculada -->
+                                            <Border Background="{DynamicResource ColorPanelContainer}"
+                                                    BorderBrush="{DynamicResource ColorBordeVariant}" BorderThickness="1"
+                                                    CornerRadius="10" Padding="14">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <Border Width="44" Height="44" CornerRadius="8"
+                                                            Background="#0B0F17" Margin="0,0,10,0">
+                                                        <Image Source="{Binding CoverPath}" Stretch="UniformToFill"/>
+                                                    </Border>
+
+                                                    <StackPanel Grid.Column="1" Margin="0,0,10,0">
+                                                        <TextBlock Text="Pokémon Esmeralda Kaizo"
+                                                                   FontSize="14" FontWeight="SemiBold"
+                                                                   Foreground="{DynamicResource ColorTexto}"/>
+                                                        <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                                                            <Border Width="7" Height="7" CornerRadius="4"
+                                                                  Background="#0B0F17" Margin="0,2,6,0"/>
+                                                            <TextBlock Text="GBA · Sin locke vinculado"
+                                                                       FontSize="10.5"
+                                                                       Foreground="{DynamicResource ColorTextoSuave}"/>
+                                                        </StackPanel>
+                                                    </StackPanel>
+
+                                                    <StackPanel Grid.Column="2" HorizontalAlignment="Right">
+                                                        <TextBlock Text="2026-11-24" FontSize="10.5"
+                                                                   Foreground="{DynamicResource ColorTextoSuave}"/>
+                                                        <TextBlock Text="23:20" FontSize="10.5"
+                                                                   Foreground="{DynamicResource ColorTextoSuave}"/>
+                                                    </StackPanel>
+                                                </Grid>
+                                            </Border>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!-- Detalle de ROM seleccionada -->
+                                    <Border Grid.Column="1" Background="{DynamicResource ColorPanelContainer}"
+                                            BorderBrush="{DynamicResource ColorBordeVariant}" BorderThickness="1"
+                                            CornerRadius="12" Padding="20">
+                                        <StackPanel>
+                                            <Grid Margin="0,0,0,16">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <Border Width="64" Height="64" CornerRadius="10"
+                                                        Background="#0B0F17" Margin="0,0,12,0"
+                                                        BorderBrush="{DynamicResource ColorBordeVariant}"
+                                                        BorderThickness="1">
+                                                    <Image x:Name="ImgCoverDet" Stretch="UniformToFill"
+                                                           Margin="2"/>
+                                                </Border>
+
+                                                <StackPanel Grid.Column="1">
+                                                    <TextBlock Text="Nintendo DS · HeartGold" FontSize="10.5"
+                                                               FontWeight="SemiBold" Foreground="{DynamicResource AcentoBrush}"
+                                                               Margin="0,0,0,4"/>
+                                                    <TextBlock Text="Pokémon HeartGold" FontSize="16"
+                                                               FontWeight="SemiBold" Foreground="{DynamicResource ColorTexto}"
+                                                               Margin="0,0,0,6"/>
+                                                    <Button Content="🖼  Cambiar carátula" Padding="8,6"
+                                                            FontSize="11"
+                                                            Style="{StaticResource BotonNav}"/>
+                                                </StackPanel>
+                                            </Grid>
+
+                                            <!-- Metadatos del guardado -->
+                                            <Border Background="{DynamicResource ColorPanelContainerLow}"
+                                                    BorderBrush="{DynamicResource ColorBordeVariant}" BorderThickness="1"
+                                                    CornerRadius="8" Padding="14" Margin="0,0,0,16">
+                                                <StackPanel>
+                                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                                                        <TextBlock Text="Locke vinculado" FontSize="11"
+                                                                   Foreground="{DynamicResource ColorTextoSuave}"/>
+                                                        <TextBlock Text="«Hardlocke»" FontSize="12"
+                                                                   FontWeight="SemiBold" Foreground="{DynamicResource AcentoBrush}"
+                                                                   Margin="8,0,0,0"/>
+                                                    </StackPanel>
+                                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                                                        <TextBlock Text="Jugador" FontSize="11"
+                                                                   Foreground="{DynamicResource ColorTextoSuave}"/>
+                                                        <TextBlock Text="David" FontSize="12"
+                                                                   Foreground="{DynamicResource ColorTexto}"
+                                                                   Margin="20,0,0,0"/>
+                                                    </StackPanel>
+                                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                                                        <TextBlock Text="Última partida" FontSize="11"
+                                                                   Foreground="{DynamicResource ColorTextoSuave}"/>
+                                                        <TextBlock Text="2026-10-11 14:04" FontSize="12"
+                                                                   FontFamily="Consolas" Foreground="{DynamicResource ColorTexto}"
+                                                                   Margin="8,0,0,0"/>
+                                                    </StackPanel>
+                                                    <Border BorderBrush="{DynamicResource ColorBordeVariant}"
+                                                            BorderThickness="0,1,0,0" Margin="8,8,0,8"/>
+                                                    <TextBlock Text="Archivo de guardado (.sav)" FontSize="11"
+                                                               Foreground="{DynamicResource ColorTextoSuave}"/>
+                                                    <TextBlock Text="E:\Nintendo\Pokemon\HeartGold\HeartGold_rand.dsv"
+                                                               FontSize="11" FontFamily="Consolas"
+                                                               Foreground="{DynamicResource ColorTexto}"
+                                                               TextWrapping="Wrap" Margin="0,4,0,0"/>
+                                                </StackPanel>
+                                            </Border>
+
+                                            <!-- Botón jugar -->
+                                            <Button x:Name="BtnJugar" Content="▶  Jugar ahora"
+                                                    Style="{StaticResource BotonAcento}" Padding="16,12"
+                                                    FontSize="13" FontWeight="SemiBold"
+                                                    Margin="0,0,0,12"/>
+
+                                            <!-- Acciones secundarias (grid 2x2) -->
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <Button Grid.Column="0" Content="🔗  Vincular a locke"
+                                                        Padding="10,8" FontSize="11.5" Margin="0,0,6,0"
+                                                        Click="BtnVincularLocke_Click" Style="{StaticResource BotonNav}"/>
+                                                <Button Grid.Column="1" Content="📤  Publicar equipo"
+                                                        Padding="10,8" FontSize="11.5" Margin="6,0,0,0"
+                                                        Click="BtnPublicarEquipo_Click" Style="{StaticResource BotonNav}"/>
+
+                                                <Button Grid.Column="0" Content="🐚  Escamas Corazón"
+                                                        Padding="10,8" FontSize="11.5" Margin="0,8,6,0"
+                                                        Click="BtnEscamasCorazon_Click" Style="{StaticResource BotonNav}"/>
+                                                <Button Grid.Column="1" Content="🍬  Carameloraros"
+                                                        Padding="10,8" FontSize="11.5" Margin="6,8,0,0"
+                                                        Click="BtnCarameloraros_Click" Style="{StaticResource BotonNav}"/>
+                                            </Grid>
+
+                                            <!-- Borrar -->
+                                            <Button Content="🗑  Borrar de la biblioteca"
+                                                    Padding="10,6" FontSize="11.5" Margin="0,12,0,0"
+                                                    Foreground="{DynamicResource ColorError}"
+                                                    Background="Transparent" BorderBrush="Transparent"
+                                                    HorizontalAlignment="Left"/>
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
+
+                            </StackPanel>
+                        </ScrollViewer>
+
+                        <!-- ─── PÁGINA: RANDOMIZADOR ─── -->
+                        <Grid x:Name="PanelRandomizador" Margin="0,12,0,0" Visibility="Collapsed">
+                            <ui:RandomizadorControl x:Name="CtrlRandomizador"/>
+                        </Grid>
+
+                        <!-- ─── PÁGINA: AJUSTES ─── -->
+                        <Grid x:Name="PanelAjustes" Margin="0,12,0,0" Visibility="Collapsed"/>
+                    </Grid>
+                </ScrollViewer>
             </DockPanel>
         </DockPanel>
     </Grid>

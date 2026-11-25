@@ -40,7 +40,8 @@ public partial class SettingsPanel : UserControl
         ChkSonidoVideo.IsChecked = _ajustes.VideoConSonido;
         SldVolumen.Value = _ajustes.VideoVolumen;
         TxtVolumen.Text = $"{_ajustes.VideoVolumen}%";
-        PanelAudioVideo.Visibility = TemaFondo.EsVideo ? Visibility.Visible : Visibility.Collapsed;
+        // PanelAudioVideo eliminado en el rediseño
+        // PanelAudioVideo.Visibility = TemaFondo.EsVideo ? Visibility.Visible : Visibility.Collapsed;
         ConstruirAcentos();
         ConstruirFondos();
         ActualizarEstadoFondo();
@@ -83,7 +84,7 @@ public partial class SettingsPanel : UserControl
 
     private void ConstruirFondos()
     {
-        PanelFondos.Children.Clear();
+        PanelFondosGrid.Children.Clear();
         for (var i = 0; i < TemaFondo.Presets.Length; i++)
         {
             var indice = i;
@@ -108,16 +109,17 @@ public partial class SettingsPanel : UserControl
                 ConstruirFondos();
                 CambiosAplicados?.Invoke();
             };
-            PanelFondos.Children.Add(borde);
+            PanelFondosGrid.Children.Add(borde);
         }
     }
 
     private void ActualizarEstadoFondo()
     {
-        TxtFondoEstado.Text = TemaFondo.ImagenActual is null
+        FondoLabel.Text = TemaFondo.ImagenActual is null
             ? "Sin imagen/vídeo (solo color)"
             : (TemaFondo.EsVideo ? "Vídeo activo" : "Imagen activa") + ": " + Path.GetFileName(TemaFondo.ImagenActual);
-        PanelAudioVideo.Visibility = TemaFondo.EsVideo ? Visibility.Visible : Visibility.Collapsed;
+        // PanelAudioVideo eliminado en el rediseño
+        // PanelAudioVideo.Visibility = TemaFondo.EsVideo ? Visibility.Visible : Visibility.Collapsed;
     }
 
     private void ElegirFondo_Click(object sender, RoutedEventArgs e)
@@ -248,5 +250,42 @@ public partial class SettingsPanel : UserControl
         _ajustes.SwitchArgumentos = TxtSwitchArgs.Text.Trim();
         _ajustes.Guardar();
         CambiosAplicados?.Invoke();
+    }
+
+    private void BtnAplicar_Click(object sender, RoutedEventArgs e)
+    {
+        AplicarCambios();
+    }
+
+    private void BtnRestablecer_Click(object sender, RoutedEventArgs e)
+    {
+        var resultado = MessageBox.Show(
+            "¿Restablecer todos los ajustes a valores predeterminados?\n\nSe perderán los temas, fondos, rutas y credenciales configuradas.",
+            "Restablecer ajustes de fábrica", MessageBoxButton.YesNo, MessageBoxImage.Question);
+        if (resultado != MessageBoxResult.Yes) return;
+
+        _ajustes.TemaIndice = 0;
+        _ajustes.FondoIndice = 0;
+        _ajustes.FondoRuta = "";
+        _ajustes.VideoConSonido = false;
+        _ajustes.VideoVolumen = 35;
+        _ajustes.Sonidos = true;
+        _ajustes.SwitchRuta = "";
+        _ajustes.SwitchArgumentos = EmuladorSwitch.ArgumentosPorDefecto;
+        _ajustes.VendorDir = "";
+        _ajustes.DatosDir = "";
+        _ajustes.FirebaseUrl = "";
+        _ajustes.FirebaseApiKey = "";
+        _ajustes.Guardar();
+
+        CargarValores();
+        CambiosAplicados?.Invoke();
+        MessageBox.Show("Ajustes restablecidos. Reinicia el launcher para aplicar todos los cambios.",
+            "Restablecer ajustes", MessageBoxButton.OK, MessageBoxImage.Information);
+    }
+
+    private void ToggleKey_Click(object sender, RoutedEventArgs e)
+    {
+        // TextBox simple (no PasswordBox): el botón de ojo es decorativo
     }
 }

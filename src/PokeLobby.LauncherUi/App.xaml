@@ -4,16 +4,25 @@
              StartupUri="MainWindow.xaml">
     <Application.Resources>
 
-        <!-- ═══════════ Paleta (personalizable: TemaAcento / TemaFondo) ═══════════ -->
-        <SolidColorBrush x:Key="ColorFondo" Color="#0E1119"/>
-        <SolidColorBrush x:Key="ColorPanel" Color="#181D2A"/>
+        <!-- ═══════════ Paleta Material Design 3 (estilo Rediseño HTML) ═══════════ -->
+        <SolidColorBrush x:Key="ColorFondo" Color="#0F131E"/>
+        <SolidColorBrush x:Key="ColorPanel" Color="#1B1F2B"/>
         <SolidColorBrush x:Key="ColorPanelVelo" Color="#E6181D2A"/>
-        <SolidColorBrush x:Key="ColorPanelSolido" Color="#181D2A"/>
-        <SolidColorBrush x:Key="ColorBorde" Color="#2A3145"/>
-        <SolidColorBrush x:Key="ColorTexto" Color="#E8EAF2"/>
-        <SolidColorBrush x:Key="ColorTextoSuave" Color="#9AA3B8"/>
+        <SolidColorBrush x:Key="ColorPanelSolido" Color="#1B1F2B"/>
+        <SolidColorBrush x:Key="ColorPanelVeloBajo" Color="#0A0E19"/>
+        <SolidColorBrush x:Key="ColorPanelVeloBajo2" Color="#171B26"/>
+        <SolidColorBrush x:Key="ColorPanelContainer" Color="#1B1F2B"/>
+        <SolidColorBrush x:Key="ColorPanelContainerLow" Color="#171B26"/>
+        <SolidColorBrush x:Key="ColorPanelContainerLowest" Color="#0A0E19"/>
+        <SolidColorBrush x:Key="ColorPanelContainerHigh" Color="#262A35"/>
+        <SolidColorBrush x:Key="ColorPanelContainerHighest" Color="#313441"/>
+        <SolidColorBrush x:Key="ColorBorde" Color="#5A5E6B"/>
+        <SolidColorBrush x:Key="ColorBordeVariant" Color="#2C303C"/>
+        <SolidColorBrush x:Key="ColorTexto" Color="#DFE2F2"/>
+        <SolidColorBrush x:Key="ColorTextoSuave" Color="#A7ABBA"/>
+        <SolidColorBrush x:Key="ColorTextoMuted" Color="#A7ABBA"/>
 
-    <!-- Tooltips legibles en TODA la app: fondo oscuro + letra clara (antes salían blancos). -->
+    <!-- Tooltips legibles en TODA la app: fondo oscuro + letra clara. -->
     <Style TargetType="ToolTip">
         <Setter Property="Background" Value="{DynamicResource ColorPanel}"/>
         <Setter Property="Foreground" Value="{DynamicResource ColorTexto}"/>
@@ -36,16 +45,18 @@
         </Setter>
     </Style>
 
-        <SolidColorBrush x:Key="ColorOk" Color="#4CC38A"/>
-        <SolidColorBrush x:Key="ColorAviso" Color="#F0A24A"/>
-        <SolidColorBrush x:Key="ColorError" Color="#EF5B5B"/>
+        <SolidColorBrush x:Key="ColorOk" Color="#4AE176"/>
+        <SolidColorBrush x:Key="ColorAviso" Color="#FFB95F"/>
+        <SolidColorBrush x:Key="ColorError" Color="#FFB4AB"/>
 
-        <SolidColorBrush x:Key="AcentoBrush" Color="#8B5CF6"/>
-        <SolidColorBrush x:Key="AcentoSuaveBrush" Color="#308B5CF6"/>
-        <SolidColorBrush x:Key="AcentoBordeBrush" Color="#A08B5CF6"/>
+        <!-- Acento principal (coral/salmon del rediseño) -->
+        <SolidColorBrush x:Key="AcentoBrush" Color="#FFB4A8"/>
+        <SolidColorBrush x:Key="AcentoContainerBrush" Color="#FF5541"/>
+        <SolidColorBrush x:Key="AcentoSuaveBrush" Color="#30FFB4A8"/>
+        <SolidColorBrush x:Key="AcentoBordeBrush" Color="#A0FFB4A8"/>
         <LinearGradientBrush x:Key="AcentoGradienteBrush" StartPoint="0,0" EndPoint="1,0">
-            <GradientStop Color="#8B5CF6" Offset="0"/>
-            <GradientStop Color="#6B21A8" Offset="1"/>
+            <GradientStop Color="#FFB4A8" Offset="0"/>
+            <GradientStop Color="#FF5541" Offset="1"/>
         </LinearGradientBrush>
         <SolidColorBrush x:Key="FondoVeloBrush" Color="Transparent"/>
 
@@ -397,6 +408,46 @@
         <Style TargetType="Separator">
             <Setter Property="Background" Value="{DynamicResource ColorBorde}"/>
             <Setter Property="Margin" Value="0,10"/>
+        </Style>
+
+        <!-- Pestañas de categoría (estilo Rediseño: botón toggle) -->
+        <Style TargetType="Button" x:Key="BotonCategoria">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{DynamicResource ColorTextoSuave}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource ColorBordeVariant}"/>
+            <Setter Property="BorderThickness" Value="0,0,0,2"/>
+            <Setter Property="Padding" Value="14,10"/>
+            <Setter Property="Margin" Value="0,0,10,0"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Borde" Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="0">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="Center"
+                                              RecognizesAccessKey="True"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Borde" Property="Background"
+                                        Value="{DynamicResource ColorPanelVelo}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource ColorTexto}"/>
+                            </Trigger>
+                            <Trigger Property="Tag" Value="activo">
+                                <Setter TargetName="Borde" Property="BorderBrush"
+                                        Value="{DynamicResource AcentoBrush}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource ColorTexto}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
 
     </Application.Resources>

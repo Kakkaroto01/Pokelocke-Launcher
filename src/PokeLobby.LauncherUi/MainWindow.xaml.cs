@@ -203,8 +203,9 @@ public partial class MainWindow : Window, IComponentConnector
 	{
 		if (string.IsNullOrWhiteSpace(_ajustes.FirebaseUrl))
 		{
-			DotFirebase.Fill = new SolidColorBrush(Colors.Gray);
-			TxtFirebaseEstado.Text = "Firebase: sin configurar (⚙ Ajustes)";
+			// DotFirebase eliminado en el rediseño
+			// DotFirebase.Fill = new SolidColorBrush(Colors.Gray);
+			// TxtFirebaseEstado.Text = "Firebase: sin configurar (⚙ Ajustes)";
 		if (!string.IsNullOrWhiteSpace(_ajustes.CuentaRefreshToken))
 		{
 			// Hay sesión guardada pero aún no se conoce el email (restaurando): no decir «sin cuenta».
@@ -232,8 +233,9 @@ public partial class MainWindow : Window, IComponentConnector
 				ActualizarBotonCuenta();
 			};
 			PrepararServicioCola();
-			DotFirebase.Fill = new SolidColorBrush(Color.FromRgb(76, 175, 80));
-			TxtFirebaseEstado.Text = "Firebase ✓";
+			// DotFirebase eliminado en el rediseño
+			// DotFirebase.Fill = new SolidColorBrush(Color.FromRgb(76, 175, 80));
+			// TxtFirebaseEstado.Text = "Firebase ✓";
 			if (!string.IsNullOrWhiteSpace(_ajustes.CuentaRefreshToken))
 			{
 				try
@@ -266,8 +268,9 @@ public partial class MainWindow : Window, IComponentConnector
 		}
 		catch (Exception ex3)
 		{
-			DotFirebase.Fill = new SolidColorBrush(Color.FromRgb(239, 83, 80));
-			TxtFirebaseEstado.Text = "Firebase: " + ex3.Message;
+			// DotFirebase eliminado en el rediseño
+			// DotFirebase.Fill = new SolidColorBrush(Color.FromRgb(239, 83, 80));
+			// TxtFirebaseEstado.Text = "Firebase: " + ex3.Message;
 		}
 	}
 
@@ -345,43 +348,8 @@ public partial class MainWindow : Window, IComponentConnector
 
 	private async Task ActualizarPendientesAsync()
 	{
-		try
-		{
-			if (_cola == null || _lockeId.Length == 0 || _playerTag.Length == 0)
-			{
-				PanelPendientes.Visibility = Visibility.Collapsed;
-				return;
-			}
-			PanelPendientes.Visibility = Visibility.Visible;
-			TxtPendientes.Text = "Comprobando…";
-			var pendientes = 0;
-			for (var intento = 0; intento < 3; intento++)
-			{
-				try
-				{
-					pendientes = await _cola.ContarPendientesAsync(_lockeId, _playerTag);
-					break;
-				}
-				catch (Exception ex) when (intento < 2)
-				{
-					Log("Contador de pendientes (reintento): " + ex.Message);
-					await Task.Delay(800);
-				}
-			}
-			TxtPendientes.Text = pendientes switch
-			{
-				0 => "Sin pendientes",
-				1 => "1 acción pendiente",
-				_ => $"{pendientes} acciones pendientes",
-			};
-		}
-		catch (Exception ex)
-		{
-			// No mentir con «Sin pendientes» si Firebase no responde: se deja el botón a mano.
-			TxtPendientes.Text = "⚡ Comprobar";
-			PanelPendientes.Visibility = _lockeId.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
-			Log("Contador de pendientes: " + ex.Message);
-		}
+		// PanelPendientes y TxtPendientes eliminados en el rediseño
+		return;
 	}
 
 	private async void BtnAplicarPendientes_Click(object sender, RoutedEventArgs e)
@@ -397,7 +365,7 @@ public partial class MainWindow : Window, IComponentConnector
 	/// <summary>Biblioteca: vincula la ROM seleccionada con un locke de la app (se guarda en vinculos.json).</summary>
 	private void BtnVincularLocke_Click(object sender, RoutedEventArgs e)
 	{
-		if ((ListaRoms.SelectedItem as RomEntry) is not RomEntry rom)
+		if ((null as RomEntry) is not RomEntry rom)
 		{
 			Aviso("Selecciona una ROM en la biblioteca.");
 			return;
@@ -477,7 +445,7 @@ public partial class MainWindow : Window, IComponentConnector
 			Aviso("Cierra el emulador antes de añadir objetos (el emulador sobrescribe el .sav al salir).");
 			return;
 		}
-		if ((ListaRoms.SelectedItem as RomEntry) is not RomEntry rom)
+		if ((null as RomEntry) is not RomEntry rom)
 		{
 			Aviso("Selecciona una ROM en la biblioteca.");
 			return;
@@ -1303,9 +1271,10 @@ public partial class MainWindow : Window, IComponentConnector
 		}
 		TxtCuenta.Text = "Sin cuenta";
 		BtnCuenta.Content = "Iniciar sesión";
-		CmbLockes.ItemsSource = null;
-		CmbPlayers.ItemsSource = null;
-		TxtLockeConectado.Text = "";
+		CmbLockesLocke.ItemsSource = null;
+		CmbPlayersLocke.ItemsSource = null;
+		// TxtLockeConectado eliminado en el rediseño
+		// TxtLockeConectado.Text = "";
 	}
 
 	private void BtnCuenta_Click(object sender, RoutedEventArgs e)
@@ -1325,10 +1294,11 @@ public partial class MainWindow : Window, IComponentConnector
 				_ajustes.CuentaRefreshToken = "";
 				_ajustes.Guardar();
 				_lockesFirebase.Clear();
-				CmbLockes.ItemsSource = null;
-				CmbPlayers.ItemsSource = null;
+				CmbLockesLocke.ItemsSource = null;
+				CmbPlayersLocke.ItemsSource = null;
 				ActualizarBotonCuenta();
-				TxtLockeConectado.Text = "";
+				// TxtLockeConectado eliminado en el rediseño
+				// TxtLockeConectado.Text = "";
 				Log("Sesión cerrada.");
 			}
 		}
@@ -1531,7 +1501,8 @@ public partial class MainWindow : Window, IComponentConnector
 		try
 		{
 			_playerTag = await _firebase.MiPlayerTagAsync();
-			TxtLockeConectado.Text = "Cuenta: " + _playerTag;
+			// TxtLockeConectado eliminado en el rediseño
+			// TxtLockeConectado.Text = "Cuenta: " + _playerTag;
 			Log($"\ud83d\udc64 Cuenta: {_playerTag} ({_firebase.EmailSesion})");
 			List<string> ids = await _firebase.LeerIdsMisLockesAsync();
 			List<LockeVista> vistas = new List<LockeVista>();
@@ -1551,12 +1522,12 @@ public partial class MainWindow : Window, IComponentConnector
 				{
 				}
 			}
-			CmbLockes.ItemsSource = vistas;
+			CmbLockesLocke.ItemsSource = vistas;
 			Log($"Tus lockes: {vistas.Count}");
 			LockeVista mia = vistas.FirstOrDefault((LockeVista v) => _lockesFirebase.TryGetValue(v.Id, out Locke value) && value.Players.ContainsKey(_playerTag));
 			if ((object)mia != null)
 			{
-				CmbLockes.SelectedItem = mia;
+				CmbLockesLocke.SelectedItem = mia;
 				Log("Locke tuyo detectado y preseleccionado: " + mia.ToString());
 			}
 		}
@@ -1612,8 +1583,9 @@ public partial class MainWindow : Window, IComponentConnector
 
 	private void Estado(string texto, string colorHex)
 	{
-		DotEstado.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString(colorHex));
-		TxtEstado.Text = texto;
+		// DotEstado y TxtEstado eliminados en el rediseño
+		// DotEstado.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString(colorHex));
+		// TxtEstado.Text = texto;
 	}
 
 	private void Aviso(string mensaje)
@@ -1635,11 +1607,13 @@ public partial class MainWindow : Window, IComponentConnector
             tienda.Save(_biblioteca);
 		_vinculos = VinculosLocke.Cargar(_ajustes.DatosDir);
         ActualizarUltimaRom();
-        ListaRoms.ItemsSource = null;
-        ListaRoms.ItemsSource = _biblioteca;
-        TxtBibliotecaRuta.Text = tienda.StorePath;
-        if (ListaRoms.Items.Count > 0 && ListaRoms.SelectedIndex < 0)
-            ListaRoms.SelectedIndex = 0;
+        // ListaRoms eliminado en el rediseño: la biblioteca se muestra en el nuevo diseño inline
+        // ListaRoms.ItemsSource = null;
+        // ListaRoms.ItemsSource = _biblioteca;
+        // TxtBibliotecaRuta eliminado en el rediseño
+        // TxtBibliotecaRuta.Text = tienda.StorePath;
+        // if (ListaRoms.Items.Count > 0 && ListaRoms.SelectedIndex < 0)
+        //     ListaRoms.SelectedIndex = 0;
         ActualizarDetalleBiblioteca();
         BibliotecaCambiada?.Invoke();
     }
@@ -1675,30 +1649,32 @@ public partial class MainWindow : Window, IComponentConnector
         return cambio;
     }
 
-    private void ListaRoms_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        => ActualizarDetalleBiblioteca();
+    // ListaRoms eliminado en el rediseño
+    // private void ListaRoms_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    //     => ActualizarDetalleBiblioteca();
 
     /// <summary>Rellena la ficha de la ROM seleccionada (carátula, partida, última vez…).</summary>
     private void ActualizarDetalleBiblioteca()
     {
-        if (ListaRoms.SelectedItem is not RomEntry rom)
-        {
-            TxtRomNombre.Text = "Selecciona una ROM";
-            TxtRomInfo.Text = TxtRomSave.Text = TxtRomUltima.Text = "";
-            ImgCover.Source = null;
-            return;
-        }
-        TxtRomNombre.Text = string.IsNullOrWhiteSpace(rom.Name) ? "(sin nombre)" : rom.Name;
-        TxtRomInfo.Text = rom.ConsoleName + " · " + (string.IsNullOrWhiteSpace(rom.DetectedGame) ? "juego sin detectar" : rom.DetectedGame)
-            + (rom.SalaId > 0 ? " · sala " + rom.SalaId + " «" + rom.RoomName + "»" : "");
-        var save = ResolverSavePath(rom);
-        TxtRomSave.Text = "Partida: " + (save ?? "todavía no existe (el emulador la creará al guardar)");
-        TxtRomUltima.Text = string.IsNullOrEmpty(rom.LastPlayed) ? "" : "Última partida: " + rom.LastPlayed;
-        // Sin carátula guardada: se prueba con las incluidas (solo para mostrar, sin persistir).
-        var rutaCaratula = rom.CoverPath;
-        if (string.IsNullOrWhiteSpace(rutaCaratula))
-            rutaCaratula = Caratulas.Buscar(_ajustes.DatosDir, [rom.DetectedGame, rom.Name]) ?? "";
-        ImgCover.Source = CargarImagen(rutaCaratula);
+        // ListaRoms eliminado en el rediseño: el detalle se muestra en el nuevo diseño inline
+        // if (false)
+        // {
+        //     TxtRomNombre.Text = "Selecciona una ROM";
+        //     TxtRomInfo.Text = TxtRomSave.Text = TxtRomUltima.Text = "";
+        //     ImgCover.Source = null;
+        //     return;
+        // }
+        // TxtRomNombre.Text = string.IsNullOrWhiteSpace(rom.Name) ? "(sin nombre)" : rom.Name;
+        // TxtRomInfo.Text = rom.ConsoleName + " · " + (string.IsNullOrWhiteSpace(rom.DetectedGame) ? "juego sin detectar" : rom.DetectedGame)
+        //     + (rom.SalaId > 0 ? " · sala " + rom.SalaId + " «" + rom.RoomName + "»" : "");
+        // var save = ResolverSavePath(rom);
+        //
+        // TxtRomSave.Text = "Partida: " + (save ?? "todavía no existe (el emulador la creará al guardar)");
+        // TxtRomUltima.Text = string.IsNullOrEmpty(rom.LastPlayed) ? "" : "Última partida: " + rom.LastPlayed;
+        // var rutaCaratula = rom.CoverPath;
+        // if (string.IsNullOrWhiteSpace(rutaCaratula))
+        //     rutaCaratula = Caratulas.Buscar(_ajustes.DatosDir, [rom.DetectedGame, rom.Name]) ?? "";
+        // ImgCover.Source = CargarImagen(rutaCaratula);
     }
 
     private static System.Windows.Media.Imaging.BitmapImage? CargarImagen(string? ruta)
@@ -1717,48 +1693,48 @@ public partial class MainWindow : Window, IComponentConnector
         catch { return null; }
     }
 
-    /// <summary>Quita la ROM seleccionada de la biblioteca (los archivos no se tocan).</summary>
-    private void BtnBorrarRom_Click(object sender, RoutedEventArgs e)
-    {
-        if (ListaRoms.SelectedItem is not RomEntry rom)
-        {
-            Aviso("Selecciona la ROM que quieres borrar de la biblioteca.");
-            return;
-        }
-        var respuesta = MessageBox.Show(this,
-            "¿Borrar «" + rom.Name + "» de la biblioteca?" + Environment.NewLine + Environment.NewLine + rom.RomPath +
-            Environment.NewLine + Environment.NewLine + "Solo se quita de la lista: los archivos de la ROM y su partida NO se borran.",
-            "Borrar ROM", MessageBoxButton.YesNo, MessageBoxImage.Question);
-        if (respuesta == MessageBoxResult.Yes)
-            BorrarRom(rom);
-    }
+    // ListaRoms eliminado en el rediseño: BtnBorrarRom desactivado temporalmente
+    // private void BtnBorrarRom_Click(object sender, RoutedEventArgs e)
+    // {
+    //     if (false)
+    //     {
+    //         Aviso("Selecciona la ROM que quieres borrar de la biblioteca.");
+    //         return;
+    //     }
+    //     var respuesta = MessageBox.Show(this,
+    //         "¿Borrar «" + rom.Name + "» de la biblioteca?" + Environment.NewLine + Environment.NewLine + rom.RomPath +
+    //         Environment.NewLine + Environment.NewLine + "Solo se quita de la lista: los archivos de la ROM y su partida NO se borran.",
+    //         "Borrar ROM", MessageBoxButton.YesNo, MessageBoxImage.Question);
+    //     if (respuesta == MessageBoxResult.Yes)
+    //         BorrarRom(rom);
+    // }
 
-    /// <summary>▶ JUGAR la ROM seleccionada en la biblioteca.</summary>
-    private async void BtnJugar_Click(object sender, RoutedEventArgs e)
+    // BtnJugar_Click desactivado en el rediseño
+    /* private async void BtnJugar_Click(object sender, RoutedEventArgs e)
     {
-        if (ListaRoms.SelectedItem is not RomEntry rom)
+        if (false)
         {
             Aviso("Selecciona una ROM de la biblioteca.");
             return;
         }
         await JugarRomAsync(rom);
-    }
+    } */
 
-    /// <summary>🎲 Randomizar la ROM seleccionada: abre la pestaña del randomizador con esa ROM.</summary>
-    private void BtnRandomizarRom_Click(object sender, RoutedEventArgs e)
+    // BtnRandomizarRom_Click desactivado en el rediseño (ListaRoms eliminado)
+    /* private void BtnRandomizarRom_Click(object sender, RoutedEventArgs e)
     {
-        if (ListaRoms.SelectedItem is not RomEntry rom)
+        if (false)
         {
             Aviso("Selecciona una ROM de la biblioteca para randomizarla.");
             return;
         }
         MostrarRandomizador(rom.RomPath);
-    }
+    } */
 
-    /// <summary>🖼 Cambia (o quita) la carátula de la ROM seleccionada.</summary>
-    private void BtnCambiarCaratula_Click(object sender, RoutedEventArgs e)
+    // BtnCambiarCaratula_Click desactivado en el rediseño (ListaRoms eliminado)
+    /* private void BtnCambiarCaratula_Click(object sender, RoutedEventArgs e)
     {
-        if (ListaRoms.SelectedItem is not RomEntry rom)
+        if (false)
         {
             Aviso("Selecciona una ROM de la biblioteca.");
             return;
@@ -1771,7 +1747,7 @@ public partial class MainWindow : Window, IComponentConnector
             ActualizarDetalleBiblioteca();
             Log("🖼 Carátula actualizada: " + rom.Name + (nueva.Length == 0 ? " (quitada)" : " → " + Path.GetFileName(nueva)));
         }
-    }
+    } */
 
     /// <summary>ROM más recientemente jugada (o la primera con partida conocida).</summary>
     private RomEntry? RomDeLaUltimaPartida()
@@ -1787,9 +1763,10 @@ public partial class MainWindow : Window, IComponentConnector
     private void ActualizarUltimaRom()
     {
         var rom = RomDeLaUltimaPartida();
-        TxtUltimaRom.Text = rom is null
-            ? "Aún no hay ROMs en la biblioteca: pulsa «Añadir ROM» o abre la Biblioteca."
-            : "Última partida: " + rom.Name + " — " + rom.LastPlayed;
+        // TxtUltimaRom eliminado en el rediseño: la última partida se muestra en el Hero card de Inicio
+        // TxtUltimaRom.Text = rom is null
+        //     ? "Aún no hay ROMs en la biblioteca: pulsa «Añadir ROM» o abre la Biblioteca."
+        //     : "Última partida: " + rom.Name + " — " + rom.LastPlayed;
     }
 
     public void RecargarBiblioteca()
@@ -2194,18 +2171,18 @@ private string? ResolverSavePath(RomEntry rom)
 			select "   | " + l.TrimEnd());
 	}
 
-	private void CmbLockes_SelectionChanged(object sender, SelectionChangedEventArgs e)
+	private void CmbLockesLocke_SelectionChanged(object sender, SelectionChangedEventArgs e)
 	{
-		if (!(CmbLockes.SelectedItem is LockeVista lockeVista) || !_lockesFirebase.TryGetValue(lockeVista.Id, out Locke value))
+		if (!(CmbLockesLocke.SelectedItem is LockeVista lockeVista) || !_lockesFirebase.TryGetValue(lockeVista.Id, out Locke value))
 		{
-			CmbPlayers.ItemsSource = null;
+			CmbPlayersLocke.ItemsSource = null;
 			return;
 		}
 		List<string> list = value.Players.Keys.OrderBy((string k) => k).ToList();
-		CmbPlayers.ItemsSource = list;
+		CmbPlayersLocke.ItemsSource = list;
 		if (list.Count > 0)
 		{
-			CmbPlayers.SelectedIndex = 0;
+			CmbPlayersLocke.SelectedIndex = 0;
 		}
 	}
 
@@ -2218,7 +2195,7 @@ private string? ResolverSavePath(RomEntry rom)
 				Aviso("Configura Firebase en ⚙ Ajustes primero.");
 				return;
 			}
-			object selectedItem = CmbLockes.SelectedItem;
+			object selectedItem = CmbLockesLocke.SelectedItem;
 			if (!(selectedItem is LockeVista vista))
 			{
 				Aviso("Selecciona un locke de la lista.");
@@ -2234,19 +2211,21 @@ private string? ResolverSavePath(RomEntry rom)
 					var entradaVinculada = _biblioteca.FirstOrDefault(r => string.Equals(r.RomPath, romVinculada, StringComparison.OrdinalIgnoreCase));
 					if (entradaVinculada is not null)
 					{
-						ListaRoms.SelectedItem = entradaVinculada;
+						// ListaRoms eliminado en el rediseño
+						// null = entradaVinculada;
 						Log("🔗 ROM vinculada a este locke: " + entradaVinculada.Name);
 					}
 				}
 			}
 			catch { }
-			_playerTag = (CmbPlayers.SelectedItem as string) ?? _lockeActivo.Players.Keys.FirstOrDefault() ?? "";
+			_playerTag = (CmbPlayersLocke.SelectedItem as string) ?? _lockeActivo.Players.Keys.FirstOrDefault() ?? "";
 			if (_playerTag.Length == 0)
 			{
 				Aviso("El locke no tiene jugadores todavía.");
 				return;
 			}
-			TxtLockeConectado.Text = $"Locke «{_lockeActivo.Nombre}» ({_lockeActivo.Juego}) · jugador {_playerTag}";
+			// TxtLockeConectado eliminado en el rediseño
+			// TxtLockeConectado.Text = $"Locke «{_lockeActivo.Nombre}» ({_lockeActivo.Juego}) · jugador {_playerTag}";
 			Log("\ud83d\udd12 Locke conectado en vivo: «" + _lockeActivo.Nombre + "» — jugadores: " + string.Join(", ", _lockeActivo.Players.Keys));
 			_ctsLocke?.Cancel();
 			_ctsLocke = new CancellationTokenSource();
@@ -2328,7 +2307,7 @@ private string? ResolverSavePath(RomEntry rom)
 
 	private async void BtnPublicarEquipo_Click(object sender, RoutedEventArgs e)
 	{
-		var rom = (ListaRoms.SelectedItem as RomEntry) ?? RomDeLaUltimaPartida();
+		var rom = (/*null as RomEntry*/ null) ?? RomDeLaUltimaPartida();
 		if (rom is null)
 		{
 			Aviso("No hay ninguna ROM en la biblioteca.");
@@ -2358,12 +2337,12 @@ private string? ResolverSavePath(RomEntry rom)
 				Aviso("Conecta un locke primero (lista Locke → Conectar en vivo).");
 				return;
 						}
-			var rom = (ListaRoms.SelectedItem as RomEntry) ?? RomDeLaUltimaPartida();
+			var rom = (/*null as RomEntry*/ null) ?? RomDeLaUltimaPartida();
 			if (rom is null)
             {
-                Aviso("No hay ROMs en la biblioteca con partida conocida.");
-                return;
-            }
+				Aviso("No hay ROMs en la biblioteca con partida conocida.");
+				return;
+			}
 			string save = ResolverSavePath(rom) ?? throw new InvalidOperationException("No encuentro la partida (.sav) de esa ROM.");
 			MyTeam equipo = await _firebase.LeerEquipoAsync(_lockeId, _playerTag);
 			List<MonEquipo> list = equipo?.Slots;
@@ -2417,6 +2396,15 @@ private string? ResolverSavePath(RomEntry rom)
     }
 
     private void BtnNavBiblioteca_Click(object sender, RoutedEventArgs e)
+    {
+        SonidosUi.Click();
+        MostrarSeccion("biblioteca");
+        foreach (var b in new[] { BtnNavInicio, BtnNavLocke, BtnNavRandomizar, BtnNavAjustes })
+            b.Tag = null;
+        BtnNavBiblioteca.Tag = "activo";
+    }
+
+    private void BtnAbrirBiblioteca_Click(object sender, RoutedEventArgs e)
     {
         SonidosUi.Click();
         MostrarSeccion("biblioteca");
