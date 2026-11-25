@@ -1,0 +1,29 @@
+# Build outputs
+bin/
+obj/
+*/bin/
+*/obj/
+
+# Publish output
+dist/
+publish/
+publish-uninstaller/
+
+# Vendor (emuladores, JRE, randomizer - 380 MB, no subir)
+vendor/
+
+# .NET tooling
+.dotnet/
+*.user
+*.cache
+
+# IDE
+.vs/
+.idea/
+
+# Temporary
+*.tmp
+*.log
+
+# NuGet
+*.nupkg
