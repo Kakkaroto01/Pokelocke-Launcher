@@ -21,16 +21,13 @@
             <Border DockPanel.Dock="Left" Width="252" Background="{DynamicResource ColorPanelContainerLowest}"
                     BorderBrush="{DynamicResource ColorBordeVariant}" BorderThickness="0,0,1,0"
                     Padding="12,14">
-                <DockPanel LastChildFill="True">
+                <DockPanel LastChildFill="False">
                     <!-- Encabezado de marca -->
                     <StackPanel DockPanel.Dock="Top" Margin="0,0,0,16">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <Grid Width="32" Height="32">
-                                <Ellipse Fill="#F5F5F5" Stroke="#20202E" StrokeThickness="2"/>
-                                <Path Data="M1,17 A16,16 0 0 1 33,17 L1,17 Z" Fill="{DynamicResource AcentoBrush}"/>
-                                <Rectangle Height="3" Fill="#20202E" VerticalAlignment="Center"/>
-                                <Ellipse Width="10" Height="10" Fill="White" Stroke="#20202E" StrokeThickness="2"/>
-                            </Grid>
+                            <Image Width="32" Height="32"
+                                   Source="pack://application:,,,/PokeLockeLauncher;component/pokelocke.png"
+                                   Stretch="Uniform"/>
                             <StackPanel Margin="8,0,0,0" VerticalAlignment="Center">
                                 <TextBlock Text="PokeLocke" FontSize="16" FontWeight="SemiBold"
                                            Foreground="{DynamicResource ColorTexto}"/>
@@ -41,7 +38,7 @@
                     </StackPanel>
 
                     <!-- Navegación principal -->
-                    <ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Auto">
+                    <ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Auto" MaxHeight="420">
                         <StackPanel>
                             <Button x:Name="BtnNavInicio" Content="🏠   Inicio" Tag="activo"
                                     Style="{StaticResource BotonNav}" Click="Nav_Click"/>
@@ -56,27 +53,22 @@
                         </StackPanel>
                     </ScrollViewer>
 
-                    <!-- Acciones rápidas (Añadir ROM, Carpeta de datos) -->
-                    <Border DockPanel.Dock="Bottom" Background="{DynamicResource ColorPanelContainerLow}"
-                            BorderBrush="{DynamicResource ColorBordeVariant}" BorderThickness="0,1,0,0"
-                            Padding="8,12" CornerRadius="8">
-                        <StackPanel>
-                            <Button x:Name="BtnAnadirRom" Content="➕  Añadir ROM"
-                                    Style="{StaticResource BotonAcento}" Padding="12,8"
-                                    Click="BtnAnadirRom_Click" Margin="0,0,0,8"/>
-                            <Button x:Name="BtnAbrirBiblioteca" Content="📂  Carpeta de datos"
-                                    Style="{StaticResource BotonNav}" Padding="10,6" FontSize="12"
-                                    Click="BtnAbrirBiblioteca_Click" Margin="0"/>
-                        </StackPanel>
-                    </Border>
+                    <!-- Línea separadora -->
+                    <Rectangle DockPanel.Dock="Top" Height="1" Fill="{DynamicResource ColorBordeVariant}" Margin="0,12"/>
 
-                    <!-- Panel de cuenta Firebase (abajo) -->
+                    <!-- Añadir ROM -->
+                    <Button DockPanel.Dock="Top" x:Name="BtnAnadirRom" Content="➕  Añadir ROM"
+                            Style="{StaticResource BotonAcento}" Padding="12,8"
+                            Click="BtnAnadirRom_Click" Margin="0,0,0,0"/>
+
+                    <!-- Panel de cuenta Firebase (esquina inferior izquierda del todo) -->
                     <Border DockPanel.Dock="Bottom" Background="{DynamicResource ColorPanelContainerLow}"
                             BorderBrush="{DynamicResource ColorBordeVariant}" BorderThickness="0,1,0,0"
-                            Padding="10,10" CornerRadius="10" VerticalAlignment="Bottom">
+                            Padding="12,12" CornerRadius="10" Margin="0,12,0,0" VerticalAlignment="Bottom"
+                            MinHeight="90">
                         <StackPanel>
-                            <TextBlock Text="Firebase conectado" FontSize="10.5"
-                                       Foreground="{DynamicResource ColorOk}" Margin="0,0,0,4"/>
+                            <TextBlock x:Name="TxtFirebaseEstado" Text="Firebase Desconectado" FontSize="10.5"
+                                       Foreground="{DynamicResource ColorError}" Margin="0,0,0,4"/>
                             <TextBlock x:Name="TxtCuenta" Text="Sin cuenta" FontSize="12"
                                        Foreground="{DynamicResource ColorTexto}" FontWeight="SemiBold"
                                        Margin="0,0,0,8"/>

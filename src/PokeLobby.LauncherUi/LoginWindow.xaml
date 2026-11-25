@@ -6,7 +6,8 @@
         ResizeMode="NoResize"
         Background="{DynamicResource ColorFondo}"
         FontFamily="Segoe UI"
-        ShowInTaskbar="False">
+        ShowInTaskbar="False"
+        Icon="pack://application:,,,/PokeLockeLauncher;component/pokelocke.png">
 
     <Grid Margin="24">
         <Border Background="{DynamicResource ColorPanelContainer}" CornerRadius="16"
@@ -14,83 +15,180 @@
                 Padding="28">
             <StackPanel>
 
-                <!-- Cabecera: badge Firebase + cerrar -->
-                <Grid Margin="0,0,0,18">
+                <!-- Cabecera: logo Pokelocke + cerrar -->
+                <Grid Margin="0,0,0,24">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
-                    <Border Grid.Column="0" Background="{DynamicResource ColorOk}" Opacity="0.18"
-                            CornerRadius="999" Padding="10,4" HorizontalAlignment="Left">
-                        <StackPanel Orientation="Horizontal">
-                            <Ellipse Width="7" Height="7" Fill="{DynamicResource ColorOk}"
-                                     VerticalAlignment="Center" Margin="0,0,6,0"/>
-                            <TextBlock Text="Firebase RTDB" FontSize="10.5" FontWeight="SemiBold"
-                                       Foreground="{DynamicResource ColorOk}"/>
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Image Width="32" Height="32"
+                               Source="pack://application:,,,/PokeLockeLauncher;component/pokelocke.png"
+                               Stretch="Uniform"/>
+                        <StackPanel Margin="8,0,0,0" VerticalAlignment="Center">
+                            <TextBlock Text="PokeLocke" FontSize="16" FontWeight="SemiBold"
+                                       Foreground="{DynamicResource ColorTexto}"/>
+                            <TextBlock Text="Launcher v1.0.0" FontSize="10.5"
+                                       Foreground="{DynamicResource ColorTextoSuave}"/>
                         </StackPanel>
-                    </Border>
+                    </StackPanel>
 
-                    <Button Grid.Column="1" Content="✕" Width="30" Height="30"
-                            FontSize="12" Padding="0" Cursor="Hand"
-                            Style="{StaticResource BotonNav}"
-                            Click="Cerrar_Click"
-                            ToolTip="Cancelar"/>
+                    <!-- Botón cerrar: cuadrado con color de fondo + X -->
+                    <Border Grid.Column="1" Width="34" Height="34"
+                            Background="{DynamicResource ColorFondo}"
+                            BorderBrush="{DynamicResource ColorBordeVariant}" BorderThickness="1"
+                            CornerRadius="6">
+                        <Button x:Name="BtnCerrar" Content="✕" FontSize="14"
+                                Style="{x:Null}"
+                                Background="Transparent" BorderThickness="0"
+                                Foreground="{DynamicResource ColorTexto}"
+                                Click="BtnCerrar_Click"
+                                ToolTip="Cerrar"
+                                Padding="0"/>
+                    </Border>
                 </Grid>
 
                 <!-- Título -->
-                <TextBlock Text="Cuenta PokeLocke" FontSize="22" FontWeight="SemiBold"
+                <TextBlock Text="Cuenta PokeLocke" FontSize="20" FontWeight="SemiBold"
                            Foreground="{DynamicResource ColorTexto}"/>
                 <TextBlock Text="Entra con el mismo usuario y contraseña de la app Android."
                            FontSize="12.5" TextWrapping="Wrap"
                            Foreground="{DynamicResource ColorTextoSuave}"
-                           Margin="0,4,0,18"/>
+                           Margin="0,6,0,20"/>
 
-                <!-- Usuario -->
-                <TextBlock Text="Usuario" FontSize="12" FontWeight="SemiBold"
-                           Foreground="{DynamicResource ColorTexto}" Margin="0,0,0,6"/>
-                <TextBox x:Name="TxtUsuario" Padding="10,9" FontSize="13"
-                         TextChanged="Credenciales_Changed"/>
+                <!-- Usuario: recuadro con icono de persona y placeholder -->
+                <TextBlock Text="Usuario" FontSize="11.5" FontWeight="SemiBold"
+                           Foreground="{DynamicResource ColorTextoSuave}" Margin="0,0,0,6"/>
+                <Border Background="{DynamicResource ColorPanelContainerLow}"
+                        BorderBrush="{DynamicResource ColorBordeVariant}" BorderThickness="1"
+                        CornerRadius="10" Padding="0" Height="48">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="48"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
 
-                <!-- Contraseña (PasswordBox + TextBox para mostrar/ocultar) -->
-                <TextBlock Text="Contraseña" FontSize="12" FontWeight="SemiBold"
-                           Foreground="{DynamicResource ColorTexto}" Margin="0,14,0,6"/>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
+                        <!-- Icono de persona -->
+                        <TextBlock Text="👤" FontSize="16"
+                                   Foreground="{DynamicResource ColorTextoSuave}"
+                                   VerticalAlignment="Center" HorizontalAlignment="Center"
+                                   Grid.Column="0"/>
 
-                    <PasswordBox x:Name="TxtPassword" Grid.Column="0" Padding="10,9" FontSize="13"
-                                 PasswordChanged="Password_PasswordChanged"/>
-                    <TextBox x:Name="TxtPasswordVisible" Grid.Column="0" Padding="10,9" FontSize="13"
-                             Visibility="Collapsed" TextChanged="PasswordVisible_TextChanged"/>
+                        <!-- Texto: placeholder + caja real (sin cromo) -->
+                        <Grid Grid.Column="1" Margin="0,0,12,0">
+                            <TextBlock x:Name="PhUsuario" Text="Nombre de Usuario"
+                                       FontSize="13" Foreground="{DynamicResource ColorTextoSuave}"
+                                       VerticalAlignment="Center"
+                                       IsHitTestVisible="False"/>
 
-                    <Button Grid.Column="1" x:Name="BtnVerPassword" Content="👁"
-                            Width="34" FontSize="13" Margin="8,0,0,0" Padding="0"
-                            Style="{StaticResource BotonNav}"
-                            Click="VerPassword_Click"
-                            ToolTip="Mostrar u ocultar contraseña"/>
-                </Grid>
+                            <TextBox x:Name="TxtUsuario" Style="{x:Null}"
+                                     Background="Transparent" BorderThickness="0"
+                                     FontSize="13" Foreground="{DynamicResource ColorTexto}"
+                                     VerticalAlignment="Center" Margin="0"
+                                     TextChanged="TxtUsuario_TextChanged"/>
+                        </Grid>
+                    </Grid>
+                </Border>
+
+                <!-- Contraseña: recuadro con icono de candado y botón ver/esconder -->
+                <TextBlock Text="Contraseña" FontSize="11.5" FontWeight="SemiBold"
+                           Foreground="{DynamicResource ColorTextoSuave}" Margin="0,14,0,6"/>
+                <Border Background="{DynamicResource ColorPanelContainerLow}"
+                        BorderBrush="{DynamicResource ColorBordeVariant}" BorderThickness="1"
+                        CornerRadius="10" Padding="0" Height="48">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="48"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="44"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Icono de candado -->
+                        <TextBlock Text="🔒" FontSize="16"
+                                   Foreground="{DynamicResource ColorTextoSuave}"
+                                   VerticalAlignment="Center" HorizontalAlignment="Center"
+                                   Grid.Column="0"/>
+
+                        <!-- Texto: placeholder + cajas reales (sin cromo) -->
+                        <Grid Grid.Column="1" Margin="0,0,4,0">
+                            <TextBlock x:Name="PhPassword" Text="*******"
+                                       FontSize="13" Foreground="{DynamicResource ColorTextoSuave}"
+                                       VerticalAlignment="Center"
+                                       IsHitTestVisible="False"/>
+
+                            <PasswordBox x:Name="TxtPassword" Style="{x:Null}"
+                                         Background="Transparent" BorderThickness="0"
+                                         FontSize="13"
+                                         VerticalAlignment="Center" Margin="0"
+                                         Foreground="{DynamicResource ColorTexto}"
+                                         PasswordChanged="TxtPassword_PasswordChanged"/>
+
+                            <TextBox x:Name="TxtPasswordVisible" Style="{x:Null}"
+                                     Background="Transparent" BorderThickness="0"
+                                     FontSize="13"
+                                     VerticalAlignment="Center" Margin="0"
+                                     Foreground="{DynamicResource ColorTexto}"
+                                     Visibility="Collapsed"
+                                     TextChanged="PasswordVisible_TextChanged"/>
+                        </Grid>
+
+                        <!-- Botón mostrar / ocultar contraseña -->
+                        <Button Grid.Column="2" x:Name="BtnVerPassword" Style="{x:Null}"
+                                Width="34" Height="34"
+                                Background="Transparent" BorderThickness="0"
+                                HorizontalAlignment="Center" VerticalAlignment="Center"
+                                Click="VerPassword_Click"
+                                ToolTip="Mostrar u ocultar contraseña">
+                            <Grid Width="18" Height="18">
+                                <!-- Ojo normal: contraseña oculta, pulsa para ver -->
+                                <TextBlock x:Name="IconoOjo" Text="👁" FontSize="14"
+                                           Foreground="{DynamicResource ColorTextoSuave}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <!-- Ojo tachado: contraseña visible, pulsa para ocultar -->
+                                <Grid x:Name="IconoTachado" Visibility="Collapsed">
+                                    <TextBlock Text="👁" FontSize="14"
+                                               Foreground="{DynamicResource ColorTextoSuave}"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    <Rectangle Height="1.6" Fill="{DynamicResource ColorTextoSuave}"
+                                               HorizontalAlignment="Stretch" VerticalAlignment="Center"
+                                               RenderTransformOrigin="0.5,0.5">
+                                        <Rectangle.RenderTransform>
+                                            <RotateTransform Angle="-45"/>
+                                        </Rectangle.RenderTransform>
+                                    </Rectangle>
+                                </Grid>
+                            </Grid>
+                        </Button>
+                    </Grid>
+                </Border>
 
                 <!-- Error -->
                 <TextBlock x:Name="TxtError" FontSize="11.5" TextWrapping="Wrap"
                            Foreground="{DynamicResource ColorError}"
                            Margin="0,12,0,0" Visibility="Collapsed"/>
 
-                <!-- Botones -->
+                <!-- Botones: Iniciar sesión y Crear cuenta nueva del mismo tamaño -->
                 <Button x:Name="BtnEntrar" Content="Iniciar sesión"
                         Style="{StaticResource BotonAcento}"
                         Padding="16,11" FontSize="13.5" FontWeight="SemiBold"
-                        Margin="0,20,0,0" Click="Entrar_Click"/>
-                <Button x:Name="BtnCrear" Content="Crear cuenta nueva"
-                        Style="{StaticResource BotonNav}"
-                        Padding="16,10" FontSize="13"
-                        Margin="0,10,0,0" Click="Crear_Click"/>
+                        Margin="0,20,0,10" Click="Entrar_Click"
+                        HorizontalAlignment="Stretch"/>
+                <Border Background="{DynamicResource ColorFondo}"
+                        BorderBrush="{DynamicResource ColorBordeVariant}" BorderThickness="1"
+                        CornerRadius="8" Margin="0" Padding="0">
+                    <Button x:Name="BtnCrear" Content="Crear cuenta nueva"
+                            Style="{x:Null}"
+                            Background="Transparent" BorderThickness="0"
+                            Foreground="{DynamicResource ColorTexto}"
+                            Padding="16,11" FontSize="13.5" FontWeight="SemiBold"
+                            Click="Crear_Click"
+                            HorizontalAlignment="Stretch"/>
+                </Border>
 
                 <!-- Nota -->
                 <Border BorderBrush="{DynamicResource ColorBordeVariant}" BorderThickness="0,1,0,0"
-                        Margin="0,20,0,0" Padding="0,14,0,0">
+                        Margin="0,24,0,0" Padding="0,14,0,0">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="☁" FontSize="12" Margin="0,0,8,0"
                                    Foreground="{DynamicResource ColorTextoSuave}"

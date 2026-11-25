@@ -232,6 +232,7 @@ public partial class MainWindow : Window, IComponentConnector
 				_ajustes.CuentaRefreshToken = sesion.RefreshToken;
 				_ajustes.Guardar();
 				ActualizarBotonCuenta();
+				ActualizarEstadoFirebase();
 			};
 			PrepararServicioCola();
 			// DotFirebase eliminado en el rediseño
@@ -259,6 +260,7 @@ public partial class MainWindow : Window, IComponentConnector
 					{
 						Log("No se pudo restaurar la sesión ahora (¿sin conexión?): se reintentará al reconectar.");
 						ActualizarBotonCuenta();
+						ActualizarEstadoFirebase();
 						return;
 					}
 					_ajustes.CuentaRefreshToken = "";
@@ -266,6 +268,7 @@ public partial class MainWindow : Window, IComponentConnector
 				}
 			}
 			ActualizarBotonCuenta();
+			ActualizarEstadoFirebase();
 		}
 		catch (Exception ex3)
 		{
@@ -1278,6 +1281,16 @@ public partial class MainWindow : Window, IComponentConnector
 		// TxtLockeConectado.Text = "";
 	}
 
+	/// <summary>Actualiza el indicador de estado de Firebase en la barra lateral.</summary>
+	private void ActualizarEstadoFirebase()
+	{
+		var iniciado = _firebase is not null && _firebase.SesionIniciada;
+		TxtFirebaseEstado.Text = iniciado ? "Firebase conectado" : "Firebase Desconectado";
+		TxtFirebaseEstado.Foreground = iniciado
+			? new SolidColorBrush(Color.FromRgb(74, 225, 118))   // ColorOk (#4AE176)
+			: new SolidColorBrush(Color.FromRgb(255, 180, 171)); // ColorError (#FFB4AB)
+	}
+
 	private void BtnCuenta_Click(object sender, RoutedEventArgs e)
 	{
 		if (_firebase == null)
@@ -1298,6 +1311,7 @@ public partial class MainWindow : Window, IComponentConnector
 				CmbLockesLocke.ItemsSource = null;
 				CmbPlayersLocke.ItemsSource = null;
 				ActualizarBotonCuenta();
+				ActualizarEstadoFirebase();
 				// TxtLockeConectado eliminado en el rediseño
 				// TxtLockeConectado.Text = "";
 				Log("Sesión cerrada.");
@@ -1351,6 +1365,7 @@ public partial class MainWindow : Window, IComponentConnector
 		};
 		dialogo.ShowDialog();
 		ActualizarBotonCuenta();
+		ActualizarEstadoFirebase();
 	}
 
 	/// <summary>Valida usuario (formato @pokelocke.com) y contraseña antes de llamar a Firebase.</summary>
@@ -1408,6 +1423,7 @@ public partial class MainWindow : Window, IComponentConnector
 			_ajustes.Guardar();
 		}
 		ActualizarBotonCuenta();
+		ActualizarEstadoFirebase();
 		try
 		{
 			_playerTag = await _firebase.MiPlayerTagAsync();

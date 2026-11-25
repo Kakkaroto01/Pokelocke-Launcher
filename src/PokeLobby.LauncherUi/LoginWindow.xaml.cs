@@ -26,6 +26,7 @@ public partial class LoginWindow : Window
     {
         InitializeComponent();
         TxtUsuario.Text = usuarioInicial;
+        ActualizarPlaceholderUsuario();
         Loaded += (_, _) =>
         {
             if (string.IsNullOrWhiteSpace(TxtUsuario.Text)) TxtUsuario.Focus();
@@ -36,7 +37,7 @@ public partial class LoginWindow : Window
     private string PasswordActual =>
         _verPassword ? TxtPasswordVisible.Text : TxtPassword.Password;
 
-    private void Cerrar_Click(object sender, RoutedEventArgs e)
+    private void BtnCerrar_Click(object sender, RoutedEventArgs e)
     {
         DialogResult = false;
         Close();
@@ -50,7 +51,9 @@ public partial class LoginWindow : Window
             TxtPasswordVisible.Text = TxtPassword.Password;
             TxtPassword.Visibility = Visibility.Collapsed;
             TxtPasswordVisible.Visibility = Visibility.Visible;
-            BtnVerPassword.Content = "🙈";
+            // Contraseña visible: el botón muestra el ojo tachado para volver a ocultarla.
+            IconoOjo.Visibility = Visibility.Collapsed;
+            IconoTachado.Visibility = Visibility.Visible;
             TxtPasswordVisible.Focus();
             TxtPasswordVisible.CaretIndex = TxtPasswordVisible.Text.Length;
         }
@@ -59,19 +62,46 @@ public partial class LoginWindow : Window
             TxtPassword.Password = TxtPasswordVisible.Text;
             TxtPasswordVisible.Visibility = Visibility.Collapsed;
             TxtPassword.Visibility = Visibility.Visible;
-            BtnVerPassword.Content = "👁";
+            // Contraseña oculta: el botón muestra el ojo normal para verla.
+            IconoTachado.Visibility = Visibility.Collapsed;
+            IconoOjo.Visibility = Visibility.Visible;
             TxtPassword.Focus();
         }
+        ActualizarPlaceholderPassword();
     }
 
-    private void Password_PasswordChanged(object sender, RoutedEventArgs e)
+    private void TxtUsuario_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        ActualizarPlaceholderUsuario();
+        OcultarError();
+    }
+
+    private void ActualizarPlaceholderUsuario()
+    {
+        PhUsuario.Visibility = string.IsNullOrWhiteSpace(TxtUsuario.Text)
+            ? Visibility.Visible
+            : Visibility.Collapsed;
+    }
+
+    private void TxtPassword_PasswordChanged(object sender, RoutedEventArgs e)
     {
         if (!_verPassword) TxtPasswordVisible.Text = TxtPassword.Password;
+        ActualizarPlaceholderPassword();
+        OcultarError();
+    }
+
+    private void ActualizarPlaceholderPassword()
+    {
+        PhPassword.Visibility = string.IsNullOrWhiteSpace(TxtPassword.Password)
+            ? Visibility.Visible
+            : Visibility.Collapsed;
     }
 
     private void PasswordVisible_TextChanged(object sender, TextChangedEventArgs e)
     {
         if (_verPassword) TxtPassword.Password = TxtPasswordVisible.Text;
+        ActualizarPlaceholderPassword();
+        OcultarError();
     }
 
     private void Credenciales_Changed(object sender, TextChangedEventArgs e)
