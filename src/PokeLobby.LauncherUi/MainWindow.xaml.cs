@@ -112,6 +112,7 @@ public partial class MainWindow : Window, IComponentConnector
 			_ajustes.VendorDir = Ajustes.BuscarVendorDir();
 		}
 		CargarBiblioteca();
+		ActualizarPortadasInicio();
 		ActualizarVideoFondo();
 		AsegurarCarpetaDatos();
 		SembrarCaratulasIncluidas();
@@ -1527,6 +1528,29 @@ public partial class MainWindow : Window, IComponentConnector
         BibliotecaCambiada?.Invoke();
     }
 
+    /// <summary>Obtiene una ruta de carátula válida para un RomEntry, buscando si es necesario.</summary>
+    private static string? ResolverCaratula(RomEntry rom, string datosDir)
+    {
+        if (!string.IsNullOrWhiteSpace(rom.CoverPath) && File.Exists(rom.CoverPath))
+            return rom.CoverPath;
+        var encontrada = Caratulas.Buscar(datosDir, new[] { rom.DetectedGame, rom.Name });
+        return string.IsNullOrWhiteSpace(encontrada) ? null : encontrada;
+    }
+
+    /// <summary>Actualiza las imágenes de portada de la página de Inicio con carátulas reales.</summary>
+    private void ActualizarPortadasInicio()
+    {
+        var portadas = _biblioteca
+            .Select(r => ResolverCaratula(r, _ajustes.DatosDir))
+            .Where(p => p is not null)
+            .Cast<string>()
+            .ToList();
+
+        ImgPortadaHero.Source = portadas.Count > 0 ? CargarImagen(portadas[0]) : null;
+        ImgCoverReciente1.Source = portadas.Count > 1 ? CargarImagen(portadas[1]) : null;
+        ImgCoverReciente2.Source = portadas.Count > 2 ? CargarImagen(portadas[2]) : null;
+    }
+
     /// <summary>
     /// Corrige las carátulas guardadas con la ruta de una carpeta de datos heredada
     /// (PokeLobby o la etapa intermedia en LOCALAPPDATA). Devuelve true si cambió alguna.
@@ -1681,6 +1705,7 @@ public partial class MainWindow : Window, IComponentConnector
     public void RecargarBiblioteca()
     {
         CargarBiblioteca();
+        ActualizarPortadasInicio();
         // Migración: cualquier ROM que sea un .exe es un fangame (Pokémon Añil), no Switch/GBA.
         var cambiado = false;
         foreach (var rom in _biblioteca)
@@ -1718,6 +1743,7 @@ public partial class MainWindow : Window, IComponentConnector
             Estado("ROM borrada de la biblioteca", "#F0A24A");
         }
         CargarBiblioteca();
+        ActualizarPortadasInicio();
     }
     /// <summary>
     /// Guarda library.json. Si la carpeta de datos no es escribible, avisa con la causa y la
@@ -2322,6 +2348,15 @@ private string? ResolverSavePath(RomEntry rom)
         BtnNavBiblioteca.Tag = "activo";
     }
 
+    private void BtnAbrirPanelLocke_Click(object sender, RoutedEventArgs e)
+    {
+        SonidosUi.Click();
+        MostrarSeccion("locke");
+        foreach (var b in new[] { BtnNavInicio, BtnNavBiblioteca, BtnNavRandomizar, BtnNavAjustes })
+            b.Tag = null;
+        BtnNavLocke.Tag = "activo";
+    }
+
     /// <summary>Cambia la sección visible de la ventana principal (inicio/locke/biblioteca/randomizador/ajustes).</summary>
     private void MostrarSeccion(string seccion)
     {
@@ -2365,9 +2400,11 @@ private string? ResolverSavePath(RomEntry rom)
 		if (!GuardarBiblioteca())
 		{
 			CargarBiblioteca();
+			ActualizarPortadasInicio();
 			return;
 		}
 		CargarBiblioteca();
+		ActualizarPortadasInicio();
 		Log($"➕ ROM añadida: {rom.Name} ({rom.ConsoleName})");
 		Estado("ROM añadida a la biblioteca", "#4CAF50");
 	}
@@ -2452,6 +2489,7 @@ private string? ResolverSavePath(RomEntry rom)
 			_ajustes.VendorDir = Ajustes.BuscarVendorDir();
 		}
 		CargarBiblioteca();
+		ActualizarPortadasInicio();
 		ConectarFirebaseAsync();
 		ActualizarVideoFondo();
 	}

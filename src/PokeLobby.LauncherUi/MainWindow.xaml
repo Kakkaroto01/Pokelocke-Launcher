@@ -124,20 +124,21 @@
                                       Padding="0,0,0,0" Visibility="Visible">
                             <StackPanel Margin="0,12,0,0">
 
-                                <!-- Hero: Continuar Partida -->
+                                <!-- Hero: Última partida -->
                                 <Border Style="{StaticResource Tarjeta}" Margin="0,0,0,16"
                                         CornerRadius="12" BorderThickness="1">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="220"/>
+                                            <ColumnDefinition Width="260"/>
                                         </Grid.ColumnDefinitions>
 
-                                        <StackPanel Grid.Column="0" Margin="20">
+                                        <StackPanel Grid.Column="0" Margin="24">
+
                                             <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
-                                                <TextBlock Text="Última partida" FontSize="10.5"
+                                                <TextBlock Text="ÚLTIMA PARTIDA" FontSize="10.5"
                                                            FontWeight="SemiBold" Foreground="{DynamicResource AcentoBrush}"
-                                                           Margin="0,0,6,0"/>
+                                                           Margin="0,0,8,0"/>
                                                 <Border Width="7" Height="7" CornerRadius="4"
                                                       Background="{DynamicResource ColorOk}"
                                                       Margin="0,3,0,0"/>
@@ -151,12 +152,12 @@
                                                        Margin="0,0,0,4"/>
                                             <TextBlock Text="Pokemon HeartGold_randomized_20261117-004448.nds"
                                                        FontSize="11" Foreground="{DynamicResource ColorTextoSuave}"
-                                                       Margin="0,0,0,10"/>
+                                                       Margin="0,0,0,12"/>
 
                                             <TextBlock Text="Al iniciar se aplicarán automáticamente los objetos y cartas pendientes de tu sala en Pokelocke sobre el archivo de guardado."
                                                        FontSize="12" TextWrapping="Wrap"
                                                        Foreground="{DynamicResource ColorTextoSuave}"
-                                                       Margin="0,0,0,14"/>
+                                                       Margin="0,0,0,16"/>
 
                                             <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
                                                 <Button x:Name="BtnJugarUltima" Content="▶  Continuar Partida"
@@ -170,18 +171,177 @@
                                             </StackPanel>
                                         </StackPanel>
 
-                                        <Border Grid.Column="1" Background="{DynamicResource ColorPanelContainerLow}"
-                                                CornerRadius="10" Margin="16,16,16,16"
-                                                BorderBrush="{DynamicResource ColorBordeVariant}" BorderThickness="1">
-                                            <TextBlock Text="🖼 Portada" FontSize="11"
-                                                       Foreground="{DynamicResource ColorTextoSuave}"
-                                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        <!-- Portada real del juego a la derecha -->
+                                        <Border Grid.Column="1" Margin="16,16,16,16"
+                                                BorderBrush="{DynamicResource ColorBordeVariant}" BorderThickness="1"
+                                                CornerRadius="10">
+                                            <Image x:Name="ImgPortadaHero" Stretch="UniformToFill"
+                                                   Margin="0"/>
                                         </Border>
                                     </Grid>
                                 </Border>
 
+                                <!-- Split: Biblioteca reciente + Locke en vivo -->
+                                <Grid Margin="0,0,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="340"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Biblioteca reciente -->
+                                    <Border Grid.Column="0" Margin="0,0,12,0">
+                                        <StackPanel>
+                                            <DockPanel LastChildFill="True">
+                                                <TextBlock DockPanel.Dock="Left" Text="BIBLIOTECA RECIENTE" FontSize="11.5"
+                                                           FontWeight="SemiBold" Foreground="{DynamicResource ColorTexto}"/>
+                                                <TextBlock DockPanel.Dock="Right" Text="Ver todas" FontSize="11"
+                                                           Foreground="{DynamicResource AcentoBrush}"
+                                                           Cursor="Hand" VerticalAlignment="Center"/>
+                                            </DockPanel>
+                                            <TextBlock Text="2 ROMs registradas en tu equipo" FontSize="10"
+                                                       Foreground="{DynamicResource ColorTextoSuave}"
+                                                       Margin="0,6,0,14"/>
+
+                                            <!-- ROM reciente 1 -->
+                                            <Border Background="{DynamicResource ColorPanelContainer}"
+                                                    BorderBrush="{DynamicResource ColorBordeVariant}" BorderThickness="1"
+                                                    CornerRadius="10" Padding="14" Margin="0,0,0,10">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <Border Width="44" Height="44" CornerRadius="8"
+                                                            Background="#0B0F17" Margin="0,0,10,0">
+                                                        <Image x:Name="ImgCoverReciente1" Stretch="UniformToFill"
+                                                               Margin="2"/>
+                                                    </Border>
+
+                                                    <StackPanel Grid.Column="1" Margin="0,0,10,0">
+                                                        <TextBlock Text="Pokémon HeartGold Random"
+                                                                   FontSize="13" FontWeight="SemiBold"
+                                                                   Foreground="{DynamicResource ColorTexto}"/>
+                                                        <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                                                            <Border Width="7" Height="7" CornerRadius="4"
+                                                                  Background="#0B0F17" Margin="0,2,6,0"/>
+                                                            <TextBlock Text="DS · Sala 607 · e4locke"
+                                                                       FontSize="10"
+                                                                       Foreground="{DynamicResource ColorTextoSuave}"/>
+                                                        </StackPanel>
+                                                    </StackPanel>
+
+                                                    <StackPanel Grid.Column="2" HorizontalAlignment="Right">
+                                                        <TextBlock Text="11 Oct" FontSize="10"
+                                                                   Foreground="{DynamicResource ColorTextoSuave}"/>
+                                                        <TextBlock Text="14:04" FontSize="10"
+                                                                   Foreground="{DynamicResource ColorTextoSuave}"/>
+                                                    </StackPanel>
+                                                </Grid>
+                                            </Border>
+
+                                            <!-- ROM reciente 2 -->
+                                            <Border Background="{DynamicResource ColorPanelContainer}"
+                                                    BorderBrush="{DynamicResource ColorBordeVariant}" BorderThickness="1"
+                                                    CornerRadius="10" Padding="14">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <Border Width="44" Height="44" CornerRadius="8"
+                                                            Background="#0B0F17" Margin="0,0,10,0">
+                                                        <Image x:Name="ImgCoverReciente2" Stretch="UniformToFill"
+                                                               Margin="2"/>
+                                                    </Border>
+
+                                                    <StackPanel Grid.Column="1" Margin="0,0,10,0">
+                                                        <TextBlock Text="Pokemon Esmeralda Kaizo"
+                                                                   FontSize="13" FontWeight="SemiBold"
+                                                                   Foreground="{DynamicResource ColorTexto}"/>
+                                                        <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                                                            <Border Width="7" Height="7" CornerRadius="4"
+                                                                  Background="#0B0F17" Margin="0,2,6,0"/>
+                                                            <TextBlock Text="GBA · Sin locke vinculado"
+                                                                       FontSize="10"
+                                                                       Foreground="{DynamicResource ColorTextoSuave}"/>
+                                                        </StackPanel>
+                                                    </StackPanel>
+
+                                                    <StackPanel Grid.Column="2" HorizontalAlignment="Right">
+                                                        <TextBlock Text="24 Nov" FontSize="10"
+                                                                   Foreground="{DynamicResource ColorTextoSuave}"/>
+                                                        <TextBlock Text="23:20" FontSize="10"
+                                                                   Foreground="{DynamicResource ColorTextoSuave}"/>
+                                                    </StackPanel>
+                                                </Grid>
+                                            </Border>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!-- Locke en vivo -->
+                                    <Border Grid.Column="1" Margin="12,0,0,0">
+                                        <StackPanel>
+                                            <DockPanel LastChildFill="True">
+                                                <TextBlock DockPanel.Dock="Left" Text="LOCKE EN VIVO" FontSize="11.5"
+                                                           FontWeight="SemiBold" Foreground="{DynamicResource ColorTexto}"/>
+                                                <Border DockPanel.Dock="Right" Background="{DynamicResource ColorOk}"
+                                                        Width="7" Height="7" CornerRadius="4"
+                                                        Margin="0,4,0,0"/>
+                                            </DockPanel>
+                                            <TextBlock Text="Sincronización con Pokelocke Android"
+                                                       FontSize="10" Foreground="{DynamicResource ColorTextoSuave}"
+                                                       Margin="0,6,0,14"/>
+
+                                            <Border Background="{DynamicResource ColorPanelContainerLow}"
+                                                    BorderBrush="{DynamicResource ColorBordeVariant}" BorderThickness="1"
+                                                    CornerRadius="10" Padding="14" Margin="0,0,0,12">
+                                                <StackPanel>
+                                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                                        <TextBlock Text="Locke activo" FontSize="10"
+                                                                   Foreground="{DynamicResource ColorTextoSuave}"/>
+                                                        <TextBlock Text="Hardlocke (Sala 607)"
+                                                                   FontSize="11.5" FontWeight="SemiBold"
+                                                                   Foreground="{DynamicResource ColorTexto}"
+                                                                   Margin="8,0,0,0"/>
+                                                    </StackPanel>
+                                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                                        <TextBlock Text="Archivo .sav" FontSize="10"
+                                                                   Foreground="{DynamicResource ColorTextoSuave}"/>
+                                                        <TextBlock Text="HeartGold.dav"
+                                                                   FontSize="11.5" FontWeight="SemiBold"
+                                                                   Foreground="{DynamicResource ColorTexto}"
+                                                                   Margin="8,0,0,0"/>
+                                                    </StackPanel>
+                                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                                        <TextBlock Text="Cambios pendientes" FontSize="10"
+                                                                   Foreground="{DynamicResource ColorTextoSuave}"/>
+                                                        <TextBlock Text="2 objetos"
+                                                                   FontSize="11.5" FontWeight="SemiBold"
+                                                                   Foreground="{DynamicResource AcentoBrush}"
+                                                                   Margin="8,0,0,0"/>
+                                                    </StackPanel>
+                                                </StackPanel>
+                                            </Border>
+
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                                <Button Content="📤  Publicar equipo"
+                                                        Style="{StaticResource BotonNav}" Padding="12,8"
+                                                        FontSize="12" Click="BtnPublicarEquipo_Click"
+                                                        HorizontalAlignment="Left" Margin="0,0,8,0"/>
+                                                <Button Content="Abrir panel"
+                                                        Style="{StaticResource BotonNav}" Padding="12,8"
+                                                        FontSize="12" Click="BtnAbrirPanelLocke_Click"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
+
                                 <!-- Registro -->
-                                <Border Style="{StaticResource Tarjeta}" Margin="0,0,0,0"
+                                <Border Style="{StaticResource Tarjeta}" Margin="0,16,0,0"
                                         CornerRadius="12" BorderThickness="1">
                                     <DockPanel>
                                         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal"
