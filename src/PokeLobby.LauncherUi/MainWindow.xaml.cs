@@ -1310,151 +1310,60 @@ public partial class MainWindow : Window, IComponentConnector
 
 	private void VentanaLogin()
 	{
-		StackPanel stackPanel = new StackPanel
+		var dialogo = new LoginWindow(PokeLobby.PokeLocke.CuentaPokelocke.UsuarioDesdeEmail(_ajustes.CuentaEmail))
 		{
-			Margin = new Thickness(18.0)
+			Owner = this
 		};
-		stackPanel.Children.Add(new TextBlock
+		dialogo.IniciarSesionAsync = async (usuario, contrasena) =>
 		{
-			Text = "Cuenta PokeLocke",
-			FontSize = 17.0,
-			FontWeight = FontWeights.Bold,
-			Foreground = new SolidColorBrush(Color.FromRgb(232, 232, 240)),
-			Margin = new Thickness(0.0, 0.0, 0.0, 4.0)
-		});
-		stackPanel.Children.Add(new TextBlock
-		{
-			Text = "Entra con el mismo usuario y contraseña de la app Android. El correo interno se forma como usuario@pokelocke.com.",
-			Foreground = new SolidColorBrush(Color.FromRgb(154, 154, 176)),
-			TextWrapping = TextWrapping.Wrap,
-			Margin = new Thickness(0.0, 0.0, 0.0, 10.0)
-		});
-		TextBox txtUsuario = new TextBox
-		{
-			Text = PokeLobby.PokeLocke.CuentaPokelocke.UsuarioDesdeEmail(_ajustes.CuentaEmail)
-		};
-		PasswordBox txtPassword = new PasswordBox
-		{
-			Padding = new Thickness(8.0, 6.0, 8.0, 6.0)
-		};
-		stackPanel.Children.Add(Titulo("Usuario"));
-		stackPanel.Children.Add(txtUsuario);
-		stackPanel.Children.Add(Titulo("Contraseña"));
-		stackPanel.Children.Add(txtPassword);
-		TextBlock txtError = new TextBlock
-		{
-			Foreground = new SolidColorBrush(Color.FromRgb(239, 83, 80)),
-			TextWrapping = TextWrapping.Wrap,
-			Margin = new Thickness(0.0, 10.0, 0.0, 0.0)
-		};
-		Button btnEntrar = new Button
-		{
-			Content = "Iniciar sesión",
-			Padding = new Thickness(14.0, 8.0, 14.0, 8.0),
-			Margin = new Thickness(0.0, 14.0, 0.0, 0.0)
-		};
-		Button btnCrear = new Button
-		{
-			Content = "Crear cuenta nueva",
-			Padding = new Thickness(14.0, 8.0, 14.0, 8.0),
-			Margin = new Thickness(0.0, 8.0, 0.0, 0.0)
-		};
-		stackPanel.Children.Add(btnEntrar);
-		stackPanel.Children.Add(btnCrear);
-		stackPanel.Children.Add(txtError);
-		Window ventana = new Window
-		{
-			Title = "Iniciar sesión — PokeLocke",
-			Width = 480.0,
-			Height = 400.0,
-			WindowStartupLocation = WindowStartupLocation.CenterOwner,
-			Owner = this,
-			Background = new SolidColorBrush(Color.FromRgb(18, 18, 31)),
-			Content = new ScrollViewer
-			{
-				VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-				Content = stackPanel
-			}
-		};
-		btnEntrar.Click += async (object _, RoutedEventArgs _) =>
-		{
-			if (!ValidarCredenciales(txtUsuario.Text, txtPassword.Password, txtError))
-			{
-				return;
-			}
-			btnEntrar.IsEnabled = false;
-			btnCrear.IsEnabled = false;
+			if (!ValidarCredenciales(usuario, contrasena, out var motivo)) return motivo;
 			try
 			{
-				string email = PokeLobby.PokeLocke.CuentaPokelocke.EmailInterno(txtUsuario.Text);
-				await _firebase.IniciarSesionAsync(email, txtPassword.Password);
+				string email = PokeLobby.PokeLocke.CuentaPokelocke.EmailInterno(usuario);
+				if (_firebase is null) return "Firebase no está configurado (revisa Ajustes).";
+				await _firebase.IniciarSesionAsync(email, contrasena);
 				GuardarSesion(email);
-				ventana.Close();
 				await TrasIniciarSesionAsync();
+				return null;
 			}
 			catch (Exception ex)
 			{
-				txtError.Text = MensajeDeError(ex);
-			}
-			finally
-			{
-				btnEntrar.IsEnabled = true;
-				btnCrear.IsEnabled = true;
+				return MensajeDeError(ex);
 			}
 		};
-		btnCrear.Click += async (object _, RoutedEventArgs _) =>
+		dialogo.CrearCuentaAsync = async (usuario, contrasena) =>
 		{
-			if (!ValidarCredenciales(txtUsuario.Text, txtPassword.Password, txtError))
-			{
-				return;
-			}
-			btnEntrar.IsEnabled = false;
-			btnCrear.IsEnabled = false;
+			if (!ValidarCredenciales(usuario, contrasena, out var motivo)) return motivo;
 			try
 			{
-				string email = PokeLobby.PokeLocke.CuentaPokelocke.EmailInterno(txtUsuario.Text);
-				await _firebase.CrearCuentaAsync(email, txtPassword.Password);
+				string email = PokeLobby.PokeLocke.CuentaPokelocke.EmailInterno(usuario);
+				if (_firebase is null) return "Firebase no está configurado (revisa Ajustes).";
+				await _firebase.CrearCuentaAsync(email, contrasena);
 				GuardarSesion(email);
-				ventana.Close();
 				await TrasIniciarSesionAsync();
+				return null;
 			}
 			catch (Exception ex)
 			{
-				txtError.Text = MensajeDeError(ex);
-			}
-			finally
-			{
-				btnEntrar.IsEnabled = true;
-				btnCrear.IsEnabled = true;
+				return MensajeDeError(ex);
 			}
 		};
-		ventana.ShowDialog();
-		static TextBlock Titulo(string t)
-		{
-			return new TextBlock
-			{
-				Text = t,
-				FontWeight = FontWeights.SemiBold,
-				Foreground = new SolidColorBrush(Color.FromRgb(154, 154, 176)),
-				Margin = new Thickness(0.0, 10.0, 0.0, 4.0)
-			};
-		}
+		dialogo.ShowDialog();
+		ActualizarBotonCuenta();
 	}
 
 	/// <summary>Valida usuario (formato @pokelocke.com) y contraseña antes de llamar a Firebase.</summary>
-	private static bool ValidarCredenciales(string usuario, string contrasena, TextBlock txtError)
+	private static bool ValidarCredenciales(string usuario, string contrasena, out string motivo)
 	{
-		if (!PokeLobby.PokeLocke.CuentaPokelocke.EsValido(usuario, out string motivoUsuario))
+		if (!PokeLobby.PokeLocke.CuentaPokelocke.EsValido(usuario, out motivo))
 		{
-			txtError.Text = motivoUsuario;
 			return false;
 		}
-		if (!PokeLobby.PokeLocke.CuentaPokelocke.ContrasenaValida(contrasena, out string motivoContrasena))
+		if (!PokeLobby.PokeLocke.CuentaPokelocke.ContrasenaValida(contrasena, out motivo))
 		{
-			txtError.Text = motivoContrasena;
 			return false;
 		}
-		txtError.Text = "";
+		motivo = "";
 		return true;
 	}
 

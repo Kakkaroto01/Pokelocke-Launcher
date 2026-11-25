@@ -70,12 +70,11 @@
                             </StackPanel>
                         </Border>
 
-                        <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
-                            <Span FontFamily="Consolas" FontSize="12" Foreground="{DynamicResource ColorOk}">
-                                <Run Text="●  "/>
-                                <Run x:Name="TxtCompatRom" Text="ROM compatible · Gen IV (NDS)"/>
-                            </Span>
-                        </StackPanel>
+                        <TextBlock Margin="0,12,0,0" FontFamily="Consolas" FontSize="12"
+                                   Foreground="{DynamicResource ColorOk}">
+                            <Run Text="●  "/>
+                            <Run x:Name="TxtCompatRom" Text="ROM compatible · Gen IV (NDS)"/>
+                        </TextBlock>
                     </StackPanel>
                 </Border>
 

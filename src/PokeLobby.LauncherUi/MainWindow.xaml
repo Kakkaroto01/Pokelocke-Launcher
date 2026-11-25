@@ -5,7 +5,7 @@
         Title="PokeLocke Launcher" Height="820" Width="1280"
         Background="{DynamicResource ColorFondo}"
         WindowStartupLocation="CenterScreen" FontFamily="Segoe UI"
-        Icon="pack://application:,,,/pokelocke.png">
+        Icon="pack://application:,,,/PokeLockeLauncher;component/pokelocke.png">
 
     <Grid>
         <!-- Fondo personalizado (imagen) + velo -->
