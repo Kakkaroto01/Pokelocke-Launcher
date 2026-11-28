@@ -25,6 +25,14 @@ public partial class RandomizadorControl : UserControl
     private RandomizerSettings _settings = new();
     private readonly Dictionary<string, Control> _controles = new(StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<string, string[]> _valoresObservados = new(StringComparer.OrdinalIgnoreCase);
+
+    /// <summary>Claves antiguas que algunos presets del vendor todavía incluyen pero que el motor
+    /// actual ya no lee. No se muestran para que no parezcan opciones funcionales.</summary>
+    private static readonly HashSet<string> ClavesObsoletas = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "trainers.doubleBattle",
+        "trainers.randomShiny",
+    };
     private bool _cargado;
     private string _prefijoActual = "";
 
@@ -41,9 +49,9 @@ public partial class RandomizadorControl : UserControl
         ["trainers.movesetForceGoodDamagingPercent"] = (0, 100, "", "%"),
         ["tmmoves.forceGoodDamagingPercent"] = (0, 100, "", "%"),
         ["tutormoves.forceGoodDamagingPercent"] = (0, 100, "", "%"),
-        ["statics.levelModifierValue"] = (-50, 100, "", " niveles"),
-        ["wild.levelModifierValue"] = (-50, 100, "", " niveles"),
-        ["totems.levelModifierValue"] = (-50, 100, "", " niveles"),
+        ["statics.levelModifierValue"] = (-50, 100, "", "%"),
+        ["wild.levelModifierValue"] = (-50, 100, "", "%"),
+        ["totems.levelModifierValue"] = (-50, 100, "", "%"),
         ["statics.bstMargin"] = (0, 200, "", " pts"),
         ["evolutions.tradeLevel"] = (1, 100, "Nv. ", ""),
         // 0 = sin límite (valor por defecto del motor); no debe convertirse en Nv. 1 al abrir.
@@ -55,8 +63,8 @@ public partial class RandomizadorControl : UserControl
         ["trainers.legendPerTeam"] = (0, 6, "", ""),
         ["trainers.legendMinPerTeam"] = (0, 6, "", ""),
         ["trainers.leagueUniqueCount"] = (0, 6, "", ""),
-        ["basestats.updateGenerationTo"] = (1, 9, "Gen ", ""),
-        ["movedata.updateGenerationTo"] = (1, 9, "Gen ", ""),
+        ["basestats.updateGenerationTo"] = (0, 9, "Gen ", ""),
+        ["movedata.updateGenerationTo"] = (0, 9, "Gen ", ""),
     };
 
     // ── Mapa de columnas para opciones radio/pill por sección ──
@@ -178,7 +186,7 @@ public partial class RandomizadorControl : UserControl
     [
         new("Características",        ["types", "abilities", "basestats", "evolutions"]),
         new("Iniciales y Estáticos",  ["starters", "statics", "trades"]),
-        new("Movimientos",            ["movedata", "movesets", "tmmoves", "tmcompat", "tutorcompat"]),
+        new("Movimientos",            ["movedata", "movesets", "tmmoves", "tmcompat", "tutormoves", "tutorcompat"]),
         new("Pokémon Salvajes",       ["wild", "totems"]),
         new("Entrenadores",           ["trainers"]),
         new("Objetos",                ["fielditems", "shops", "pickup"]),
@@ -231,6 +239,7 @@ public partial class RandomizadorControl : UserControl
     {
         var opciones = _settings.Valores
             .Where(kv => grupo.Prefijos.Any(p => kv.Key.StartsWith(p + ".", StringComparison.OrdinalIgnoreCase)))
+            .Where(kv => !ClavesObsoletas.Contains(kv.Key))
             .OrderBy(kv => kv.Key, StringComparer.OrdinalIgnoreCase)
             .ToList();
 
@@ -871,11 +880,12 @@ public partial class RandomizadorControl : UserControl
             return tarjeta;
         }
 
-        // ── Tutores: compatibilidad 2×2 y movimientos de tutores en horizontal ──
+        // ── Tutores: compatibilidad 2×2, movimientos de tutores, slider y casillas ──
         if (titulo == "Tutores")
         {
             Agregar(stack, Opcion("tutorcompat.mod", 2));
             Agregar(stack, Opcion("tutormoves.mod", 2), 12);
+            Agregar(stack, Opcion("tutormoves.forceGoodDamagingPercent"), 12);
             AgregarChecks(stack, checks.Select(o => o.clave), 2, 12);
 
             tarjeta.Child = stack;
@@ -1549,9 +1559,14 @@ public partial class RandomizadorControl : UserControl
                 ToolTip = DescripcionesRandomizer.Para(clave, valor),
             };
             string TextoValor(int v)
-                => clave.Equals("evolutions.maxLevel", StringComparison.OrdinalIgnoreCase) && v == 0
-                    ? "Sin límite"
-                    : $"{rango.Prefijo}{v}{rango.Sufijo}";
+            {
+                if (v == 0 && clave.Equals("evolutions.maxLevel", StringComparison.OrdinalIgnoreCase))
+                    return "Sin límite";
+                if (v == 0 && (clave.Equals("basestats.updateGenerationTo", StringComparison.OrdinalIgnoreCase) ||
+                               clave.Equals("movedata.updateGenerationTo", StringComparison.OrdinalIgnoreCase)))
+                    return "Gen actual";
+                return $"{rango.Prefijo}{v}{rango.Sufijo}";
+            }
             var valorTexto = new TextBlock
             {
                 Text = TextoValor((int)inicial),

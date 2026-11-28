@@ -116,9 +116,9 @@ internal static class DescripcionesRandomizer
         ["starters.allowAlternateForms"] = "Permite formas alternativas como inicial (Alola, Galar…).",
         ["starters.banBadItems"] = "Quita objetos inútiles a los iniciales.",
         ["starters.banLegendaries"] = "Impide que un legendario sea inicial.",
-        ["starters.custom1"] = "Especie fija del primer inicial (0 = sin fijar).",
-        ["starters.custom2"] = "Especie fija del segundo inicial (0 = sin fijar).",
-        ["starters.custom3"] = "Especie fija del tercer inicial (0 = sin fijar).",
+        ["starters.custom1"] = "Inicial personalizado 1: 0/1 = aleatorio; 2 = primera especie de la lista del juego, 3 = segunda…",
+        ["starters.custom2"] = "Inicial personalizado 2: 0/1 = aleatorio; 2 = primera especie de la lista del juego, 3 = segunda…",
+        ["starters.custom3"] = "Inicial personalizado 3: 0/1 = aleatorio; 2 = primera especie de la lista del juego, 3 = segunda…",
         ["starters.mustBeBaseForm"] = "El inicial debe ser una forma base (no una evolución).",
         ["starters.randomizeHeldItems"] = "Aleatoriza el objeto que llevan los iniciales.",
 
