@@ -1,296 +1,450 @@
 <UserControl x:Class="PokeLobby.LauncherUi.SettingsPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             Background="{DynamicResource ColorFondo}"
+             Background="Transparent"
              FontFamily="Segoe UI">
+
+    <UserControl.Resources>
+        <!-- Botón primario rojo (igual que la imagen de referencia) -->
+        <Style x:Key="BtnAjustesPrimario" TargetType="Button">
+            <Setter Property="Background" Value="#B92318"/>
+            <Setter Property="BorderBrush" Value="#D93829"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bg" Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bg" Property="Background" Value="#D02B1E"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Bg" Property="Background" Value="#9E1D13"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Botón secundario compacto -->
+        <Style x:Key="BtnAjustesSecundario" TargetType="Button">
+            <Setter Property="Background" Value="{DynamicResource ColorPanelContainerHigh}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource ColorBordeVariant}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Foreground" Value="{DynamicResource ColorTexto}"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bg" Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bg" Property="Background" Value="{DynamicResource ColorPanelContainerHighest}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Botón de texto sutil -->
+        <Style x:Key="BtnAjustesSutil" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground" Value="{DynamicResource ColorTextoSuave}"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bg" Background="{TemplateBinding Background}"
+                                CornerRadius="8" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bg" Property="Background" Value="{DynamicResource ColorPanelContainerLow}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource ColorTexto}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- TextBox oscuro del rediseño -->
+        <Style x:Key="InputAjustes" TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+            <Setter Property="Background" Value="{DynamicResource ColorPanelContainerLow}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource ColorBordeVariant}"/>
+            <Setter Property="Foreground" Value="{DynamicResource ColorTexto}"/>
+            <Setter Property="FontFamily" Value="Consolas"/>
+            <Setter Property="FontSize" Value="12.5"/>
+            <Setter Property="Padding" Value="12,9"/>
+        </Style>
+    </UserControl.Resources>
 
     <Grid Margin="0">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <!-- ═══════════ Header ═══════════ -->
-        <Border Grid.Row="0" Padding="20,20,20,12" BorderBrush="{DynamicResource ColorBordeVariant}"
-                BorderThickness="0,0,0,1">
+
+        <!-- ═══════════ Barra superior de Ajustes ═══════════ -->
+        <Border Grid.Row="0" Padding="0,4,0,16" BorderBrush="{DynamicResource ColorBordeVariant}"
+                BorderThickness="0,0,0,1" Margin="0,0,0,20">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <StackPanel Grid.Column="0">
-                    <TextBlock Text="Ajustes" FontSize="20" FontWeight="SemiBold"
-                               Foreground="{DynamicResource ColorTexto}"/>
-                    <TextBlock Text="Configura el tema visual, fondo, sonidos, emulador de Switch y rutas de Firebase sin salir de la ventana"
-                               FontSize="12.5" Foreground="{DynamicResource ColorTextoSuave}" Margin="0,2,0,0"/>
-                </StackPanel>
+                <TextBlock Grid.Column="0"
+                           Text="Configura el tema visual, fondo, sonidos, emulador de Switch y rutas de Firebase sin salir de la ventana"
+                           FontSize="12.5" Foreground="{DynamicResource ColorTextoSuave}"
+                           VerticalAlignment="Center" TextWrapping="Wrap"/>
 
-                <Button Grid.Column="1" Content="💾  Aplicar cambios"
-                        Style="{StaticResource BotonAcento}" Padding="16,10" FontSize="13"
-                        Margin="0,0,0,0" Click="BtnAplicar_Click"
-                        HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <Button Grid.Column="1" Style="{StaticResource BtnAjustesPrimario}"
+                        Padding="18,10" Click="BtnAplicar_Click"
+                        HorizontalAlignment="Right" VerticalAlignment="Center" Margin="16,0,0,0">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <Viewbox Width="16" Height="16" Margin="0,0,8,0">
+                            <Canvas Width="24" Height="24">
+                                <Path Fill="#FFFFFF"
+                                      Data="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/>
+                            </Canvas>
+                        </Viewbox>
+                        <TextBlock Text="Aplicar cambios" Foreground="#FFFFFF" FontWeight="SemiBold"/>
+                    </StackPanel>
+                </Button>
             </Grid>
         </Border>
 
         <!-- ═══════════ Contenido principal ═══════════ -->
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-            <StackPanel Margin="0,0,0,12">
+            <StackPanel Margin="0,0,0,16" MaxWidth="1120">
 
-                <!-- Grid 2 columnas -->
-                <Grid>
+                <!-- Fila 1: Tema de acento + Fondo y sonidos (2 columnas iguales) -->
+                <Grid Margin="0,0,0,18">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <!-- ══ Columna izquierda: Tema de acento + Fondo y sonidos ══ -->
-                    <StackPanel Grid.Column="0" Margin="0,0,12,0">
-
-                        <!-- Tema de acento (16 presets) -->
-                        <Border Style="{StaticResource Tarjeta}" Margin="0,0,0,16" CornerRadius="12" BorderThickness="1">
-                            <StackPanel Margin="20">
-                                <Grid Margin="0,0,0,12">
+                    <!-- Tema de acento (16 presets) -->
+                    <Border Grid.Column="0" Background="{DynamicResource ColorPanelContainer}"
+                            BorderBrush="{DynamicResource ColorBordeVariant}" BorderThickness="1"
+                            CornerRadius="12" Padding="22" Margin="0,0,10,0">
+                        <StackPanel>
+                            <Border BorderBrush="{DynamicResource ColorBordeVariant}" BorderThickness="0,0,0,1"
+                                    Padding="0,0,0,12" Margin="0,0,0,16">
+                                <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <StackPanel Grid.Column="0">
-                                        <TextBlock Text="Tema de acento" FontSize="14" FontWeight="SemiBold"
+                                    <StackPanel Grid.Column="0" Margin="0,0,12,0">
+                                        <TextBlock Text="Tema de acento" FontSize="17" FontWeight="SemiBold"
                                                    Foreground="{DynamicResource ColorTexto}"/>
                                         <TextBlock Text="16 presets de color aplicados al instante en controles y resaltados"
-                                                   FontSize="11.5" Foreground="{DynamicResource ColorTextoSuave}"
-                                                   Margin="0,2,0,0"/>
+                                                   FontSize="12" Foreground="{DynamicResource ColorTextoSuave}"
+                                                   TextWrapping="Wrap" Margin="0,3,0,0"/>
                                     </StackPanel>
                                     <TextBlock x:Name="AcentLabel" Grid.Column="1" FontSize="12" FontFamily="Consolas"
                                                Foreground="{DynamicResource AcentoBrush}"
-                                               HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                               HorizontalAlignment="Right" VerticalAlignment="Center"
+                                               Text="Rojo Pokéball"/>
                                 </Grid>
+                            </Border>
 
-                                <Grid x:Name="PanelAcentosGrid" Grid.IsSharedSizeScope="True">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition SharedSizeGroup="Acento"/>
-                                        <ColumnDefinition SharedSizeGroup="Acento"/>
-                                        <ColumnDefinition SharedSizeGroup="Acento"/>
-                                        <ColumnDefinition SharedSizeGroup="Acento"/>
-                                        <ColumnDefinition SharedSizeGroup="Acento"/>
-                                        <ColumnDefinition SharedSizeGroup="Acento"/>
-                                        <ColumnDefinition SharedSizeGroup="Acento"/>
-                                        <ColumnDefinition SharedSizeGroup="Acento"/>
-                                    </Grid.ColumnDefinitions>
-                                    <WrapPanel x:Name="PanelAcentos" Grid.ColumnSpan="8"/>
-                                </Grid>
-                            </StackPanel>
-                        </Border>
+                            <UniformGrid x:Name="PanelAcentos" Columns="8" HorizontalAlignment="Stretch"/>
+                        </StackPanel>
+                    </Border>
 
-                        <!-- Fondo y sonidos -->
-                        <Border Style="{StaticResource Tarjeta}" Margin="0,0,0,0" CornerRadius="12" BorderThickness="1">
-                            <StackPanel Margin="20">
-                                <Grid Margin="0,0,0,12">
+                    <!-- Fondo y sonidos -->
+                    <Border Grid.Column="1" Background="{DynamicResource ColorPanelContainer}"
+                            BorderBrush="{DynamicResource ColorBordeVariant}" BorderThickness="1"
+                            CornerRadius="12" Padding="22" Margin="10,0,0,0">
+                        <StackPanel>
+                            <Border BorderBrush="{DynamicResource ColorBordeVariant}" BorderThickness="0,0,0,1"
+                                    Padding="0,0,0,12" Margin="0,0,0,16">
+                                <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <StackPanel Grid.Column="0">
-                                        <TextBlock Text="Fondo y sonidos" FontSize="14" FontWeight="SemiBold"
+                                    <StackPanel Grid.Column="0" Margin="0,0,12,0">
+                                        <TextBlock Text="Fondo y sonidos" FontSize="17" FontWeight="SemiBold"
                                                    Foreground="{DynamicResource ColorTexto}"/>
                                         <TextBlock Text="8 presets de color, imagen/vídeo y audio"
-                                                   FontSize="11.5" Foreground="{DynamicResource ColorTextoSuave}"
-                                                   Margin="0,2,0,0"/>
+                                                   FontSize="12" Foreground="{DynamicResource ColorTextoSuave}"
+                                                   Margin="0,3,0,0"/>
                                     </StackPanel>
                                     <TextBlock x:Name="FondoLabel" Grid.Column="1" FontSize="12" FontFamily="Consolas"
                                                Foreground="{DynamicResource ColorTextoSuave}"
-                                               HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                               HorizontalAlignment="Right" VerticalAlignment="Center"
+                                               Text="Obsidiana"/>
                                 </Grid>
+                            </Border>
 
-                                <WrapPanel x:Name="PanelFondosGrid" Orientation="Horizontal"
-                                           Margin="0,0,0,12">
-                                </WrapPanel>
+                            <WrapPanel x:Name="PanelFondosGrid" Orientation="Horizontal" Margin="0,0,0,12"/>
 
-                                <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
-                                    <Button Content="🖼  Elegir imagen/vídeo…" Padding="10,8" FontSize="12"
-                                            Click="ElegirFondo_Click" Margin="0,0,10,0"/>
-                                    <Button Content="✕  Quitar fondo" Padding="10,8" FontSize="12"
-                                            Click="QuitarFondo_Click" Margin="0,0,10,0"/>
-                                </StackPanel>
-
-                                <Border BorderBrush="{DynamicResource ColorBordeVariant}" BorderThickness="0,1,0,0"
-                                        Margin="0,0,0,12" Padding="0,12,0,0">
-                                    <StackPanel Orientation="Horizontal">
-                                        <CheckBox x:Name="ChkSonidos" Content="Sonidos de la interfaz al navegar"
-                                                  Checked="Sonidos_Changed" Unchecked="Sonidos_Changed"
-                                                  Margin="0,0,0,8"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,14">
+                                <Button Style="{StaticResource BtnAjustesSecundario}" Padding="12,8"
+                                        Click="ElegirFondo_Click" Margin="0,0,8,0">
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <Viewbox Width="15" Height="15" Margin="0,0,6,0">
+                                            <Canvas Width="24" Height="24">
+                                                <Path Fill="{DynamicResource ColorTexto}"
+                                                      Data="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+                                            </Canvas>
+                                        </Viewbox>
+                                        <TextBlock Text="Elegir imagen/vídeo…" Foreground="{DynamicResource ColorTexto}"/>
                                     </StackPanel>
-                                </Border>
+                                </Button>
+                                <Button Style="{StaticResource BtnAjustesSutil}" Content="Quitar fondo"
+                                        Padding="12,8" Click="QuitarFondo_Click"/>
+                            </StackPanel>
 
-                                <Border BorderBrush="{DynamicResource ColorBordeVariant}" BorderThickness="0,1,0,0"
-                                        Margin="0,0,0,12" Padding="0,12,0,0">
-                                    <StackPanel Orientation="Horizontal">
+                            <Border BorderBrush="{DynamicResource ColorBordeVariant}" BorderThickness="0,1,0,0"
+                                    Padding="0,14,0,0">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                                        <CheckBox x:Name="ChkSonidos" Content="Sonidos de la interfaz al navegar"
+                                                  FontSize="12" Foreground="{DynamicResource ColorTexto}"
+                                                  Checked="Sonidos_Changed" Unchecked="Sonidos_Changed"
+                                                  Margin="0,0,0,10"/>
                                         <CheckBox x:Name="ChkSonidoVideo" Content="Vídeo de fondo con sonido"
+                                                  FontSize="12" Foreground="{DynamicResource ColorTexto}"
                                                   Checked="AudioVideo_Changed" Unchecked="AudioVideo_Changed"/>
                                     </StackPanel>
-                                </Border>
 
-                                <StackPanel Margin="0,0,0,0">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock Grid.Column="0" Text="Volumen del vídeo" FontSize="11.5"
-                                                   Foreground="{DynamicResource ColorTextoSuave}"
-                                                   VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                        <TextBlock x:Name="TxtVolumen" Grid.Column="1" FontSize="11.5" FontFamily="Consolas"
-                                                   Foreground="{DynamicResource ColorTextoSuave}"
-                                                   HorizontalAlignment="Right" Text="35%"/>
-                                    </Grid>
-                                    <Slider x:Name="SldVolumen" Minimum="0" Maximum="100" Value="35"
-                                            ValueChanged="Volumen_Changed" Margin="0,4,0,0"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </Border>
-                    </StackPanel>
-
-                    <!-- ══ Columna derecha: Emulador de Switch + Carpetas y Firebase ══ -->
-                    <StackPanel Grid.Column="1" Margin="12,0,0,0">
-
-                        <!-- Emulador de Nintendo Switch -->
-                        <Border Style="{StaticResource Tarjeta}" Margin="0,0,0,16" CornerRadius="12" BorderThickness="1">
-                            <StackPanel Margin="20">
-                                <Grid Margin="0,0,0,12">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <StackPanel Grid.Column="0">
-                                        <TextBlock Text="Emulador de Nintendo Switch" FontSize="14"
-                                                   FontWeight="SemiBold" Foreground="{DynamicResource ColorTexto}"/>
-                                        <TextBlock Text="Ejecutable y argumentos para lanzar ROMs de Switch (.nsp / .xci) desde la biblioteca"
-                                                   FontSize="11.5" Foreground="{DynamicResource ColorTextoSuave}"
-                                                   Margin="0,2,0,0"/>
-                                    </StackPanel>
-                                    <TextBlock Grid.Column="1" Text="Ryujinx / Yuzu" FontSize="12" FontFamily="Consolas"
-                                               Foreground="{DynamicResource ColorTextoSuave}"
-                                               HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                                </Grid>
-
-                                <Grid Margin="0,0,0,12">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBox x:Name="TxtSwitchExe" Grid.Column="0" IsReadOnly="True"
-                                             Padding="10,8" FontSize="13" FontFamily="Consolas"/>
-                                    <Button Grid.Column="1" Content="Examinar" Padding="12,8" FontSize="12"
-                                            Margin="8,0,0,0" Click="ElegirSwitch_Click"
-                                            Style="{StaticResource BotonNav}"/>
-                                    <Button Grid.Column="2" Content="Quitar" Padding="12,8" FontSize="12"
-                                            Margin="8,0,0,0" Click="QuitarSwitch_Click"
-                                            Style="{StaticResource BotonNav}"/>
-                                </Grid>
-
-                                <TextBlock Text="Argumentos de lanzamiento (usa {rom})" FontSize="11.5"
-                                           Foreground="{DynamicResource ColorTextoSuave}" Margin="0,0,0,6"/>
-                                <TextBox x:Name="TxtSwitchArgs" Padding="10,8" FontSize="13" FontFamily="Consolas"
-                                         LostFocus="SwitchArgs_LostFocus"
-                                         TextWrapping="NoWrap"/>
-                                <TextBlock x:Name="TxtSwitchAviso" FontSize="11" Foreground="#FFA726"
-                                           TextWrapping="Wrap" Margin="0,8,0,0"/>
-                            </StackPanel>
-                        </Border>
-
-                        <!-- Carpetas y conexión Firebase -->
-                        <Border Style="{StaticResource Tarjeta}" Margin="0,0,0,0" CornerRadius="12" BorderThickness="1">
-                            <StackPanel Margin="20">
-                                <Grid Margin="0,0,0,12">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <StackPanel Grid.Column="0">
-                                        <TextBlock Text="Carpetas y conexión Firebase" FontSize="14"
-                                                   FontWeight="SemiBold" Foreground="{DynamicResource ColorTexto}"/>
-                                        <TextBlock Text="Rutas locales de almacenamiento y credenciales para sincronizar con Pokelocke Android"
-                                                   FontSize="11.5" Foreground="{DynamicResource ColorTextoSuave}"
-                                                   Margin="0,2,0,0"/>
-                                    </StackPanel>
-                                    <TextBlock Grid.Column="1" Text="RTDB conectada" FontSize="12" FontFamily="Consolas"
-                                               Foreground="{DynamicResource ColorOk}"
-                                               HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                                </Grid>
-
-                                <Grid Margin="0,0,0,12">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <StackPanel Grid.Column="0" Margin="0,0,8,0">
-                                        <TextBlock Text="Carpeta vendor (emuladores y herramientas)" FontSize="11.5"
-                                                   Foreground="{DynamicResource ColorTextoSuave}"
-                                                   Margin="0,0,0,6"/>
-                                        <DockPanel LastChildFill="True">
-                                            <Button Content="Examinar" Padding="8,6" FontSize="11.5"
-                                                    DockPanel.Dock="Right" Click="ElegirVendor_Click"
-                                                    Style="{StaticResource BotonNav}"/>
-                                            <TextBox x:Name="TxtVendor" Padding="10,8" FontSize="13" FontFamily="Consolas"/>
-                                        </DockPanel>
-                                    </StackPanel>
-                                    <StackPanel Grid.Column="1" Margin="8,0,0,0">
-                                        <TextBlock Text="Carpeta de datos" FontSize="11.5"
-                                                   Foreground="{DynamicResource ColorTextoSuave}"
-                                                   Margin="0,0,0,6"/>
-                                        <DockPanel LastChildFill="True">
-                                            <Button Content="Abrir" Padding="8,6" FontSize="11.5"
-                                                    DockPanel.Dock="Right" Click="ElegirDatos_Click"
-                                                    Style="{StaticResource BotonNav}"/>
-                                            <TextBox x:Name="TxtDatos" Padding="10,8" FontSize="13" FontFamily="Consolas"/>
-                                        </DockPanel>
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10,0,0,0">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0" Text="Volumen del vídeo" FontSize="12"
+                                                       Foreground="{DynamicResource ColorTextoSuave}"
+                                                       VerticalAlignment="Center"/>
+                                            <TextBlock x:Name="TxtVolumen" Grid.Column="1" FontSize="12" FontFamily="Consolas"
+                                                       Foreground="{DynamicResource ColorTexto}"
+                                                       HorizontalAlignment="Right" Text="35%"/>
+                                        </Grid>
+                                        <Slider x:Name="SldVolumen" Minimum="0" Maximum="100" Value="35"
+                                                ValueChanged="Volumen_Changed" Margin="0,6,0,0"/>
                                     </StackPanel>
                                 </Grid>
-
-                                <StackPanel Margin="0,0,0,12">
-                                    <TextBlock Text="URL de Firebase Realtime Database" FontSize="11.5"
-                                               Foreground="{DynamicResource ColorTextoSuave}" Margin="0,0,0,6"/>
-                                    <TextBox x:Name="TxtFirebaseUrl" Padding="10,8" FontSize="13" FontFamily="Consolas"/>
-                                </StackPanel>
-
-                                <StackPanel Margin="0,0,0,0">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock Grid.Column="0" Text="Web API Key de Firebase" FontSize="11.5"
-                                                   Foreground="{DynamicResource ColorTextoSuave}" Margin="0,0,0,6"/>
-                                        <Button Grid.Column="1" Content="👁" FontSize="12"
-                                                Click="ToggleKey_Click" Margin="8,0,0,0"
-                                                Style="{StaticResource BotonNav}"
-                                                HorizontalAlignment="Right"/>
-                                    </Grid>
-                                    <DockPanel LastChildFill="True">
-                                        <Button Grid.Column="1" Content="👁" FontSize="12"
-                                                Click="ToggleKey_Click" Margin="8,0,0,0"
-                                                Style="{StaticResource BotonNav}"
-                                                DockPanel.Dock="Right"/>
-                                        <TextBox x:Name="TxtFirebaseKey" Padding="10,8" FontSize="13" FontFamily="Consolas"/>
-                                    </DockPanel>
-                                </StackPanel>
-                            </StackPanel>
-                        </Border>
-                    </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </Border>
                 </Grid>
 
-                <!-- ══ Persistencia y restablecimiento ══ -->
-                <Border Margin="0,16,0,0" Padding="20" Background="{DynamicResource ColorPanelContainerLow}"
+                <!-- Fila 2: Emulador de Nintendo Switch (ancho completo) -->
+                <Border Background="{DynamicResource ColorPanelContainer}"
                         BorderBrush="{DynamicResource ColorBordeVariant}" BorderThickness="1"
-                        CornerRadius="10">
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                        <TextBlock Text="%APPDATA%\PokeLockeLauncher\ajustes.json · Cambios aplicados al instante"
-                                   FontSize="11.5" FontFamily="Consolas" Foreground="{DynamicResource ColorTextoSuave}"
-                                   VerticalAlignment="Center" Margin="0,0,16,0"/>
-                        <Button Content="🔄  Restablecer ajustes de fábrica" Padding="14,8" FontSize="12"
-                                Click="BtnRestablecer_Click" Style="{StaticResource BotonNav}"/>
+                        CornerRadius="12" Padding="22" Margin="0,0,0,18">
+                    <StackPanel>
+                        <Border BorderBrush="{DynamicResource ColorBordeVariant}" BorderThickness="0,0,0,1"
+                                Padding="0,0,0,12" Margin="0,0,0,16">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Emulador de Nintendo Switch" FontSize="17" FontWeight="SemiBold"
+                                               Foreground="{DynamicResource ColorTexto}"/>
+                                    <TextBlock Text="Ejecutable y argumentos para lanzar ROMs de Switch (.nsp / .xci) desde la biblioteca"
+                                               FontSize="12" Foreground="{DynamicResource ColorTextoSuave}"
+                                               Margin="0,3,0,0"/>
+                                </StackPanel>
+                                <TextBlock Grid.Column="1" Text="Ryujinx / Yuzu" FontSize="12" FontFamily="Consolas"
+                                           Foreground="{DynamicResource ColorTextoSuave}"
+                                           HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="7*"/>
+                                <ColumnDefinition Width="5*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0" Margin="0,0,16,0">
+                                <TextBlock Text="Ruta del ejecutable (.exe)" FontSize="12" FontWeight="SemiBold"
+                                           Foreground="{DynamicResource ColorTextoSuave}" Margin="0,0,0,6"/>
+                                <DockPanel LastChildFill="True">
+                                    <Button DockPanel.Dock="Right" Style="{StaticResource BtnAjustesSutil}"
+                                            Content="Quitar" Padding="10,8" Margin="4,0,0,0"
+                                            Click="QuitarSwitch_Click"/>
+                                    <Button DockPanel.Dock="Right" Style="{StaticResource BtnAjustesSecundario}"
+                                            Padding="12,8" Margin="8,0,0,0" Click="ElegirSwitch_Click">
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <Viewbox Width="15" Height="15" Margin="0,0,6,0">
+                                                <Canvas Width="24" Height="24">
+                                                    <Path Fill="{DynamicResource ColorTexto}"
+                                                          Data="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z"/>
+                                                </Canvas>
+                                            </Viewbox>
+                                            <TextBlock Text="Examinar" Foreground="{DynamicResource ColorTexto}"/>
+                                        </StackPanel>
+                                    </Button>
+                                    <TextBox x:Name="TxtSwitchExe" IsReadOnly="True"
+                                             Style="{StaticResource InputAjustes}"/>
+                                </DockPanel>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="Argumentos de lanzamiento (usa {rom})" FontSize="12" FontWeight="SemiBold"
+                                           Foreground="{DynamicResource ColorTextoSuave}" Margin="0,0,0,6"/>
+                                <TextBox x:Name="TxtSwitchArgs" Style="{StaticResource InputAjustes}"
+                                         LostFocus="SwitchArgs_LostFocus" TextWrapping="NoWrap"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <TextBlock x:Name="TxtSwitchAviso" FontSize="11.5" Foreground="{DynamicResource ColorAviso}"
+                                   TextWrapping="Wrap" Margin="0,10,0,0" Visibility="Collapsed"/>
                     </StackPanel>
+                </Border>
+
+                <!-- Fila 3: Carpetas y conexión Firebase (ancho completo) -->
+                <Border Background="{DynamicResource ColorPanelContainer}"
+                        BorderBrush="{DynamicResource ColorBordeVariant}" BorderThickness="1"
+                        CornerRadius="12" Padding="22" Margin="0,0,0,18">
+                    <StackPanel>
+                        <Border BorderBrush="{DynamicResource ColorBordeVariant}" BorderThickness="0,0,0,1"
+                                Padding="0,0,0,12" Margin="0,0,0,16">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Carpetas y conexión Firebase" FontSize="17" FontWeight="SemiBold"
+                                               Foreground="{DynamicResource ColorTexto}"/>
+                                    <TextBlock Text="Rutas locales de almacenamiento y credenciales para sincronizar con Pokelocke Android"
+                                               FontSize="12" Foreground="{DynamicResource ColorTextoSuave}"
+                                               Margin="0,3,0,0"/>
+                                </StackPanel>
+                                <TextBlock Grid.Column="1" Text="RTDB conectada" FontSize="12" FontFamily="Consolas"
+                                           Foreground="{DynamicResource ColorOk}"
+                                           HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- Vendor -->
+                            <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,10,14">
+                                <TextBlock Text="Carpeta vendor (emuladores y herramientas)" FontSize="12" FontWeight="SemiBold"
+                                           Foreground="{DynamicResource ColorTextoSuave}" Margin="0,0,0,6"/>
+                                <DockPanel LastChildFill="True">
+                                    <Button DockPanel.Dock="Right" Style="{StaticResource BtnAjustesSecundario}"
+                                            Content="Examinar" Padding="12,8" Margin="8,0,0,0"
+                                            Click="ElegirVendor_Click"/>
+                                    <TextBox x:Name="TxtVendor" Style="{StaticResource InputAjustes}"/>
+                                </DockPanel>
+                            </StackPanel>
+
+                            <!-- Datos -->
+                            <StackPanel Grid.Row="0" Grid.Column="1" Margin="10,0,0,14">
+                                <TextBlock Text="Carpeta de datos (library.json, huellas, vínculos)" FontSize="12" FontWeight="SemiBold"
+                                           Foreground="{DynamicResource ColorTextoSuave}" Margin="0,0,0,6"/>
+                                <DockPanel LastChildFill="True">
+                                    <Button DockPanel.Dock="Right" Style="{StaticResource BtnAjustesSecundario}"
+                                            Content="Abrir" Padding="12,8" Margin="8,0,0,0"
+                                            Click="ElegirDatos_Click"/>
+                                    <TextBox x:Name="TxtDatos" Style="{StaticResource InputAjustes}"/>
+                                </DockPanel>
+                            </StackPanel>
+
+                            <!-- Firebase URL -->
+                            <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,10,0">
+                                <TextBlock Text="URL de Firebase Realtime Database" FontSize="12" FontWeight="SemiBold"
+                                           Foreground="{DynamicResource ColorTextoSuave}" Margin="0,0,0,6"/>
+                                <TextBox x:Name="TxtFirebaseUrl" Style="{StaticResource InputAjustes}"/>
+                            </StackPanel>
+
+                            <!-- Firebase API Key -->
+                            <StackPanel Grid.Row="1" Grid.Column="1" Margin="10,0,0,0">
+                                <TextBlock Text="Web API Key de Firebase" FontSize="12" FontWeight="SemiBold"
+                                           Foreground="{DynamicResource ColorTextoSuave}" Margin="0,0,0,6"/>
+                                <DockPanel LastChildFill="True">
+                                    <Button DockPanel.Dock="Right" Style="{StaticResource BtnAjustesSecundario}"
+                                            Width="38" Height="36" Margin="8,0,0,0"
+                                            ToolTip="Mostrar u ocultar API Key" Click="ToggleKey_Click">
+                                        <Viewbox Width="16" Height="16">
+                                            <Canvas Width="24" Height="24">
+                                                <Path Fill="{DynamicResource ColorTextoSuave}"
+                                                      Data="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                                            </Canvas>
+                                        </Viewbox>
+                                    </Button>
+                                    <TextBox x:Name="TxtFirebaseKey" Style="{StaticResource InputAjustes}"/>
+                                </DockPanel>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Fila 4: Persistencia y restablecimiento -->
+                <Border Background="{DynamicResource ColorPanelContainerLow}"
+                        BorderBrush="{DynamicResource ColorBordeVariant}" BorderThickness="1"
+                        CornerRadius="12" Padding="22">
+                    <DockPanel LastChildFill="True">
+                        <Button DockPanel.Dock="Right" Style="{StaticResource BtnAjustesPrimario}"
+                                Padding="16,10" Click="BtnRestablecer_Click" VerticalAlignment="Center">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Viewbox Width="16" Height="16" Margin="0,0,8,0">
+                                    <Canvas Width="24" Height="24">
+                                        <Path Fill="#FFFFFF"
+                                              Data="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+                                    </Canvas>
+                                </Viewbox>
+                                <TextBlock Text="Restablecer ajustes de fábrica" Foreground="#FFFFFF" FontWeight="SemiBold"/>
+                            </StackPanel>
+                        </Button>
+
+                        <StackPanel DockPanel.Dock="Left" VerticalAlignment="Center">
+                            <TextBlock Text="Persistencia automática en ajustes.json" FontSize="15" FontWeight="SemiBold"
+                                       Foreground="{DynamicResource ColorTexto}"/>
+                            <TextBlock Text="%APPDATA%\PokeLockeLauncher\ajustes.json · Cambios aplicados al instante"
+                                       FontSize="12" FontFamily="Consolas" Foreground="{DynamicResource ColorTextoSuave}"
+                                       Margin="0,3,0,0"/>
+                        </StackPanel>
+                    </DockPanel>
                 </Border>
 
             </StackPanel>

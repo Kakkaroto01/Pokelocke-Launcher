@@ -66,6 +66,11 @@ public partial class MainWindow : Window, IComponentConnector
 
 	private SettingsPanel? CtrlAjustes;
 
+	private RomEntry? _romSeleccionada;
+	private string _seccionActual = "inicio";
+	private Point _swipeInicio;
+	private bool _swipeActivo;
+
 	public static string RutaLog => Path.Combine(Path.GetTempPath(), "PokeLockeLauncher.log");
 
 	public MainWindow()
@@ -369,7 +374,7 @@ public partial class MainWindow : Window, IComponentConnector
 	/// <summary>Biblioteca: vincula la ROM seleccionada con un locke de la app (se guarda en vinculos.json).</summary>
 	private void BtnVincularLocke_Click(object sender, RoutedEventArgs e)
 	{
-		if ((null as RomEntry) is not RomEntry rom)
+		if (_romSeleccionada is not RomEntry rom)
 		{
 			Aviso("Selecciona una ROM en la biblioteca.");
 			return;
@@ -449,7 +454,7 @@ public partial class MainWindow : Window, IComponentConnector
 			Aviso("Cierra el emulador antes de añadir objetos (el emulador sobrescribe el .sav al salir).");
 			return;
 		}
-		if ((null as RomEntry) is not RomEntry rom)
+		if (_romSeleccionada is not RomEntry rom)
 		{
 			Aviso("Selecciona una ROM en la biblioteca.");
 			return;
@@ -571,12 +576,14 @@ public partial class MainWindow : Window, IComponentConnector
 				var partida = PartidaAnil.Cargar(rutaSave, pbs);
 				var okAnil = await _firebase.EscribirEquipoAsync(_lockeId, _playerTag, EquipoAnil.Construir(partida));
 				Log(okAnil ? "👥 Equipo de Añil publicado en myTeam" : "No se pudo publicar myTeam (Añil)");
+				if (okAnil) TxtLockeLiveUltimaSubida.Text = $"{DateTime.Now:HH:mm} · Equipo publicado";
 				return;
 			}
 			var sav = SaveUtil.GetSaveFile(rutaSave);
 			if (sav is null) return;
 			var ok = await _firebase.EscribirEquipoAsync(_lockeId, _playerTag, EquipoRemoto.Construir(sav));
 			Log(ok ? "👥 Equipo publicado en myTeam (6 huecos)" : "No se pudo publicar myTeam");
+			if (ok) TxtLockeLiveUltimaSubida.Text = $"{DateTime.Now:HH:mm} · {sav.PartyCount} Pokémon";
 		}
 		catch (Exception ex)
 		{
@@ -1493,10 +1500,33 @@ public partial class MainWindow : Window, IComponentConnector
 
 	private void Log(string linea)
 	{
+		var hora = DateTime.Now.ToString("HH:mm:ss");
 		((DispatcherObject)this).Dispatcher.Invoke((Action)(() =>
 		{
-			TxtLog.AppendText($"[{DateTime.Now:HH:mm:ss}] {linea}{Environment.NewLine}");
-			TxtLog.ScrollToEnd();
+			if (TxtLogLocke is null) return;
+			var doc = TxtLogLocke.Document;
+			while (doc.Blocks.Count >= 200)
+				doc.Blocks.Remove(doc.Blocks.FirstBlock);
+
+			var colorHora = "#DFE2F2";
+			if (linea.Contains("ERROR", StringComparison.OrdinalIgnoreCase) || linea.Contains("error", StringComparison.Ordinal))
+				colorHora = "#FFB4AB";
+			else if (linea.Contains("pendiente", StringComparison.OrdinalIgnoreCase) || linea.Contains("cola", StringComparison.OrdinalIgnoreCase) || linea.Contains("sav", StringComparison.OrdinalIgnoreCase))
+				colorHora = "#FFB95F";
+			else if (linea.Contains("firebase", StringComparison.OrdinalIgnoreCase) || linea.Contains("conectado", StringComparison.OrdinalIgnoreCase) || linea.Contains("publicado", StringComparison.OrdinalIgnoreCase) || linea.Contains("🔒", StringComparison.Ordinal) || linea.Contains("👥", StringComparison.Ordinal) || linea.Contains("🔗", StringComparison.Ordinal))
+				colorHora = "#4AE176";
+
+			var p = new System.Windows.Documents.Paragraph { Margin = new Thickness(0, 0, 0, 6) };
+			p.Inlines.Add(new System.Windows.Documents.Run($"[{hora}] ")
+			{
+				Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(colorHora))
+			});
+			p.Inlines.Add(new System.Windows.Documents.Run(linea)
+			{
+				Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#A7ABBA"))
+			});
+			doc.Blocks.Add(p);
+			TxtLogLocke.ScrollToEnd();
 		}));
 		try
 		{
@@ -1531,17 +1561,47 @@ public partial class MainWindow : Window, IComponentConnector
         // (la migración ya copió los archivos; aquí solo se corrige la ruta guardada).
         if (RemapearCaratulasAntiguas())
             tienda.Save(_biblioteca);
-		_vinculos = VinculosLocke.Cargar(_ajustes.DatosDir);
+        _vinculos = VinculosLocke.Cargar(_ajustes.DatosDir);
         ActualizarUltimaRom();
-        // ListaRoms eliminado en el rediseño: la biblioteca se muestra en el nuevo diseño inline
-        // ListaRoms.ItemsSource = null;
-        // ListaRoms.ItemsSource = _biblioteca;
-        // TxtBibliotecaRuta eliminado en el rediseño
-        // TxtBibliotecaRuta.Text = tienda.StorePath;
-        // if (ListaRoms.Items.Count > 0 && ListaRoms.SelectedIndex < 0)
-        //     ListaRoms.SelectedIndex = 0;
+        if (_romSeleccionada is null || !_biblioteca.Any(r => string.Equals(r.RomPath, _romSeleccionada.RomPath, StringComparison.OrdinalIgnoreCase)))
+            _romSeleccionada = RomDeLaUltimaPartida();
+        ActualizarListaBiblioteca();
         ActualizarDetalleBiblioteca();
+        ActualizarHeroUltimaPartida();
+        ActualizarBibliotecaReciente();
+        _ = ActualizarLockeEnVivo();
+        _ = ActualizarMetricasBiblioteca();
         BibliotecaCambiada?.Invoke();
+    }
+
+    /// <summary>Actualiza los contadores dinámicos de las tres tarjetas de métrica de la biblioteca.</summary>
+    private async Task ActualizarMetricasBiblioteca()
+    {
+        // Roms en biblioteca
+        TxtMetricaRoms.Text = _biblioteca.Count == 1 ? "1 partida" : $"{_biblioteca.Count} partidas";
+
+        // Lockes vinculados (vínculos en vinculos.json o ROMs con SalaId > 0)
+        var vinculados = _biblioteca.Count(r => r.SalaId > 0 || !string.IsNullOrWhiteSpace(_vinculos.LockeDeRom(r.RomPath)));
+        TxtMetricaLockes.Text = vinculados == 0 ? "Sin vinculados" : $"{vinculados} vinculado{(vinculados > 1 ? "s" : "")}";
+
+        // Pendientes al .sav (cola del locke conectado)
+        try
+        {
+            if (_firebase is not null && !string.IsNullOrWhiteSpace(_lockeId) && !string.IsNullOrWhiteSpace(_playerTag))
+            {
+                var cola = await _firebase.LeerColaAsync(_lockeId, _playerTag);
+                var pendientes = cola.Values.Count(v => v.Status == "pending" || v.Status == "applying");
+                TxtMetricaPendientes.Text = pendientes == 0 ? "Sin pendientes" : $"{pendientes} objeto{(pendientes > 1 ? "s" : "")}";
+            }
+            else
+            {
+                TxtMetricaPendientes.Text = "Sin locke conectado";
+            }
+        }
+        catch
+        {
+            TxtMetricaPendientes.Text = "? objetos";
+        }
     }
 
     /// <summary>Obtiene una ruta de carátula válida para un RomEntry, buscando si es necesario.</summary>
@@ -1565,6 +1625,169 @@ public partial class MainWindow : Window, IComponentConnector
         ImgPortadaHero.Source = portadas.Count > 0 ? CargarImagen(portadas[0]) : null;
         ImgCoverReciente1.Source = portadas.Count > 1 ? CargarImagen(portadas[1]) : null;
         ImgCoverReciente2.Source = portadas.Count > 2 ? CargarImagen(portadas[2]) : null;
+    }
+
+    /// <summary>Texto legible de la consola de una ROM (p. ej. «DS», «GBA»).</summary>
+    private static string TextoConsola(RomEntry rom)
+    {
+        var c = ConsolaDe(rom.ConsoleName);
+        return c switch
+        {
+            ConsolaJuego.Ds => "DS",
+            ConsolaJuego.Gba => "GBA",
+            ConsolaJuego.TresDs => "3DS",
+            ConsolaJuego.Switch => "Switch",
+            ConsolaJuego.Anil => "Añil",
+            _ => string.IsNullOrWhiteSpace(rom.ConsoleName) ? "?" : rom.ConsoleName,
+        };
+    }
+
+    /// <summary>Formatea una fecha «yyyy-MM-dd HH:mm» a «dd MMM · HH:mm» (es-ES).</summary>
+    private static string FormatoFechaCorto(string? lastPlayed)
+    {
+        if (string.IsNullOrWhiteSpace(lastPlayed)) return "";
+        if (DateTime.TryParse(lastPlayed, out var fecha))
+            return fecha.ToString("dd MMM", new System.Globalization.CultureInfo("es-ES")) + " · " + fecha.ToString("HH:mm");
+        return lastPlayed;
+    }
+
+    /// <summary>Actualiza el Hero de «Última partida» con la ROM más reciente (consola, fecha, portada).</summary>
+    private void ActualizarHeroUltimaPartida()
+    {
+        var rom = RomDeLaUltimaPartida();
+        if (rom is null)
+        {
+            TxtHeroConsola.Text = "";
+            TxtHeroFecha.Text = "";
+            TxtHeroTitulo.Text = "Sin partidas todavía";
+            TxtHeroArchivo.Text = "Añade una ROM con «Añadir ROM» y juega al menos una vez.";
+            TxtHeroDescripcion.Text = "";
+            BtnJugarUltima.IsEnabled = false;
+            BtnAplicarCambiosSav.IsEnabled = false;
+            ImgPortadaHero.Source = null;
+            return;
+        }
+
+        var consola = TextoConsola(rom);
+        var fecha = FormatoFechaCorto(rom.LastPlayed);
+        TxtHeroConsola.Text = consola;
+        TxtHeroFecha.Text = fecha;
+        TxtHeroTitulo.Text = string.IsNullOrWhiteSpace(rom.Name) ? "(sin nombre)" : rom.Name;
+        TxtHeroArchivo.Text = Path.GetFileName(rom.RomPath);
+        TxtHeroDescripcion.Text = "Al iniciar se aplicarán automáticamente los objetos y cartas pendientes de tu sala en Pokelocke sobre el archivo de guardado."
+            + (rom.SalaId > 0 ? " Vinculada a la sala «" + rom.RoomName + "»." : "");
+        BtnJugarUltima.IsEnabled = true;
+        BtnAplicarCambiosSav.IsEnabled = true;
+        ImgPortadaHero.Source = ResolverCaratula(rom, _ajustes.DatosDir) is { } cover ? CargarImagen(cover) : null;
+    }
+
+    /// <summary>Rellena hasta 3 filas de la biblioteca reciente con los últimos juegos jugados.</summary>
+    private void ActualizarBibliotecaReciente()
+    {
+        var recientes = _biblioteca
+            .Where(r => !string.IsNullOrEmpty(r.LastPlayed))
+            .OrderByDescending(r => r.LastPlayed)
+            .Take(3)
+            .ToList();
+
+        var filas = new[]
+        {
+            (FilaReciente1, ImgCoverReciente1, TxtReciente1Nombre, TxtReciente1Info, TxtReciente1Fecha, BtnJugarReciente1),
+            (FilaReciente2, ImgCoverReciente2, TxtReciente2Nombre, TxtReciente2Info, TxtReciente2Fecha, BtnJugarReciente2),
+            (FilaReciente3, ImgCoverReciente3, TxtReciente3Nombre, TxtReciente3Info, TxtReciente3Fecha, BtnJugarReciente3),
+        };
+
+        TxtBibliotecaCount.Text = _biblioteca.Count == 1
+            ? "1 ROM registrada en tu equipo"
+            : _biblioteca.Count + " ROMs registradas en tu equipo";
+
+        for (var i = 0; i < filas.Length; i++)
+        {
+            var (fila, img, nombre, info, fecha, btnJugar) = filas[i];
+            if (i < recientes.Count)
+            {
+                var rom = recientes[i];
+                fila.Visibility = Visibility.Visible;
+                img.Source = ResolverCaratula(rom, _ajustes.DatosDir) is { } cover ? CargarImagen(cover) : null;
+                nombre.Text = string.IsNullOrWhiteSpace(rom.Name) ? "(sin nombre)" : rom.Name;
+                var consola = TextoConsola(rom);
+                var nombreSala = rom.SalaId > 0 && !string.IsNullOrWhiteSpace(rom.RoomName) ? rom.RoomName : null;
+                info.Text = nombreSala is not null ? consola + " " + nombreSala : "Sin locke vinculado";
+                fecha.Text = FormatoFechaCorto(rom.LastPlayed);
+                btnJugar.Tag = rom;
+                btnJugar.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                fila.Visibility = Visibility.Collapsed;
+                btnJugar.Visibility = Visibility.Collapsed;
+                btnJugar.Tag = null;
+            }
+        }
+
+        TxtBibliotecaVacia.Visibility = _biblioteca.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    /// <summary>Actualiza la card de Locke en vivo con el locke conectado o el estado vacío.</summary>
+    private async Task ActualizarLockeEnVivo()
+    {
+        PanelLockeVacio.Visibility = Visibility.Collapsed;
+        PanelLockeInfo.Visibility = Visibility.Collapsed;
+        TxtLockeNombre.Text = "";
+        TxtLockeSave.Text = "";
+        TxtLockePendientes.Text = "0 objetos";
+        BtnPublicarEquipoInicio.IsEnabled = false;
+
+        TxtLockeLiveRom.Text = "Sin ROM vinculada";
+        TxtLockeLiveSav.Text = "—";
+        TxtLockeLiveCola.Text = "0 objetos pendientes";
+        TxtLockeLiveCola.Foreground = (Brush)FindResource("ColorTextoSuave");
+        PathLockeCloudSync.Fill = (Brush)FindResource("ColorTextoSuave");
+
+        if (_lockeActivo is null || string.IsNullOrWhiteSpace(_lockeId) || string.IsNullOrWhiteSpace(_playerTag))
+        {
+            PanelLockeVacio.Visibility = Visibility.Visible;
+            return;
+        }
+
+        PanelLockeInfo.Visibility = Visibility.Visible;
+        TxtLockeNombre.Text = _lockeActivo.Nombre;
+        PathLockeCloudSync.Fill = (Brush)FindResource("ColorOk");
+
+        var rom = RomParaElLocke(_lockeActivo.Juego, _lockeId) ?? RomDeLaUltimaPartida();
+        if (rom is not null)
+        {
+            TxtLockeLiveRom.Text = rom.Name;
+            var save = ResolverSavePath(rom);
+            var saveFile = save is not null ? Path.GetFileName(save) : "Sin partida";
+            TxtLockeSave.Text = saveFile;
+            TxtLockeLiveSav.Text = saveFile;
+            BtnPublicarEquipoInicio.IsEnabled = save is not null;
+        }
+        else
+        {
+            TxtLockeSave.Text = "Sin ROM vinculada";
+            TxtLockeLiveRom.Text = "Sin ROM vinculada";
+            TxtLockeLiveSav.Text = "—";
+        }
+
+        // Contar cambios pendientes en la cola del jugador.
+        try
+        {
+            if (_firebase is not null)
+            {
+                var cola = await _firebase.LeerColaAsync(_lockeId, _playerTag);
+                var pendientes = cola.Values.Count(v => v.Status == "pending" || v.Status == "applying");
+                TxtLockePendientes.Text = pendientes == 1 ? "1 objeto" : pendientes + " objetos";
+                TxtLockeLiveCola.Text = pendientes == 1 ? "1 objeto pendiente" : pendientes + " objetos pendientes";
+                TxtLockeLiveCola.Foreground = (Brush)FindResource(pendientes > 0 ? "ColorAviso" : "ColorTextoSuave");
+            }
+        }
+        catch
+        {
+            TxtLockePendientes.Text = "? objetos";
+            TxtLockeLiveCola.Text = "? objetos pendientes";
+        }
     }
 
     /// <summary>
@@ -1602,28 +1825,244 @@ public partial class MainWindow : Window, IComponentConnector
     // private void ListaRoms_SelectionChanged(object sender, SelectionChangedEventArgs e)
     //     => ActualizarDetalleBiblioteca();
 
+    /// <summary>Reconstruye dinámicamente la lista de ROMs en la pestaña Biblioteca.</summary>
+    private void ActualizarListaBiblioteca()
+    {
+        PanelListaRoms.Children.Clear();
+        if (_biblioteca.Count == 0)
+        {
+            PanelListaRoms.Children.Add(new TextBlock
+            {
+                Text = "No hay ROMs en la biblioteca todavía. Pulsa «Añadir ROM» para empezar.",
+                FontSize = 12,
+                Foreground = (Brush)FindResource("ColorTextoSuave"),
+                Margin = new Thickness(0, 8, 0, 0),
+                TextWrapping = TextWrapping.Wrap,
+            });
+            return;
+        }
+
+        foreach (var rom in _biblioteca)
+        {
+            var esSeleccionada = _romSeleccionada is not null &&
+                string.Equals(rom.RomPath, _romSeleccionada.RomPath, StringComparison.OrdinalIgnoreCase);
+
+            var card = new Border
+            {
+                Background = (Brush)FindResource(esSeleccionada ? "ColorPanelContainerHigh" : "ColorPanelContainer"),
+                BorderBrush = esSeleccionada
+                    ? new SolidColorBrush((Color)ColorConverter.ConvertFromString("#B92318"))
+                    : (Brush)FindResource("ColorBordeVariant"),
+                BorderThickness = new Thickness(1),
+                CornerRadius = new CornerRadius(10),
+                Padding = new Thickness(14),
+                Margin = new Thickness(0, 0, 0, 10),
+                Cursor = Cursors.Hand,
+            };
+
+            var grid = new Grid();
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+
+            // Carátula
+            var imgBorder = new Border
+            {
+                Width = 48, Height = 48, CornerRadius = new CornerRadius(8),
+                Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#0B0F17")),
+                Margin = new Thickness(0, 0, 12, 0),
+                ClipToBounds = true,
+            };
+            var img = new Image { Stretch = Stretch.UniformToFill };
+            var cover = ResolverCaratula(rom, _ajustes.DatosDir);
+            if (cover is not null) img.Source = CargarImagen(cover);
+            imgBorder.Child = img;
+            Grid.SetColumn(imgBorder, 0);
+            grid.Children.Add(imgBorder);
+
+            // Centro: nombre + consola + locke
+            var centerStack = new StackPanel { VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 0, 10, 0) };
+            centerStack.Children.Add(new TextBlock
+            {
+                Text = string.IsNullOrWhiteSpace(rom.Name) ? "(sin nombre)" : rom.Name,
+                FontSize = 14,
+                FontWeight = FontWeights.SemiBold,
+                Foreground = (Brush)FindResource("ColorTexto"),
+                TextTrimming = TextTrimming.CharacterEllipsis,
+            });
+
+            var metaRow = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 4, 0, 0) };
+            var consolaBadge = new Border
+            {
+                Background = (Brush)FindResource("ColorPanelContainerLow"),
+                BorderBrush = (Brush)FindResource("ColorBordeVariant"),
+                BorderThickness = new Thickness(1),
+                CornerRadius = new CornerRadius(4),
+                Padding = new Thickness(6, 2, 6, 2),
+                Margin = new Thickness(0, 0, 8, 0),
+                Child = new TextBlock
+                {
+                    Text = TextoConsola(rom),
+                    FontSize = 10.5,
+                    FontFamily = new FontFamily("Consolas"),
+                    FontWeight = FontWeights.SemiBold,
+                    Foreground = (Brush)FindResource("ColorTexto"),
+                }
+            };
+            metaRow.Children.Add(consolaBadge);
+
+            var lockeIdRom = _vinculos.LockeDeRom(rom.RomPath);
+            string lockeTexto;
+            bool tieneLocke;
+            if (!string.IsNullOrWhiteSpace(lockeIdRom) && _lockesFirebase.TryGetValue(lockeIdRom, out var lockeObj))
+            {
+                lockeTexto = string.IsNullOrWhiteSpace(lockeObj.Codigo) ? lockeObj.Nombre : $"Sala {lockeObj.Codigo} · {lockeObj.Nombre}";
+                tieneLocke = true;
+            }
+            else if (rom.SalaId > 0)
+            {
+                lockeTexto = $"Sala {rom.SalaId} · {rom.RoomName}";
+                tieneLocke = true;
+            }
+            else
+            {
+                lockeTexto = "Sin locke vinculado";
+                tieneLocke = false;
+            }
+
+            if (tieneLocke)
+            {
+                metaRow.Children.Add(new Border
+                {
+                    Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3D2B0D")),
+                    BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#7A5314")),
+                    BorderThickness = new Thickness(1),
+                    CornerRadius = new CornerRadius(10),
+                    Padding = new Thickness(8, 2, 8, 2),
+                    Child = new TextBlock
+                    {
+                        Text = lockeTexto,
+                        FontSize = 10.5,
+                        FontWeight = FontWeights.SemiBold,
+                        Foreground = (Brush)FindResource("ColorAviso"),
+                    }
+                });
+            }
+            else
+            {
+                metaRow.Children.Add(new TextBlock
+                {
+                    Text = lockeTexto,
+                    FontSize = 11,
+                    Foreground = (Brush)FindResource("ColorTextoSuave"),
+                    VerticalAlignment = VerticalAlignment.Center,
+                });
+            }
+
+            centerStack.Children.Add(metaRow);
+            Grid.SetColumn(centerStack, 1);
+            grid.Children.Add(centerStack);
+
+            // Derecha: fecha + estado seleccionada
+            var rightStack = new StackPanel { VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Right };
+            var fechaTexto = string.IsNullOrWhiteSpace(rom.LastPlayed)
+                ? "Sin jugar"
+                : (rom.LastPlayed.Length >= 10 ? rom.LastPlayed[..10] : rom.LastPlayed);
+            rightStack.Children.Add(new TextBlock
+            {
+                Text = fechaTexto,
+                FontSize = 11,
+                FontFamily = new FontFamily("Consolas"),
+                Foreground = (Brush)FindResource("ColorTextoSuave"),
+                HorizontalAlignment = HorizontalAlignment.Right,
+            });
+            if (esSeleccionada)
+            {
+                rightStack.Children.Add(new TextBlock
+                {
+                    Text = "Seleccionada",
+                    FontSize = 11,
+                    FontWeight = FontWeights.SemiBold,
+                    Foreground = (Brush)FindResource("AcentoBrush"),
+                    HorizontalAlignment = HorizontalAlignment.Right,
+                    Margin = new Thickness(0, 3, 0, 0),
+                });
+            }
+            else if (!string.IsNullOrWhiteSpace(rom.LastPlayed) && rom.LastPlayed.Length >= 16)
+            {
+                rightStack.Children.Add(new TextBlock
+                {
+                    Text = rom.LastPlayed.Substring(11, 5),
+                    FontSize = 11,
+                    FontFamily = new FontFamily("Consolas"),
+                    Foreground = (Brush)FindResource("ColorTextoSuave"),
+                    HorizontalAlignment = HorizontalAlignment.Right,
+                    Margin = new Thickness(0, 3, 0, 0),
+                });
+            }
+            Grid.SetColumn(rightStack, 2);
+            grid.Children.Add(rightStack);
+
+            card.Child = grid;
+            var romLocal = rom;
+            card.MouseLeftButtonUp += (_, _) =>
+            {
+                _romSeleccionada = romLocal;
+                ActualizarListaBiblioteca();
+                ActualizarDetalleBiblioteca();
+            };
+
+            PanelListaRoms.Children.Add(card);
+        }
+    }
+
     /// <summary>Rellena la ficha de la ROM seleccionada (carátula, partida, última vez…).</summary>
     private void ActualizarDetalleBiblioteca()
     {
-        // ListaRoms eliminado en el rediseño: el detalle se muestra en el nuevo diseño inline
-        // if (false)
-        // {
-        //     TxtRomNombre.Text = "Selecciona una ROM";
-        //     TxtRomInfo.Text = TxtRomSave.Text = TxtRomUltima.Text = "";
-        //     ImgCover.Source = null;
-        //     return;
-        // }
-        // TxtRomNombre.Text = string.IsNullOrWhiteSpace(rom.Name) ? "(sin nombre)" : rom.Name;
-        // TxtRomInfo.Text = rom.ConsoleName + " · " + (string.IsNullOrWhiteSpace(rom.DetectedGame) ? "juego sin detectar" : rom.DetectedGame)
-        //     + (rom.SalaId > 0 ? " · sala " + rom.SalaId + " «" + rom.RoomName + "»" : "");
-        // var save = ResolverSavePath(rom);
-        //
-        // TxtRomSave.Text = "Partida: " + (save ?? "todavía no existe (el emulador la creará al guardar)");
-        // TxtRomUltima.Text = string.IsNullOrEmpty(rom.LastPlayed) ? "" : "Última partida: " + rom.LastPlayed;
-        // var rutaCaratula = rom.CoverPath;
-        // if (string.IsNullOrWhiteSpace(rutaCaratula))
-        //     rutaCaratula = Caratulas.Buscar(_ajustes.DatosDir, [rom.DetectedGame, rom.Name]) ?? "";
-        // ImgCover.Source = CargarImagen(rutaCaratula);
+        var rom = _romSeleccionada;
+        var hayRom = rom is not null;
+        BtnJugar.IsEnabled = hayRom;
+        BtnCambiarCaratula.IsEnabled = hayRom;
+        BtnVincularLocke.IsEnabled = hayRom;
+        BtnPublicarEquipoBib.IsEnabled = hayRom;
+        BtnEscamasCorazon.IsEnabled = hayRom;
+        BtnCarameloraros.IsEnabled = hayRom;
+        BtnBorrarRom.IsEnabled = hayRom;
+
+        if (rom is null)
+        {
+            TxtDetConsolaJuego.Text = "SIN SELECCIÓN";
+            TxtDetNombre.Text = "Selecciona una ROM";
+            TxtDetLocke.Text = "Sin vincular";
+            TxtDetJugador.Text = "—";
+            TxtDetUltima.Text = "—";
+            TxtDetSave.Text = "—";
+            ImgCoverDet.Source = null;
+            return;
+        }
+
+        var juego = string.IsNullOrWhiteSpace(rom.DetectedGame) ? "Juego sin detectar" : rom.DetectedGame;
+        TxtDetConsolaJuego.Text = $"{TextoConsola(rom).ToUpperInvariant()} · {juego.ToUpperInvariant()}";
+        TxtDetNombre.Text = string.IsNullOrWhiteSpace(rom.Name) ? "(sin nombre)" : rom.Name;
+
+        var lockeIdRom = _vinculos.LockeDeRom(rom.RomPath);
+        if (!string.IsNullOrWhiteSpace(lockeIdRom) && _lockesFirebase.TryGetValue(lockeIdRom, out var lockeObj))
+            TxtDetLocke.Text = $"«{lockeObj.Nombre}»";
+        else if (rom.SalaId > 0)
+            TxtDetLocke.Text = $"«{rom.RoomName}»";
+        else
+            TxtDetLocke.Text = "Sin vincular";
+
+        TxtDetJugador.Text = !string.IsNullOrWhiteSpace(_playerTag)
+            ? _playerTag
+            : (TxtCuenta.Text != "Sin cuenta" ? TxtCuenta.Text.Replace("👤 ", "") : "—");
+        TxtDetUltima.Text = string.IsNullOrWhiteSpace(rom.LastPlayed) ? "Nunca" : rom.LastPlayed;
+
+        var save = ResolverSavePath(rom);
+        TxtDetSave.Text = save ?? "Todavía no existe (el emulador la creará al guardar)";
+
+        var cover = ResolverCaratula(rom, _ajustes.DatosDir);
+        ImgCoverDet.Source = cover is not null ? CargarImagen(cover) : null;
     }
 
     private static System.Windows.Media.Imaging.BitmapImage? CargarImagen(string? ruta)
@@ -1642,48 +2081,55 @@ public partial class MainWindow : Window, IComponentConnector
         catch { return null; }
     }
 
-    // ListaRoms eliminado en el rediseño: BtnBorrarRom desactivado temporalmente
-    // private void BtnBorrarRom_Click(object sender, RoutedEventArgs e)
-    // {
-    //     if (false)
-    //     {
-    //         Aviso("Selecciona la ROM que quieres borrar de la biblioteca.");
-    //         return;
-    //     }
-    //     var respuesta = MessageBox.Show(this,
-    //         "¿Borrar «" + rom.Name + "» de la biblioteca?" + Environment.NewLine + Environment.NewLine + rom.RomPath +
-    //         Environment.NewLine + Environment.NewLine + "Solo se quita de la lista: los archivos de la ROM y su partida NO se borran.",
-    //         "Borrar ROM", MessageBoxButton.YesNo, MessageBoxImage.Question);
-    //     if (respuesta == MessageBoxResult.Yes)
-    //         BorrarRom(rom);
-    // }
-
-    // BtnJugar_Click desactivado en el rediseño
-    /* private async void BtnJugar_Click(object sender, RoutedEventArgs e)
+    private void BtnBorrarRom_Click(object sender, RoutedEventArgs e)
     {
-        if (false)
+        if (_romSeleccionada is not RomEntry rom)
+        {
+            Aviso("Selecciona la ROM que quieres borrar de la biblioteca.");
+            return;
+        }
+        var respuesta = MessageBox.Show(this,
+            "¿Borrar «" + rom.Name + "» de la biblioteca?" + Environment.NewLine + Environment.NewLine + rom.RomPath +
+            Environment.NewLine + Environment.NewLine + "Solo se quita de la lista: los archivos de la ROM y su partida NO se borran.",
+            "Borrar ROM", MessageBoxButton.YesNo, MessageBoxImage.Question);
+        if (respuesta == MessageBoxResult.Yes)
+            BorrarRom(rom);
+    }
+
+    private async void BtnJugar_Click(object sender, RoutedEventArgs e)
+    {
+        if (_romSeleccionada is not RomEntry rom)
         {
             Aviso("Selecciona una ROM de la biblioteca.");
             return;
         }
         await JugarRomAsync(rom);
-    } */
+    }
 
-    // BtnRandomizarRom_Click desactivado en el rediseño (ListaRoms eliminado)
-    /* private void BtnRandomizarRom_Click(object sender, RoutedEventArgs e)
+    private async void BtnPublicarEquipoBiblioteca_Click(object sender, RoutedEventArgs e)
     {
-        if (false)
+        if (_romSeleccionada is not RomEntry rom)
         {
-            Aviso("Selecciona una ROM de la biblioteca para randomizarla.");
+            Aviso("Selecciona una ROM de la biblioteca.");
             return;
         }
-        MostrarRandomizador(rom.RomPath);
-    } */
+        if (_lockeId.Length == 0 || _playerTag.Length == 0)
+        {
+            Aviso("Conecta un locke primero en «Locke en vivo».");
+            return;
+        }
+        var save = ResolverSavePath(rom);
+        if (save is null)
+        {
+            Aviso("Esa ROM todavía no tiene partida guardada.");
+            return;
+        }
+        await SincronizarEquipoAsync(save);
+    }
 
-    // BtnCambiarCaratula_Click desactivado en el rediseño (ListaRoms eliminado)
-    /* private void BtnCambiarCaratula_Click(object sender, RoutedEventArgs e)
+    private void BtnCambiarCaratula_Click(object sender, RoutedEventArgs e)
     {
-        if (false)
+        if (_romSeleccionada is not RomEntry rom)
         {
             Aviso("Selecciona una ROM de la biblioteca.");
             return;
@@ -1693,10 +2139,13 @@ public partial class MainWindow : Window, IComponentConnector
         rom.CoverPath = nueva;
         if (GuardarBiblioteca())
         {
+            ActualizarListaBiblioteca();
             ActualizarDetalleBiblioteca();
+            ActualizarHeroUltimaPartida();
+            ActualizarBibliotecaReciente();
             Log("🖼 Carátula actualizada: " + rom.Name + (nueva.Length == 0 ? " (quitada)" : " → " + Path.GetFileName(nueva)));
         }
-    } */
+    }
 
     /// <summary>ROM más recientemente jugada (o la primera con partida conocida).</summary>
     private RomEntry? RomDeLaUltimaPartida()
@@ -1956,6 +2405,9 @@ private string? ResolverSavePath(RomEntry rom)
         }
         rom.LastPlayed = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
         GuardarBiblioteca();
+        ActualizarHeroUltimaPartida();
+        ActualizarBibliotecaReciente();
+        _ = ActualizarLockeEnVivo();
         Estado("Jugando " + rom.Name + " (Añil)", "#4CAF50");
     }
 
@@ -2046,6 +2498,9 @@ private string? ResolverSavePath(RomEntry rom)
 			_watcher = watcher;
 			rom.LastPlayed = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
 			GuardarBiblioteca();
+			ActualizarHeroUltimaPartida();
+			ActualizarBibliotecaReciente();
+			_ = ActualizarLockeEnVivo();
 			Estado("Jugando " + rom.Name + " (vigilando la partida)", "#4CAF50");
 			_ramvivo?.Detener();
 			if (consola == ConsolaJuego.TresDs && _lockeActivo != null && _firebase != null && rom.SalaId > 0)
@@ -2184,6 +2639,7 @@ private string? ResolverSavePath(RomEntry rom)
 			PlayerLocke miJugador = (_lockeActivo.Players.TryGetValue(_playerTag, out PlayerLocke jugador) ? jugador : null);
 			Log(myTeamResumen(miJugador));
 			await ActualizarPendientesAsync();
+			await ActualizarLockeEnVivo();
 		}
 		catch (Exception ex)
 		{
@@ -2325,10 +2781,6 @@ private string? ResolverSavePath(RomEntry rom)
 		}
 	}
 
-	private void BtnLimpiarLog_Click(object sender, RoutedEventArgs e)
-	{
-		TxtLog.Clear();
-	}
 
 	    private void Nav_Click(object sender, RoutedEventArgs e)
     {
@@ -2376,6 +2828,7 @@ private string? ResolverSavePath(RomEntry rom)
     /// <summary>Cambia la sección visible de la ventana principal (inicio/locke/biblioteca/randomizador/ajustes).</summary>
     private void MostrarSeccion(string seccion)
     {
+        _seccionActual = seccion;
         PanelInicio.Visibility = seccion == "inicio" ? Visibility.Visible : Visibility.Collapsed;
         PanelLocke.Visibility = seccion == "locke" ? Visibility.Visible : Visibility.Collapsed;
         PanelBiblioteca.Visibility = seccion == "biblioteca" ? Visibility.Visible : Visibility.Collapsed;
@@ -2389,6 +2842,77 @@ private string? ResolverSavePath(RomEntry rom)
             "ajustes" => "Ajustes",
             _ => "Inicio",
         };
+        TxtSubtituloSeccion.Text = seccion switch
+        {
+            "inicio" => "Retoma tu última partida o sincroniza cambios con Pokelocke Android",
+            "locke" => "Sincronización en tiempo real con la app móvil Pokelocke Android vía Firebase",
+            _ => "",
+        };
+    }
+
+    private static readonly string[] OrdenSecciones = ["inicio", "biblioteca", "locke", "randomizador", "ajustes"];
+
+    private void MainWindow_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        if (EsControlInteractivo(e.OriginalSource as DependencyObject))
+        {
+            _swipeActivo = false;
+            return;
+        }
+        _swipeInicio = e.GetPosition(this);
+        _swipeActivo = true;
+    }
+
+    private void MainWindow_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+    {
+        if (!_swipeActivo) return;
+        _swipeActivo = false;
+
+        var fin = e.GetPosition(this);
+        var dx = fin.X - _swipeInicio.X;
+        var dy = fin.Y - _swipeInicio.Y;
+
+        if (Math.Abs(dx) < 90 || Math.Abs(dx) <= Math.Abs(dy) * 1.8)
+            return;
+
+        // Deslizar a la izquierda (dx < 0) avanza; a la derecha (dx > 0) retrocede.
+        var idx = Array.IndexOf(OrdenSecciones, _seccionActual);
+        if (idx < 0) idx = 0;
+        var siguiente = dx < 0 ? idx + 1 : idx - 1;
+        if (siguiente < 0 || siguiente >= OrdenSecciones.Length)
+            return;
+
+        NavegarPorDeslizamiento(OrdenSecciones[siguiente]);
+    }
+
+    private void NavegarPorDeslizamiento(string seccion)
+    {
+        SonidosUi.Click();
+        MostrarSeccion(seccion);
+        foreach (var b in new[] { BtnNavInicio, BtnNavBiblioteca, BtnNavLocke, BtnNavRandomizar, BtnNavAjustes })
+            b.Tag = null;
+        var botonActivo = seccion switch
+        {
+            "biblioteca" => BtnNavBiblioteca,
+            "locke" => BtnNavLocke,
+            "randomizador" => BtnNavRandomizar,
+            "ajustes" => BtnNavAjustes,
+            _ => BtnNavInicio,
+        };
+        botonActivo.Tag = "activo";
+    }
+
+    private static bool EsControlInteractivo(DependencyObject? origen)
+    {
+        while (origen is not null)
+        {
+            if (origen is ButtonBase || origen is TextBoxBase || origen is PasswordBox ||
+                origen is ComboBox || origen is Slider || origen is ScrollBar ||
+                origen is Selector || origen is Thumb || origen is RichTextBox)
+                return true;
+            origen = VisualTreeHelper.GetParent(origen);
+        }
+        return false;
     }
 
 
@@ -2556,4 +3080,37 @@ private string? ResolverSavePath(RomEntry rom)
 	{
 		return EmulatorService.EmuladorAbierto() != null;
 	}
+
+    /// <summary>Aplica las acciones pendientes de la cola (botón «Aplicar cambios al .sav»).</summary>
+    private async void BtnAplicarCambiosSav_Click(object sender, RoutedEventArgs e)
+    {
+        await AplicarPendientesCoreAsync(conConfirmacion: false);
+    }
+
+    /// <summary>Navega a la página de biblioteca (botón «Ver todas ›»).</summary>
+    private void BtnVerTodasBiblioteca_Click(object sender, RoutedEventArgs e)
+    {
+        SonidosUi.Click();
+        MostrarSeccion("biblioteca");
+        foreach (var b in new[] { BtnNavInicio, BtnNavLocke, BtnNavRandomizar, BtnNavAjustes })
+            b.Tag = null;
+        BtnNavBiblioteca.Tag = "activo";
+    }
+
+    /// <summary>Juega la ROM guardada en el Tag del botón de fila reciente.</summary>
+    private async void BtnJugarReciente_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not Button btn || btn.Tag is not RomEntry rom) return;
+        await JugarRomAsync(rom);
+    }
+
+    private void BtnJugarReciente1_Click(object sender, RoutedEventArgs e) => BtnJugarReciente_Click(sender, e);
+    private void BtnJugarReciente2_Click(object sender, RoutedEventArgs e) => BtnJugarReciente_Click(sender, e);
+    private void BtnJugarReciente3_Click(object sender, RoutedEventArgs e) => BtnJugarReciente_Click(sender, e);
+
+    /// <summary>Limpia el registro de la página «Locke en vivo».</summary>
+    private void BtnLimpiarLogLocke_Click(object sender, RoutedEventArgs e)
+    {
+        TxtLogLocke.Document.Blocks.Clear();
+    }
 }

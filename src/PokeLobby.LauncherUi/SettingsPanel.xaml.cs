@@ -53,6 +53,9 @@ public partial class SettingsPanel : UserControl
     private void ConstruirAcentos()
     {
         PanelAcentos.Children.Clear();
+        if (_ajustes.TemaIndice >= 0 && _ajustes.TemaIndice < TemaAcento.Presets.Length)
+            AcentLabel.Text = TemaAcento.Presets[_ajustes.TemaIndice];
+
         for (var i = 0; i < TemaAcento.Presets.Length; i++)
         {
             var indice = i;
@@ -60,15 +63,17 @@ public partial class SettingsPanel : UserControl
             var borde = new Border
             {
                 Width = 34, Height = 34, CornerRadius = new CornerRadius(17),
-                Margin = new Thickness(0, 0, 8, 8),
+                Margin = new Thickness(0, 0, 8, 10),
                 Cursor = Cursors.Hand,
                 Background = new SolidColorBrush(c),
                 ToolTip = TemaAcento.Presets[i],
+                BorderBrush = (Brush)FindResource("ColorBordeVariant"),
+                BorderThickness = new Thickness(1),
             };
             if (i == _ajustes.TemaIndice)
             {
                 borde.BorderBrush = (Brush)FindResource("ColorTexto");
-                borde.BorderThickness = new Thickness(3);
+                borde.BorderThickness = new Thickness(2.5);
             }
             borde.MouseLeftButtonUp += (_, _) =>
             {
@@ -91,22 +96,25 @@ public partial class SettingsPanel : UserControl
             var c = TemaFondo.ColorDe(i);
             var borde = new Border
             {
-                Width = 34, Height = 34, CornerRadius = new CornerRadius(17),
-                Margin = new Thickness(0, 0, 8, 8),
+                Width = 30, Height = 30, CornerRadius = new CornerRadius(15),
+                Margin = new Thickness(0, 0, 8, 4),
                 Cursor = Cursors.Hand,
                 Background = new SolidColorBrush(c),
                 ToolTip = TemaFondo.Presets[i],
+                BorderBrush = (Brush)FindResource("ColorBordeVariant"),
+                BorderThickness = new Thickness(1),
             };
             if (i == _ajustes.FondoIndice)
             {
                 borde.BorderBrush = (Brush)FindResource("ColorTexto");
-                borde.BorderThickness = new Thickness(3);
+                borde.BorderThickness = new Thickness(2.5);
             }
             borde.MouseLeftButtonUp += (_, _) =>
             {
                 _ajustes.FondoIndice = indice;
                 TemaFondo.Apply(indice);
                 ConstruirFondos();
+                ActualizarEstadoFondo();
                 CambiosAplicados?.Invoke();
             };
             PanelFondosGrid.Children.Add(borde);
@@ -115,11 +123,12 @@ public partial class SettingsPanel : UserControl
 
     private void ActualizarEstadoFondo()
     {
+        var presetNombre = _ajustes.FondoIndice >= 0 && _ajustes.FondoIndice < TemaFondo.Presets.Length
+            ? TemaFondo.Presets[_ajustes.FondoIndice]
+            : "Obsidiana";
         FondoLabel.Text = TemaFondo.ImagenActual is null
-            ? "Sin imagen/vídeo (solo color)"
-            : (TemaFondo.EsVideo ? "Vídeo activo" : "Imagen activa") + ": " + Path.GetFileName(TemaFondo.ImagenActual);
-        // PanelAudioVideo eliminado en el rediseño
-        // PanelAudioVideo.Visibility = TemaFondo.EsVideo ? Visibility.Visible : Visibility.Collapsed;
+            ? presetNombre
+            : (TemaFondo.EsVideo ? "Vídeo: " : "Imagen: ") + Path.GetFileName(TemaFondo.ImagenActual);
     }
 
     private void ElegirFondo_Click(object sender, RoutedEventArgs e)
@@ -220,6 +229,10 @@ public partial class SettingsPanel : UserControl
             TxtSwitchAviso.Text = "Los argumentos no contienen {rom}: el emulador no recibirá la ROM.";
         else
             TxtSwitchAviso.Text = "";
+
+        TxtSwitchAviso.Visibility = string.IsNullOrEmpty(TxtSwitchAviso.Text)
+            ? Visibility.Collapsed
+            : Visibility.Visible;
     }
 
     // ─────────────────────────── carpetas / firebase ───────────────────────────

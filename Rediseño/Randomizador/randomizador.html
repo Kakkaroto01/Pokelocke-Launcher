@@ -119,6 +119,71 @@ if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
       direction: ltr;
       vertical-align: middle;
     }
+    [hidden] {
+      display: none !important;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      height: 4px;
+    }
+    .no-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.14);
+      border-radius: 9999px;
+    }
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 9999px;
+      background: linear-gradient(
+        to right,
+        #FF4C4C 0%,
+        #FF4C4C var(--range-pct, 0%),
+        #111117 var(--range-pct, 0%),
+        #111117 100%
+      );
+      border: 1px solid #262632;
+      outline: none;
+      cursor: pointer;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 9999px;
+      background: #F4F4F8;
+      border: 2.5px solid #FF4C4C;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.55);
+      transition: transform 150ms cubic-bezier(0.2, 0, 0, 1), border-color 150ms cubic-bezier(0.2, 0, 0, 1);
+    }
+    input[type="range"]:hover::-webkit-slider-thumb {
+      transform: scale(1.12);
+      border-color: #FF6B6B;
+    }
+    input[type="range"]:focus-visible::-webkit-slider-thumb {
+      box-shadow: 0 0 0 3px rgba(255, 76, 76, 0.3);
+    }
+    input[type="range"]::-moz-range-track {
+      height: 6px;
+      border-radius: 9999px;
+      background: #111117;
+      border: 1px solid #262632;
+    }
+    input[type="range"]::-moz-range-progress {
+      height: 6px;
+      border-radius: 9999px;
+      background: #FF4C4C;
+    }
+    input[type="range"]::-moz-range-thumb {
+      width: 16px;
+      height: 16px;
+      border-radius: 9999px;
+      background: #F4F4F8;
+      border: 2.5px solid #FF4C4C;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.55);
+      transition: transform 150ms cubic-bezier(0.2, 0, 0, 1);
+    }
   </style>
 </head>
 <body class="bg-surface text-on-surface font-body antialiased selection:bg-primary-container selection:text-on-primary-container">
@@ -236,7 +301,7 @@ if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
       </header>
 
       <!-- Main Content -->
-      <main class="flex-1 p-gutter-xl flex flex-col gap-gutter-lg max-w-6xl w-full">
+      <main class="flex-1 min-w-0 p-gutter-xl flex flex-col gap-gutter-lg max-w-6xl w-full">
 
         <!-- ROM Selection & Preset Bar -->
         <section aria-label="Selección de ROM y preset" class="p-gutter-lg rounded-lg bg-surface-container border border-outline-variant flex flex-col gap-gutter-md">
@@ -290,26 +355,26 @@ if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
         </section>
 
         <!-- Category Tabs -->
-        <nav aria-label="Categorías del randomizador" class="flex flex-wrap items-center gap-1 p-1.5 rounded-lg bg-surface-container-low border border-outline-variant">
-          <button type="button" data-tab-target="tab-caracteristicas" class="tab-btn px-3.5 py-2 rounded bg-surface-container-high text-on-surface font-label text-body-sm transition-colors duration-state-change ease-state-change">
+        <nav role="tablist" aria-label="Categorías del randomizador" class="flex items-center flex-nowrap gap-1.5 p-1.5 rounded-lg bg-surface-container-low border border-outline-variant overflow-x-auto max-w-full no-scrollbar">
+          <button type="button" role="tab" id="tab-btn-caracteristicas" aria-selected="true" aria-controls="tab-caracteristicas" data-tab-target="tab-caracteristicas" class="tab-btn shrink-0 whitespace-nowrap px-3.5 py-2 rounded border border-primary bg-surface-container-high text-on-surface font-label text-body-sm transition-colors duration-state-change ease-state-change focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiary">
             <span data-design-text-token="body-sm">Características</span>
           </button>
-          <button type="button" data-tab-target="tab-iniciales" class="tab-btn px-3.5 py-2 rounded text-on-surface-muted font-label text-body-sm hover:text-on-surface transition-colors duration-state-change ease-state-change">
+          <button type="button" role="tab" id="tab-btn-iniciales" aria-selected="false" aria-controls="tab-iniciales" data-tab-target="tab-iniciales" class="tab-btn shrink-0 whitespace-nowrap px-3.5 py-2 rounded border border-transparent text-on-surface-muted font-label text-body-sm hover:text-on-surface hover:bg-surface-container transition-colors duration-state-change ease-state-change focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiary">
             <span data-design-text-token="body-sm">Iniciales y Estáticos</span>
           </button>
-          <button type="button" data-tab-target="tab-movimientos" class="tab-btn px-3.5 py-2 rounded text-on-surface-muted font-label text-body-sm hover:text-on-surface transition-colors duration-state-change ease-state-change">
+          <button type="button" role="tab" id="tab-btn-movimientos" aria-selected="false" aria-controls="tab-movimientos" data-tab-target="tab-movimientos" class="tab-btn shrink-0 whitespace-nowrap px-3.5 py-2 rounded border border-transparent text-on-surface-muted font-label text-body-sm hover:text-on-surface hover:bg-surface-container transition-colors duration-state-change ease-state-change focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiary">
             <span data-design-text-token="body-sm">Movimientos</span>
           </button>
-          <button type="button" data-tab-target="tab-salvajes" class="tab-btn px-3.5 py-2 rounded text-on-surface-muted font-label text-body-sm hover:text-on-surface transition-colors duration-state-change ease-state-change">
+          <button type="button" role="tab" id="tab-btn-salvajes" aria-selected="false" aria-controls="tab-salvajes" data-tab-target="tab-salvajes" class="tab-btn shrink-0 whitespace-nowrap px-3.5 py-2 rounded border border-transparent text-on-surface-muted font-label text-body-sm hover:text-on-surface hover:bg-surface-container transition-colors duration-state-change ease-state-change focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiary">
             <span data-design-text-token="body-sm">Pokémon Salvajes</span>
           </button>
-          <button type="button" data-tab-target="tab-entrenadores" class="tab-btn px-3.5 py-2 rounded text-on-surface-muted font-label text-body-sm hover:text-on-surface transition-colors duration-state-change ease-state-change">
+          <button type="button" role="tab" id="tab-btn-entrenadores" aria-selected="false" aria-controls="tab-entrenadores" data-tab-target="tab-entrenadores" class="tab-btn shrink-0 whitespace-nowrap px-3.5 py-2 rounded border border-transparent text-on-surface-muted font-label text-body-sm hover:text-on-surface hover:bg-surface-container transition-colors duration-state-change ease-state-change focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiary">
             <span data-design-text-token="body-sm">Entrenadores</span>
           </button>
-          <button type="button" data-tab-target="tab-objetos" class="tab-btn px-3.5 py-2 rounded text-on-surface-muted font-label text-body-sm hover:text-on-surface transition-colors duration-state-change ease-state-change">
+          <button type="button" role="tab" id="tab-btn-objetos" aria-selected="false" aria-controls="tab-objetos" data-tab-target="tab-objetos" class="tab-btn shrink-0 whitespace-nowrap px-3.5 py-2 rounded border border-transparent text-on-surface-muted font-label text-body-sm hover:text-on-surface hover:bg-surface-container transition-colors duration-state-change ease-state-change focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiary">
             <span data-design-text-token="body-sm">Objetos</span>
           </button>
-          <button type="button" data-tab-target="tab-miscelanea" class="tab-btn px-3.5 py-2 rounded text-on-surface-muted font-label text-body-sm hover:text-on-surface transition-colors duration-state-change ease-state-change">
+          <button type="button" role="tab" id="tab-btn-miscelanea" aria-selected="false" aria-controls="tab-miscelanea" data-tab-target="tab-miscelanea" class="tab-btn shrink-0 whitespace-nowrap px-3.5 py-2 rounded border border-transparent text-on-surface-muted font-label text-body-sm hover:text-on-surface hover:bg-surface-container transition-colors duration-state-change ease-state-change focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiary">
             <span data-design-text-token="body-sm">Miscelánea</span>
           </button>
         </nav>
@@ -1782,36 +1847,82 @@ if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
 
   <script>
     (function () {
-      var btns = document.querySelectorAll('.tab-btn');
-      var panels = document.querySelectorAll('.tab-panel');
-      btns.forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          var targetId = btn.getAttribute('data-tab-target');
-          btns.forEach(function (b) {
-            b.classList.remove('bg-surface-container-high', 'text-on-surface');
-            b.classList.add('text-on-surface-muted');
-          });
-          btn.classList.add('bg-surface-container-high', 'text-on-surface');
-          btn.classList.remove('text-on-surface-muted');
-          panels.forEach(function (p) {
-            if (p.id === targetId) {
-              p.classList.remove('hidden');
-            } else {
-              p.classList.add('hidden');
+      var btns = Array.prototype.slice.call(document.querySelectorAll('.tab-btn'));
+      var panels = Array.prototype.slice.call(document.querySelectorAll('.tab-panel'));
+
+      function selectCategory(targetId, scrollIntoView) {
+        btns.forEach(function (btn) {
+          var isActive = btn.getAttribute('data-tab-target') === targetId;
+          btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+          btn.setAttribute('tabindex', isActive ? '0' : '-1');
+          if (isActive) {
+            btn.classList.add('bg-surface-container-high', 'text-on-surface', 'border-primary');
+            btn.classList.remove('text-on-surface-muted', 'border-transparent');
+            if (scrollIntoView && btn.scrollIntoView) {
+              btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
             }
-          });
+          } else {
+            btn.classList.remove('bg-surface-container-high', 'text-on-surface', 'border-primary');
+            btn.classList.add('text-on-surface-muted', 'border-transparent');
+          }
+        });
+
+        panels.forEach(function (panel) {
+          panel.setAttribute('role', 'tabpanel');
+          var isActive = panel.id === targetId;
+          panel.hidden = !isActive;
+          if (isActive) {
+            panel.classList.remove('hidden');
+          } else {
+            panel.classList.add('hidden');
+          }
+        });
+      }
+
+      btns.forEach(function (btn, idx) {
+        btn.addEventListener('click', function () {
+          selectCategory(btn.getAttribute('data-tab-target'), true);
+        });
+
+        btn.addEventListener('keydown', function (e) {
+          var nextIdx = null;
+          if (e.key === 'ArrowRight') nextIdx = (idx + 1) % btns.length;
+          else if (e.key === 'ArrowLeft') nextIdx = (idx - 1 + btns.length) % btns.length;
+          else if (e.key === 'Home') nextIdx = 0;
+          else if (e.key === 'End') nextIdx = btns.length - 1;
+
+          if (nextIdx !== null) {
+            e.preventDefault();
+            var nextBtn = btns[nextIdx];
+            nextBtn.focus();
+            selectCategory(nextBtn.getAttribute('data-tab-target'), true);
+          }
         });
       });
 
-      document.querySelectorAll('input[type="range"][data-range-format]').forEach(function (range) {
+      if (btns.length > 0) {
+        selectCategory(btns[0].getAttribute('data-tab-target'), false);
+      }
+
+      function syncRangeFill(range) {
+        var min = parseFloat(range.min || '0');
+        var max = parseFloat(range.max || '100');
+        var val = parseFloat(range.value || '0');
+        var pct = max > min ? ((val - min) / (max - min)) * 100 : 0;
+        range.style.setProperty('--range-pct', pct + '%');
+      }
+
+      document.querySelectorAll('input[type="range"]').forEach(function (range) {
+        syncRangeFill(range);
         var targetId = range.getAttribute('data-range-target') || (range.id + '-val');
         var targetEl = document.getElementById(targetId);
         var fmt = range.getAttribute('data-range-format');
-        if (targetEl && fmt) {
-          range.addEventListener('input', function () {
+        range.addEventListener('input', function () {
+          syncRangeFill(range);
+          if (targetEl && fmt) {
             targetEl.textContent = fmt.replace('{v}', range.value);
-          });
-        }
+          }
+        });
       });
 
       document.querySelectorAll('input[type="radio"]').forEach(function (radio) {

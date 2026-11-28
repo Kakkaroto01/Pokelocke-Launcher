@@ -23,15 +23,17 @@
                     </Grid.ColumnDefinitions>
 
                     <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                        <Image Width="32" Height="32"
+                        <Image Width="34" Height="34"
                                Source="pack://application:,,,/PokeLockeLauncher;component/pokelocke.png"
                                Stretch="Uniform"/>
-                        <StackPanel Margin="8,0,0,0" VerticalAlignment="Center">
-                            <TextBlock Text="PokeLocke" FontSize="16" FontWeight="SemiBold"
-                                       Foreground="{DynamicResource ColorTexto}"/>
-                            <TextBlock Text="Launcher v1.0.0" FontSize="10.5"
-                                       Foreground="{DynamicResource ColorTextoSuave}"/>
-                        </StackPanel>
+                        <Border Background="#005321" CornerRadius="12" Padding="10,4"
+                                Margin="10,0,0,0" VerticalAlignment="Center">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Ellipse Width="6" Height="6" Fill="#4AE176" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="Firebase RTDB" FontSize="11" FontWeight="SemiBold"
+                                           Foreground="#6BFF8F" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
                     </StackPanel>
 
                     <!-- Botón cerrar: cuadrado con color de fondo + X -->
@@ -170,10 +172,41 @@
 
                 <!-- Botones: Iniciar sesión y Crear cuenta nueva del mismo tamaño -->
                 <Button x:Name="BtnEntrar" Content="Iniciar sesión"
-                        Style="{StaticResource BotonAcento}"
-                        Padding="16,11" FontSize="13.5" FontWeight="SemiBold"
+                        Padding="16,12" FontSize="13.5" FontWeight="SemiBold"
                         Margin="0,20,0,10" Click="Entrar_Click"
-                        HorizontalAlignment="Stretch"/>
+                        HorizontalAlignment="Stretch" Cursor="Hand">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background" Value="#B92318"/>
+                            <Setter Property="BorderBrush" Value="#D93829"/>
+                            <Setter Property="BorderThickness" Value="1"/>
+                            <Setter Property="Foreground" Value="#FFFFFF"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border x:Name="Bg" Background="{TemplateBinding Background}"
+                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                BorderThickness="{TemplateBinding BorderThickness}"
+                                                CornerRadius="8" Padding="{TemplateBinding Padding}">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="Bg" Property="Background" Value="#D02B1E"/>
+                                            </Trigger>
+                                            <Trigger Property="IsPressed" Value="True">
+                                                <Setter TargetName="Bg" Property="Background" Value="#9E1D13"/>
+                                            </Trigger>
+                                            <Trigger Property="IsEnabled" Value="False">
+                                                <Setter Property="Opacity" Value="0.5"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
                 <Border Background="{DynamicResource ColorFondo}"
                         BorderBrush="{DynamicResource ColorBordeVariant}" BorderThickness="1"
                         CornerRadius="8" Margin="0" Padding="0">
